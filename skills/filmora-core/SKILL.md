@@ -17,7 +17,10 @@ the plugin scripts already do this. Relative paths work with every script (curre
 
 ## Workflow (every project)
 
-1. **First run on a machine** — build the effect catalog (lists what this Filmora has installed):
+1. **First run on a machine** (or the user says «جهّز كادر» / "set up Kadr") — check `python --version` and
+   `ffmpeg -version` (missing → tell them: `winget install Python.Python.3.12` / `winget install Gyan.FFmpeg`, then
+   reopen the terminal), install the libraries above if `import playwright, fontTools, PIL` fails, then
+   build the effect catalog (lists what this Filmora has installed):
    `python catalog_filmora.py` → prints counts per category. Re-run after the user downloads new effects in Filmora.
    `python filmora_paths.py` shows where projects, downloads and logs are.
 2. **Plan** the edit: duration, aspect (9:16 reel = 1080×1920, 16:9 = 1920×1080, 1:1 = 1080×1080), fps (30 default,

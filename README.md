@@ -71,6 +71,10 @@
 [HyperFrames](https://github.com/heygen-com/hyperframes)، [cinetic](https://github.com/Leonxlnx/cinetic)،
 [product-film-skill](https://github.com/Rieranthony/product-film-skill)، [brag](https://github.com/latent-spaces/brag).
 
+### تواصل
+للتعاون التجاري، الشراكات، أو أي استفسار: **kadr.studio3@gmail.com**
+للمشاكل والاقتراحات: افتح طلب جديد بصفحة المستودع (Issues).
+
 ### تنبيه
 مشروع مستقل وغير رسمي، ما إلو علاقة بـ Wondershare ولا مدعوم منها. صيغة الملف مفهومة من مشاريع المستخدم نفسه —
 احتفظ بنسخة من مشاريعك المهمة. «Filmora» علامة تجارية لأصحابها. الرخصة: MIT.
@@ -141,6 +145,10 @@ Projects are saved in the folder the Claude Code conversation was opened in (any
 Motion ideas inspired by (ideas only, no copied code): prompt-motion.com,
 [HyperFrames](https://github.com/heygen-com/hyperframes), [cinetic](https://github.com/Leonxlnx/cinetic),
 [product-film-skill](https://github.com/Rieranthony/product-film-skill), [brag](https://github.com/latent-spaces/brag).
+
+### Contact
+Business, partnerships or licensing: **kadr.studio3@gmail.com**
+Bugs and ideas: open an issue on this repository.
 
 ### Disclaimer
 Independent, unofficial project — not affiliated with or endorsed by Wondershare. The file format was understood from

@@ -4,4 +4,5 @@ numpy
 playwright      # then: playwright install chromium
 fonttools       # reading installed fonts (font specimens)
 librosa         # beat edits + sound-effect catalog
+opencv-contrib-python-headless   # motion tracking ("follow")
 # optional: faster-whisper   # transcribe a voice-over into word timings for captions

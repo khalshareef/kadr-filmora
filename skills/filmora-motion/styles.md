@@ -4,7 +4,7 @@ Each style = feeling · look · type · signature moves · banned. Pick one with
 prompt-motion.com examples as references), copy its block into the project's design-system.md, then adapt to the brand.
 Fonts are always chosen by the user from their installed fonts (font_scout.py); the type line is only a direction.
 
-## 1. Line-Art Explainer (our Falcon ASR reel)
+## 1. Line-Art Explainer (the bundled example reel)
 Feeling: calm, clever, hand-made news explainer. Look: cream canvas, black line art (6–9 px, round caps), one accent,
 dot grid with parallax. Moves: strokes that draw themselves; pop-with-overshoot icons; world-canvas camera flights with
 roll + zoom dip + directional blur; voice-driven bars; playhead timelines; accent circle wipe into the CTA.

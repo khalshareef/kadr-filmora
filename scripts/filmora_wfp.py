@@ -59,9 +59,50 @@ def kf_md5(points):
     return hashlib.md5(b).hexdigest()
 
 
+CURVE_Y = {"linear": (0.5, 0.5), "out": (1.0, 0.0), "in": (0.0, 1.0), "inout": (0.0, 0.0)}  # (A right, B left) x delta
+
+
+def kf_param_curve(points, total=None):
+    """points: [(time, value, ease_to_next)] -> Filmora's own Bezier keys (Interpolation 13, verified in Filmora 16):
+    _left/_rightDerivative = handle x as a fraction of the segment (0.5), _left/_rightDerivativeY = handle y in value
+    units along the segment (delta = steep end, 0 = flat end). out = fast start / soft stop, in = soft start, inout = S.
+    Two editable points per move instead of dense linear keys."""
+    pts = sorted(points, key=lambda p: p[0])
+    items = []
+    for n, (t, v, *_) in enumerate(pts):
+        s = f'{{"_time": {num(t)},"Interpolation": 13,"_value": {num(v)}'
+        if n > 0:
+            v0, e0 = pts[n - 1][1], (pts[n - 1][2] if len(pts[n - 1]) > 2 else "linear")
+            ly = CURVE_Y.get(e0, CURVE_Y["inout"])[1] * (v - v0)
+            s += ',"_leftDerivative": 0.5' + (f',"_leftDerivativeY": {num(ly)}' if ly else "")
+        if n < len(pts) - 1:
+            v1, e1 = pts[n + 1][1], (pts[n][2] if len(pts[n]) > 2 else "linear")
+            ry = CURVE_Y.get(e1, CURVE_Y["inout"])[0] * (v1 - v)
+            s += ',"_rightDerivative": 0.5' + (f',"_rightDerivativeY": {num(ry)}' if ry else "")
+        items.append(s + "}")
+    md5 = kf_md5([(p[0], 13, p[1]) for p in pts])
+    out = '{"Version": 3,"ParameterType": 0,"keyframeSets": [' + ",".join(items) + f'],"MD5":"{md5}"'
+    if total is not None:
+        out = out.replace(f',"MD5":"{md5}"', f',"MD5": "{md5}","_totalTime": {num(total)}')
+    return out + "}"
+
+
+def shift_param(param, delta):
+    """Move every key of a keyframe parameter string by delta (same unit), keeping each key's own fields."""
+    P = json.loads(param)
+    ks = P.get("keyframeSets", [])
+    for k in ks:
+        k["_time"] = round(k["_time"] + delta, 8)
+    P["MD5"] = kf_md5([(k["_time"], k.get("Interpolation", 1), k["_value"]) for k in ks])
+    return json.dumps(P, separators=(",", ":"))
+
+
 def kf_param(points, interp=1, total=None):
-    """points: [(time, value)] already in the param's own time unit."""
-    pts = sorted(points)
+    """points: [(time, value)] already in the param's own time unit. Points with a third element (ease to the next
+    point: out | in | inout | linear) are written as native Filmora curves (kf_param_curve)."""
+    if any(len(p) > 2 and p[2] != "linear" for p in points):
+        return kf_param_curve(points, total)
+    pts = sorted((p[0], p[1]) for p in points)
     items = []
     for n, (t, v) in enumerate(pts):
         s = f'{{"_time": {num(t)},"Interpolation": {interp},"_value": {num(v)}'
@@ -246,14 +287,14 @@ class Project:
         set_params(tf, {"Scale_x": (3, float(scale)), "Scale_y": (3, float(sy)), "Position_x": (3, float(x)),
                         "Position_y": (3, float(y)), "Rotation": (3, float(rot))})
         self._keyframes(tf, src_in / TICKS, kf_scale=kf_scale, kf_scale_x=kf_scale_x, kf_x=kf_x, kf_y=kf_y, kf_rot=kf_rot)
-        c["pipBuf"], c["pipBufSize"] = pip_buf(opacity, [(src_in + self.ticks(t), v) for t, v in kf_opacity] if kf_opacity else None)
+        c["pipBuf"], c["pipBufSize"] = pip_buf(opacity, [(src_in + self.ticks(q[0]), *q[1:]) for q in kf_opacity] if kf_opacity else None)
         self.clip_map[get_ud(c, 3).rstrip(b"\0").decode()] = m["id"]
         return c
 
     def _keyframes(self, tf, base_sec, kf_scale=None, kf_scale_x=None, kf_x=None, kf_y=None, kf_rot=None):
         maps = []
         def add(name, pts):
-            maps.append({"key": 3, "keyFrame": {"parameter": kf_param([(base_sec + self.ticks(t) / TICKS, v) for t, v in pts])}, "name": name})
+            maps.append({"key": 3, "keyFrame": {"parameter": kf_param([(base_sec + self.ticks(q[0]) / TICKS, *q[1:]) for q in pts])}, "name": name})
         if kf_scale:
             add("Scale_x", kf_scale); add("Scale_y", kf_scale)
         if kf_scale_x:
@@ -326,7 +367,7 @@ class Project:
         tfw = transform_effect(w)
         set_params(tfw, {"Scale_x": (3, float(scale)), "Scale_y": (3, float(scale)), "Position_x": (3, float(x)), "Position_y": (3, float(y))})
         self._keyframes(tfw, 0.0, kf_scale=kf_scale, kf_x=kf_x, kf_y=kf_y, kf_rot=kf_rot)
-        w["pipBuf"], w["pipBufSize"] = pip_buf(opacity, [(self.ticks(t), v) for t, v in kf_opacity] if kf_opacity else None)
+        w["pipBuf"], w["pipBufSize"] = pip_buf(opacity, [(self.ticks(q[0]), *q[1:]) for q in kf_opacity] if kf_opacity else None)
         self.clip_map[get_ud(w, 3).rstrip(b"\0").decode()] = get_ud(w, 10).decode()
         return w
 

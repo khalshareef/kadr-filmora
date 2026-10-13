@@ -38,6 +38,18 @@ def font_file(name):
     raise FileNotFoundError(f"Font '{name}' is not installed (Filmora can only use installed fonts).")
 
 
+def line_height(name, default=1.55):
+    """Distance between two lines of this font in em, as Windows/Filmora lay it out (usWinAscent + usWinDescent).
+    Fonts differ a lot (1.4-2.0 em), so a 2-line title's real height depends on the font."""
+    try:
+        from fontTools.ttLib import TTFont
+        f = TTFont(font_file(name), fontNumber=0, lazy=True)
+        os2 = f["OS/2"]
+        return max(1.2, (os2.usWinAscent + os2.usWinDescent) / f["head"].unitsPerEm)
+    except Exception:
+        return default
+
+
 def measure(items):
     """items: [(text, font_name)] -> [width of the text at font-size 1px]"""
     from playwright.sync_api import sync_playwright

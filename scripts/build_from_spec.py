@@ -13,6 +13,21 @@ sys.path.insert(0, HERE)
 from filmora_fx import FxProject          # noqa: E402
 from text_measure import measure          # noqa: E402
 import filmora_paths                       # noqa: E402
+import filmora_speed                       # noqa: E402  speed / ramps / reverse (verified in Filmora 16)
+import filmora_mask                        # noqa: E402  shape, text and image masks (verified)
+import filmora_text_anim                   # noqa: E402  Filmora's own text animation presets (verified)
+import filmora_effect_kf                   # noqa: E402  keyframed effect params + volume (verified)
+
+
+def _pairs(points):
+    return [(float(t), float(v)) for t, v in points]
+
+
+def _apply_effect_kf(effect_clip, effect_name, kfs, ease, fps):
+    """kfs = {param: [[t, v], ...]} (seconds from the clip start) on an effect that sits on effect_clip."""
+    for param, pts in (kfs or {}).items():
+        filmora_effect_kf.keyframe_clip_effect(effect_clip, effect_name, param, _pairs(pts),
+                                               interpolation=ease or "linear", fps=fps, clamp=True)
 
 # ---------------- animation presets -> keyframes (seconds from the clip's own start)
 # values: scale %, x/y 0..1 (y down), rotation degrees, opacity 0..100
@@ -97,10 +112,16 @@ EASE = {  # u in 0..1 -> progress; Filmora interpolates linearly, so curves are 
 }
 
 
+NATIVE_EASES = ("out", "in", "inout")   # written as Filmora's own curve keys (2 editable points per move)
+
+
 def eased(pts, ease="out", fps=30):
-    """Densify each keyframe segment along an easing curve (a point every 2 frames)."""
+    """out / in / inout -> the same points tagged with the ease (native Filmora curves, see filmora_wfp.kf_param_curve);
+    other eases (back) are densified along the curve (a point every 2 frames)."""
     if ease == "linear" or len(pts) < 2:
         return pts
+    if ease in NATIVE_EASES:
+        return [(t, v, ease) for t, v in pts]
     f = EASE.get(ease, EASE["out"])
     out = [pts[0]]
     for (t0, v0), (t1, v1) in zip(pts, pts[1:]):
@@ -111,14 +132,16 @@ def eased(pts, ease="out", fps=30):
     return out
 
 
-# Role-based text sizes. Calibrated on a 1080-wide vertical project the user approved (headline Readex Pro Bold 74,
-# caption IBM Plex Sans Arabic SemiBold 40, Latin subline Montserrat SemiBold 20). Any other font is scaled so the same
-# reference line takes the same width, so a wide/big-looking font automatically gets a smaller number.
-ROLE_REF = {"ar": "الذكاء الاصطناعي يساعد الدماغ", "en": "FALCON ASR NEWS"}
+# Role-based text sizes, calibrated on 1080-wide vertical projects in Readex Pro Bold / IBM Plex Sans Arabic SemiBold /
+# Montserrat SemiBold. Any other font is scaled so the same reference line takes the same width, so a wide/big-looking
+# font automatically gets a smaller number. The reference lines only measure width — don't change them without
+# re-measuring the widths below. Headline/title are a starting point that follows the text's length like a designer
+# would: one or two strong words big (~70), a full sentence smaller (~48) — see LENGTH_RANGE.
+ROLE_REF = {"ar": "الذكاء الاصطناعي يساعد الدماغ", "en": "KADR STUDIO NEWS"}
 ROLES = {  # role: (size in the calibration font, reference width of that font for the script in use)
-    "hit": {"ar": (110, 13.897), "en": (96, 10.195)}, "headline": {"ar": (74, 13.897), "en": (64, 10.195)},
-    "title": {"ar": (60, 13.897), "en": (52, 10.195)}, "caption": {"ar": (40, 12.183), "en": (34, 10.195)},
-    "label": {"ar": (30, 12.183), "en": (24, 10.195)}, "sub": {"ar": (26, 12.183), "en": (20, 10.195)},
+    "hit": {"ar": (110, 13.897), "en": (96, 10.769)}, "headline": {"ar": (70, 13.897), "en": (60, 10.769)},
+    "title": {"ar": (56, 13.897), "en": (48, 10.769)}, "caption": {"ar": (40, 12.183), "en": (34, 10.769)},
+    "label": {"ar": (30, 12.183), "en": (24, 10.769)}, "sub": {"ar": (26, 12.183), "en": (20, 10.769)},
 }
 
 
@@ -126,18 +149,38 @@ def script(text):
     return "ar" if any("؀" <= ch <= "ۿ" for ch in text) else "en"
 
 
-def role_size(c, ref_width, W, H):
+# headline/title: full size up to SHORT em of text (in the calibration font), shrinking to `long_factor` x at LONG em
+LENGTH_RANGE = {"headline": (0.69, 5.0, 12.0), "title": (0.75, 5.0, 12.0)}   # (long_factor, SHORT, LONG)
+
+
+def role_size(c, ref_width, W, H, text_width=None):
     """Font size for a text role: same visual footprint whatever the font; landscape frames get proportionally smaller
-    text (sizes follow the short side). "size_scale" fine-tunes (e.g. 1.1)."""
+    text (sizes follow the short side). Headlines/titles also follow their length (short = big, a sentence = smaller).
+    "size_scale" fine-tunes (e.g. 1.1); an explicit "size" in the spec always wins."""
     base, calib = ROLES[c["role"]][script(c["text"])]
-    return round(base * calib / max(ref_width, 0.1) * min(W, H) / W * c.get("size_scale", 1.0), 1)
+    norm = calib / max(ref_width, 0.1)                   # this font -> calibration font
+    if c["role"] in LENGTH_RANGE and text_width:
+        long_f, short_em, long_em = LENGTH_RANGE[c["role"]]
+        t = min(1.0, max(0.0, (text_width / norm - short_em) / (long_em - short_em)))
+        base *= 1 - (1 - long_f) * t
+    return round(base * norm * min(W, H) / W * c.get("size_scale", 1.0), 1)
+
+
+_LH = {}
 
 
 def block_height(c, W):
-    """Visible height (px) of a text block: lines x line pitch (Filmora: 1 em = 1.5 x size x W/1920)."""
+    """Visible height (px) of a text block: first line ~1.25 em + the font's own line pitch for every extra line
+    (Filmora: 1 em = 1.5 x size x W/1920; the pitch comes from the font file - Readex Pro 1.76 em, DG Bebo 2.0 em)."""
     em = 1.5 * c.get("size", 60) * W / 1920
     lines = c["text"].count("\n") + 1
-    return em * (1.25 + (lines - 1) * 1.55)
+    if lines == 1:
+        return em * 1.25
+    font = c.get("font", "Arial")
+    if font not in _LH:
+        from text_measure import line_height
+        _LH[font] = line_height(font)
+    return em * (1.25 + (lines - 1) * _LH[font])
 
 
 def stack_texts(texts, W, H):
@@ -160,22 +203,49 @@ def _luminance(rgb):
     return 0.2126 * ch(r) + 0.7152 * ch(g) + 0.0722 * ch(b)
 
 
-def _frame(path, t, W, H):
-    """RGB image of a media file at second t, scaled to the project frame (image files: the image)."""
+def _source_frame(path, t):
+    """RGBA picture of a media file at source second t (image files: the image itself), native size."""
     import io
     from PIL import Image
-    if path.lower().endswith((".png", ".jpg", ".jpeg", ".webp")):
-        return Image.open(path).convert("RGB").resize((W, H))
-    raw = subprocess.run(["ffmpeg", "-v", "error", "-ss", f"{max(0, t):.3f}", "-i", path, "-frames:v", "1", "-vf", f"scale={W}:{H}",
+    if path.lower().endswith((".png", ".jpg", ".jpeg", ".webp", ".bmp")):
+        return Image.open(path).convert("RGBA")
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-ss", f"{max(0, t):.3f}", "-i", path, "-frames:v", "1",
                           "-f", "image2pipe", "-vcodec", "png", "-"], capture_output=True).stdout
-    return Image.open(io.BytesIO(raw)).convert("RGB") if raw else None
+    return Image.open(io.BytesIO(raw)).convert("RGBA") if raw else None
 
 
-def fix_contrast(clips, texts, W, H, need=3.0):
-    """Sample what is under each text (the topmost video/image clip below it, at the text's middle moment and position)
-    and switch the colour to near-white or near-black if the contrast ratio is below `need` (3:1 = large text)."""
+def _composite(layers, tm, W, H, cache):
+    """What the frame looks like at timeline second tm: every visual layer fitted into the frame like Filmora does at
+    scale 100 (letterboxed), then scaled and moved by its own scale/x/y, stacked by z over black."""
+    from PIL import Image
+    canvas = Image.new("RGBA", (W, H), (0, 0, 0, 255))
+    for v in sorted(layers, key=lambda v: v.get("z", 0)):
+        src_t = v.get("src_in", 0.0) + (tm - v["start"]) * float(v.get("speed", 1) if not isinstance(v.get("speed"), dict) else 1)
+        key = (v["path"], round(src_t, 1))
+        if key not in cache:
+            cache[key] = _source_frame(v["path"], src_t)
+        img = cache[key]
+        if img is None:
+            continue
+        f = min(W / img.width, H / img.height) * v.get("scale", 100.0) / 100
+        w, h = max(1, round(img.width * f)), max(1, round(img.height * f))
+        layer = img.resize((w, h))
+        canvas.paste(layer, (round(v.get("x", 0.5) * W - w / 2), round(v.get("y", 0.5) * H - h / 2)), layer)
+    return canvas.convert("RGB")
+
+
+def _contrast(fg, bg):
+    l1, l2 = _luminance(fg), _luminance(bg)
+    return (max(l1, l2) + 0.05) / (min(l1, l2) + 0.05)
+
+
+def fix_contrast(clips, texts, W, H, need=3.0, text_w=None):
+    """Look at what is really under each text (all video/image layers below it, fitted and placed like Filmora shows
+    them, at the text's middle moment and box) and, if the colour reaches less than `need` (3:1 = large text), switch
+    to whichever of white / near-black reads better there."""
+    import numpy as np
     visuals = [c for c in clips if c["type"] in ("video", "image")]
-    cache = {}
+    cache, checked, changed = {}, 0, 0
     for c in texts:
         if c.get("contrast") is False:
             continue
@@ -183,31 +253,30 @@ def fix_contrast(clips, texts, W, H, need=3.0):
         under = [v for v in visuals if v["start"] <= tm < v["end"] and v.get("z", 0) <= c.get("z", 0)]
         if not under:
             continue
-        v = max(under, key=lambda v: v.get("z", 0))
-        src_t = v.get("src_in", 0.0) + (tm - v["start"])
-        key = (v["path"], round(src_t, 1))
-        if key not in cache:
-            cache[key] = _frame(v["path"], src_t, W, H)
-        img = cache[key]
-        if img is None:
-            continue
+        img = _composite(under, tm, W, H, cache)
         bh = block_height(c, W)
-        box = (int(W * 0.15), int(max(0, c.get("y", 0.5) * H - bh / 2)), int(W * 0.85), int(min(H, c.get("y", 0.5) * H + bh / 2)))
-        if box[3] <= box[1]:
+        half_w = (text_w or {}).get(id(c), 0) * 1.5 * c.get("size", 60) * W / 1920 / 2 or W * 0.35
+        cx, cy = c.get("x", 0.5) * W, c.get("y", 0.5) * H
+        box = (int(max(0, cx - half_w)), int(max(0, cy - bh / 2)), int(min(W, cx + half_w)), int(min(H, cy + bh / 2)))
+        if box[3] <= box[1] or box[2] <= box[0]:
             continue
-        px = img.crop(box).resize((32, 8)).getdata()
-        bg = tuple(sum(p[i] for p in px) / len(px) for i in range(3))
+        bg = tuple(np.asarray(img.crop(box), dtype=np.float32).reshape(-1, 3).mean(0))
         col = c.get("color", "#FFFFFF").lstrip("#")
         fg = tuple(int(col[i:i + 2], 16) for i in (0, 2, 4))
-        l1, l2 = _luminance(fg), _luminance(bg)
-        ratio = (max(l1, l2) + 0.05) / (min(l1, l2) + 0.05)
+        checked += 1
+        ratio = _contrast(fg, bg)
         if ratio < need:
-            new = "#FFFFFF" if _luminance(bg) < 0.35 else "#111111"
+            new = max(("#FFFFFF", "#111111"), key=lambda h: _contrast(tuple(int(h[i:i + 2], 16) for i in (1, 3, 5)), bg))
             print(f"note: text '{c['text'][:18]}' colour #{col} -> {new} (contrast {ratio:.1f}:1 on what is underneath)")
             c["color"] = new
+            changed += 1
+    if checked:
+        print(f"contrast check: {checked} text(s) checked against the picture underneath, {changed} recoloured")
 
 
-SAFE = 0.03   # keep every text this far (fraction of the frame) from the edges
+SAFE = 0.03     # keep every text this far (fraction of the frame) from the top/bottom edges
+SAFE_X = 0.07   # ...and from the side edges (Filmora can draw a few % wider than measured; reels crop the sides)
+WIDE = 0.78     # a 3+ word line wider than this share of the frame is broken into two balanced lines
 
 
 def fit_text_size(c, em_width, W, H, kf, quiet=False):
@@ -215,13 +284,13 @@ def fit_text_size(c, em_width, W, H, kf, quiet=False):
     Filmora renders glyphs at 1 em = 1.5 * size * W / 1920 px (title box height is twice that)."""
     size = float(c.get("size", 60))
     lines = c["text"].count("\n") + 1
-    max_scale = max([v for _, v in kf.get("scale", [])] + [c.get("scale", 100.0)]) / 100
-    xs = [v for _, v in kf.get("x", [])] or [c.get("x", 0.5)]
-    ys = [v for _, v in kf.get("y", [])] or [c.get("y", 0.5)]
+    max_scale = max([q[1] for q in kf.get("scale", [])] + [c.get("scale", 100.0)]) / 100
+    xs = [q[1] for q in kf.get("x", [])] or [c.get("x", 0.5)]
+    ys = [q[1] for q in kf.get("y", [])] or [c.get("y", 0.5)]
     em = 1.5 * size * W / 1920
     half_w = em_width * em * max_scale / 2 / W                     # fractions of the frame
     half_h = 1.3 * em * (1 + (lines - 1) * 1.15) * max_scale / 2 / H     # visible line ~1.3 em
-    room_w = min(min(x, 1 - x) for x in xs) - SAFE                  # centre to the nearest side edge
+    room_w = min(min(x, 1 - x) for x in xs) - SAFE_X                # centre to the nearest side edge
     room_h = min(min(y, 1 - y) for y in ys) - SAFE
     f = min(1.0, room_w / half_w if half_w > 0 else 1.0, room_h / half_h if half_h > 0 else 1.0)
     if f < 1.0:
@@ -244,10 +313,36 @@ def build(spec, out=None, register=True):
     widths = dict(zip(lines + refs, measured))
     for c in texts:                                   # role -> size, normalised to how big this font really draws
         if c.get("role") and "size" not in c:
-            c["size"] = role_size(c, widths[(ROLE_REF[script(c["text"])], c.get("font", "Arial"))], p.W, p.H)
+            font = c.get("font", "Arial")
+            c["size"] = role_size(c, widths[(ROLE_REF[script(c["text"])], font)], p.W, p.H,
+                                  max(widths[(ln, font)] for ln in c["text"].split("\n")))
+    text_w = {}                                       # too wide -> two balanced lines, then shrink to the safe area
+    for c in texts:                                   # (before stacking, so a subline goes under the real block)
+        font = c.get("font", "Arial")
+        kf = merged_keyframes(c, p.fps)
+        w = max(widths[(ln, font)] for ln in c["text"].split("\n"))
+        words = c["text"].split()
+        one = fit_text_size(c, w, p.W, p.H, kf, quiet=True)
+        fill = w * 1.5 * one / 1920                                   # share of the frame width the line takes
+        if "\n" not in c["text"] and len(words) >= 3 and (one < 0.8 * c.get("size", 60) or fill > WIDE):
+            cut = min(range(1, len(words)), key=lambda i: abs(len(" ".join(words[:i])) - len(" ".join(words[i:]))))
+            two = " ".join(words[:cut]) + "\n" + " ".join(words[cut:])
+            new = [(ln, font) for ln in two.split("\n") if (ln, font) not in widths]
+            widths.update(zip(new, measure(new)) if new else [])
+            w2 = max(widths[(ln, font)] for ln in two.split("\n"))
+            if fit_text_size(dict(c, text=two), w2, p.W, p.H, kf, quiet=True) >= one:   # unless it ends up smaller
+                grow = block_height(dict(c, text=two), p.W) - block_height(c, p.W)
+                c["text"], w = two, w2
+                c["y"] = round(c.get("y", 0.5) + grow / 2 / p.H, 4)        # grow downward: keep the top edge in place
+                print(f"note: text '{words[0]} ...' split into two lines to fit the frame")
+        c["size"] = fit_text_size(c, w, p.W, p.H, kf)
+        text_w[id(c)] = w
+    sizes = sorted({(c.get("role", "-"), c.get("font", "Arial"), c["size"]) for c in texts})
+    if sizes:
+        print("text sizes: " + ", ".join(f"{r} {f} {s:g}" for r, f, s in sizes))
     stack_texts(texts, p.W, p.H)                      # "below": put a subline under its headline, whatever its line count
     if spec.get("contrast", True):
-        fix_contrast(clips, texts, p.W, p.H)          # text colour readable on what is really underneath it
+        fix_contrast(clips, texts, p.W, p.H, text_w=text_w)   # text colour readable on what is really underneath it
 
     made = []
     for c in clips:
@@ -260,29 +355,38 @@ def build(spec, out=None, register=True):
             obj = p.image_clip(c["path"], c["start"], c["end"], rot=c.get("rotation", 0.0), kf_scale_x=kf.get("scale_x"), **common)
         elif c["type"] == "video":
             obj = p.video_clip(c["path"], c["start"], c["end"], src_in=c.get("src_in", 0.0), rot=c.get("rotation", 0.0), **common)
+            sp = c.get("speed")
+            if sp is not None or c.get("reverse") or c.get("frame_interp"):
+                kw = dict(sp) if isinstance(sp, dict) else {"speed": float(sp if sp is not None else 1.0)}
+                if "curve" in kw:
+                    kw["curve"] = _pairs(kw["curve"])
+                filmora_speed.apply_speed(obj, c.get("src_in", 0.0), total=filmora_speed.media_total(p, c["path"]),
+                                          duration=c["end"] - c["start"], reverse=bool(c.get("reverse")),
+                                          frame_interp=c.get("frame_interp"), **kw)
         elif c["type"] == "text":
-            font = c.get("font", "Arial")
-            w = max(widths[(ln, font)] for ln in c["text"].split("\n"))
-            words = c["text"].split()
-            one = fit_text_size(c, w, p.W, p.H, kf, quiet=True)
-            if "\n" not in c["text"] and len(words) >= 3 and one < 0.8 * c.get("size", 60):
-                cut = min(range(1, len(words)), key=lambda i: abs(len(" ".join(words[:i])) - len(" ".join(words[i:]))))
-                c2 = dict(c, text=" ".join(words[:cut]) + "\n" + " ".join(words[cut:]))   # too wide: try two balanced lines
-                new = [(ln, font) for ln in c2["text"].split("\n") if (ln, font) not in widths]
-                widths.update(zip(new, measure(new)) if new else [])
-                w2 = max(widths[(ln, font)] for ln in c2["text"].split("\n"))
-                if fit_text_size(c2, w2, p.W, p.H, kf, quiet=True) > one:      # keep it only if the text ends up bigger
-                    c, w = c2, w2
-                    print(f"note: text '{words[0]} ...' split into two lines to fit the frame")
+            font, w = c.get("font", "Arial"), text_w[id(c)]
             size = fit_text_size(c, w, p.W, p.H, kf)
             obj = p.title_clip(c["text"].replace("\n", "\r"), c["start"], c["end"], font=font, font_size=size,
                                color=int(c.get("color", "#FFFFFF").lstrip("#")[:6], 16), text_width=w, lines=c["text"].count("\n") + 1, **common)
+            if c.get("anim_in") or c.get("anim_out") or c.get("anim_loop"):    # Filmora's own text animation presets
+                filmora_text_anim.apply_text_animation(
+                    obj, filmora_text_anim.inner_clip_of(p, obj), in_=c.get("anim_in"), out=c.get("anim_out"),
+                    loop=c.get("anim_loop"), in_dur=c.get("anim_in_dur"), out_dur=c.get("anim_out_dur"),
+                    loop_dur=c.get("anim_loop_dur"))
         elif c["type"] == "effect":
-            obj = p.fx(c["name"], c["start"], c["end"])
+            obj = p.fx(c["name"], c["start"], c["end"], params=c.get("params"))
+            _apply_effect_kf(obj, c["name"], c.get("keyframes"), c.get("ease"), p.fps)
         else:
             raise ValueError(f"unknown clip type {c['type']}")
-        for f in c.get("filters", []):
-            p.filter(obj, f)
+        for f in c.get("filters", []):                  # "Name" or {"name", "params", "keyframes", "ease"}
+            f = {"name": f} if isinstance(f, str) else f
+            p.filter(obj, f["name"], f.get("params"))
+            _apply_effect_kf(obj, f["name"], f.get("keyframes"), f.get("ease"), p.fps)
+        if c.get("mask") and c["type"] in ("image", "video"):
+            m = dict(c["mask"])
+            if m.get("keyframes"):
+                m["keyframes"] = {k: _pairs(v) for k, v in m["keyframes"].items()}
+            filmora_mask.add_mask(obj, m.pop("shape", "ellipse"), project=p, **m)
         made.append((c, obj))
 
     # named tracks keep their clips together (needed for transitions); everything else is packed automatically
@@ -338,6 +442,8 @@ def build(spec, out=None, register=True):
     for c in sorted((c for c in clips if c["type"] == "audio"), key=lambda a: a["start"]):
         obj = p.audio_clip(c["path"], c["start"], dur=c.get("duration"), gain_db=c.get("gain_db", -10.0), fade_out=c.get("fade_out", 0.0),
                            src_in=c.get("src_in", 0.0))
+        if c.get("volume_kf"):                          # [[seconds_from_clip_start, dB], ...]
+            filmora_effect_kf.set_volume_keyframes(obj, _pairs(c["volume_kf"]), interpolation=c.get("ease", "linear"), fps=p.fps)
         for lane in alanes:
             if lane[-1]["tlEnd"] <= obj["tlBegin"]:
                 lane.append(obj)
@@ -352,6 +458,9 @@ def build(spec, out=None, register=True):
     if not out:
         cfg_dir = filmora_paths._config().get("project_dir")
         out = os.path.join(cfg_dir or os.getcwd(), spec["name"] + ".wfp")
+    plugin_root = os.path.dirname(HERE)
+    if os.path.normcase(os.path.abspath(out)).startswith(os.path.normcase(plugin_root) + os.sep):
+        print(f"WARNING: saving inside the plugin folder ({plugin_root}) — run from the project folder or pass --out")
     path, end = p.save(out)
     subprocess.run([sys.executable, os.path.join(HERE, "check_wfp.py"), path], check=True)
     if register:

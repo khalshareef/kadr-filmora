@@ -10,6 +10,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import filmora_paths  # noqa: E402
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 bad = False
+if not sys.argv[1:] or any(a in ("-h", "--help") for a in sys.argv[1:]):
+    print(__doc__)
+    sys.exit(0)
 for arg in sys.argv[1:]:
     path = filmora_paths.resolve_project(arg)
     z = zipfile.ZipFile(path)

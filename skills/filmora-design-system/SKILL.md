@@ -78,12 +78,12 @@ for 900 px wide on screen: scale = 100 × 900 / (900 × 1.2) = 83.3. Position wi
 - Glows: opacity 0 → 70 → 0 over 1–2 s behind key words; `loop: "pulse"`.
 - Backgrounds: `loop: "push"` with push_amount 1.05 over the whole video so it's never static.
 - Stagger groups: each element 0.06–0.1 s after the previous one; same easing family everywhere.
-- Stamps/badges ("NEW", "✓", numbers): `in: "punch"` + a `hit` effect + click SFX (-10 dB).
+- Stamps/badges ("NEW", "✓", numbers): `in: "punch"` + a `hit` effect + a soft click SFX (-14 dB).
 
 ## 6. Consistency checklist
 
 - Text is **flat and clean**: one solid colour, no stroke/outline, no glow, no drop shadow (strokes look dated —
-  user rule). Contrast comes from the palette or a plate behind the text, never from an outline.
+  house style). Contrast comes from the palette or a plate behind the text, never from an outline.
 
 - One palette, max two font families, one corner radius, one stroke width across all elements.
 - Same entrance style for the same kind of element (all captions pop, all titles rise…).

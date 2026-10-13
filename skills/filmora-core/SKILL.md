@@ -11,7 +11,7 @@ file, say so and tell the user the 1–2 clicks to do it themselves.
 
 Scripts live in `${CLAUDE_PLUGIN_ROOT}/scripts/` (if that variable is empty: two folders above this SKILL.md).
 Call them with `python "<root>/scripts/<name>.py"`. Python 3.10+ and ffmpeg/ffprobe on PATH are required;
-text measuring needs Pillow + Playwright Chromium (`pip install pillow playwright && playwright install chromium`).
+install the libraries once: `pip install -r <root>/requirements.txt` then `playwright install chromium`.
 On Windows, when *your own* snippets print Arabic, run Python with `-X utf8` (or set `PYTHONIOENCODING=utf-8`);
 the plugin scripts already do this. Relative paths work with every script (current folder first).
 
@@ -56,7 +56,8 @@ the plugin scripts already do this. Relative paths work with every script (curre
 - **Transitions** need two clips on the **same named track**, the second starting exactly at the first's end, and
   spare source footage (≥ half the transition) beyond each cut. Images always have spare footage; for video set
   `src_in` so there's room before, and don't cut at the very end of the source.
-- **Audio**: default gain is **-10 dB** (user rule for SFX). Music usually -4 to -8 dB under a voice, -2 to 0 alone.
+- **Audio**: give every audio clip a `gain_db` (builder default -10 dB). House defaults: SFX taps -14, whooshes -13, one
+  hero impact -10 (`sfx_catalog.place()` uses these); music -4 to -8 dB under a voice, -2 to 0 alone.
   Add `fade_out` on the last music clip. A video's own sound is not placed (clips are muted) — add the audio file
   as an `audio` clip if it's needed.
 - **Religious / Quranic content**: never add music, jingles or tonal SFX. Only soft, non-flashy visuals
@@ -91,14 +92,29 @@ the plugin scripts already do this. Relative paths work with every script (curre
    "transition_out": {"name": "Cross_Zoom", "duration": 0.4}},
   {"type": "video", "path": "D:/clips/b.mp4", "start": 3, "end": 6, "track": "main", "src_in": 0.5},
   {"type": "effect", "name": "4_Flash_White1", "start": 2.9, "end": 3.2, "z": 5},
-  {"type": "text", "text": "أهلا وسهلا", "font": "Cairo Bold", "size": 90, "y": 0.78, "start": 0.3, "end": 2.8,
-   "in": "pop", "out": "fade", "z": 10},
+  {"type": "text", "text": "أهلا وسهلا", "font": "<font the user picked>", "role": "headline", "y": 0.78,
+   "start": 0.3, "end": 2.8, "anim_in": "Appearing Verbatim", "anim_out": "Fade1", "z": 10},
   {"type": "audio", "path": "D:/sfx/whoosh.wav", "start": 2.8}
  ]}
 ```
 
+## Speed, masks, text animations, animated effect values (all verified in Filmora 16)
+
+- **Speed** on a video clip: `"speed": 2` (constant 0.1–10), `{"preset": "montage"}` (Filmora's ramps: montage,
+  hero_moment, bullet_time, jumper, flash_in, flash_out; extra: fast_slow_fast, slow_in, slow_out) or
+  `{"curve": [[0, 3], [0.5, 0.4], [1, 3]]}` (fraction of the clip, speed). `start`/`end` stay timeline seconds — the
+  builder solves how much source the speed uses. `"reverse": true`, `"frame_interp": "blending"|"optical_flow"`.
+- **Mask** on a video/image clip: `"mask": {"shape": "ellipse"|"rect"|"double_line"|"line"|"star"|"heart"|"text"|"image",
+  "x", "y", "w", "h", "rotation", "feather", "invert", "radius", "keyframes": {"scale": [[0, 0.3], [1.5, 1]]}}` —
+  x/y/w/h are fractions of the clip's own picture, not of the frame.
+- **Text animation presets** (Filmora's own, ~150 bundled): `"anim_in"`, `"anim_out"`, `"anim_loop"` + `_dur` in
+  seconds. `python filmora_text_anim.py list in|out|loop` / `search <word>`; many carry Filmora's premium mark.
+- **Effect values over time**: on an effect layer `"params": {...}`, `"keyframes": {"Blur": [[0, 0], [1.2, 100]]}`,
+  `"ease"`; on a clip filter `{"name": ..., "params": ..., "keyframes": ...}`; audio `"volume_kf": [[0, -60], [1.5, -14]]`.
+Details and every field: [spec.md](spec.md).
+
 ## Limits (be honest with the user)
 
-Not yet supported in files: speed ramps / variable speed, split-screen templates, Filmora's built-in text
-animation presets, masks, AI features (auto captions, AI portrait, smart cutout), keyframed effect parameters.
-Do these as a short "after opening, click…" note. Clip filters/effects use their default parameters.
+Not yet supported in files: several masks on one clip, Filmora's own keyframe curve types (eases are baked into
+straight steps), split-screen templates, blend modes, shapes/pen paths, dynamic captions, AI features (auto captions,
+AI portrait, smart cutout, tracking). Do these as a short "after opening, click…" note.

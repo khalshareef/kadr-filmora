@@ -100,7 +100,7 @@ class FxProject(Project):
         set_params(tf, {"Scale_x": (3, float(scale)), "Scale_y": (3, float(scale)), "Position_x": (3, float(x)),
                         "Position_y": (3, float(y)), "Rotation": (3, float(rot))})
         self._keyframes(tf, src / TICKS, kf_scale=kf_scale, kf_x=kf_x, kf_y=kf_y, kf_rot=kf_rot)
-        c["pipBuf"], c["pipBufSize"] = pip_buf(opacity, [(src + self.ticks(t), v) for t, v in kf_opacity] if kf_opacity else None)
+        c["pipBuf"], c["pipBufSize"] = pip_buf(opacity, [(src + self.ticks(q[0]), *q[1:]) for q in kf_opacity] if kf_opacity else None)
         for f in filters:
             self.filter(c, f)
         self.clip_map[get_ud(c, 3).rstrip(b"\0").decode()] = m["id"]

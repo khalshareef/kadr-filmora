@@ -28,8 +28,11 @@ Scripts: `${CLAUDE_PLUGIN_ROOT}/scripts/` (or two folders above this file).
 
 **Size by role, not by number** (every font draws at a different real size): put `"role"` instead of `"size"` —
 `hit`, `headline`, `title`, `caption`, `label`, `sub`. The builder measures how wide the chosen font really is and
-picks the number so the text looks the same size in any font (calibrated on a user-approved reel: headline ≈ 74,
-caption ≈ 40 in Readex/IBM Plex on 1080×1920; landscape frames scale by the short side). Fine-tune with
+picks the number so the text looks the same size in any font (calibrated in Readex Pro / IBM Plex on 1080×1920;
+landscape frames scale by the short side). Headlines/titles also follow their length: 1–2 strong words ≈ 70, a full
+sentence ≈ 48 (caption ≈ 40, sub ≈ 26). That is only the starting point — **decide like a motion designer**: one
+punch word can go bigger, a long line smaller; check hierarchy and breathing room on the storyboard stills, then set
+`size_scale` or an explicit `size` per text. Never apply one size to everything. Fine-tune with
 `"size_scale": 0.85…1.3`. An explicit `"size"` still wins. `captions.py --role caption` does the same for captions.
 
 Lines: ≤ 22 characters per caption line on 9:16, ≤ 35 on 16:9; max 2 lines.
@@ -50,7 +53,10 @@ hooks y ≈ 0.18–0.28. Nothing important in the bottom 20 % or behind the righ
 - Custom moves: `"keyframes": {"y": [[0, 0.3], [0.5, 0.25]], "opacity": [[0, 0], [0.2, 100]], "rotation": [...]}`.
 - Text effects from the library go in the text's `filters`:
   `python fx_pick.py --on text -n 8` (glow, glitch exit, particle converge/dissipate, colour fill, neon…).
-  Filmora's own text-animation presets (typewriter etc.) can't be written yet — mention them as a manual option.
+- **Filmora's own presets** (shown in its Animation panel, so the user can swap them later): `anim_in`, `anim_out`,
+  `anim_loop` + `_dur` — e.g. `Appearing Verbatim` / `Disappear Verbatim` (letter by letter, good for Arabic),
+  `Typewriter Pops Out`, `Fade1`, `Up Dir Insert`, `Wavy Appearance`, `Heartbeat` (loop). Find more:
+  `python filmora_text_anim.py search <word>`. Use either a preset or a keyframe `in` for the same moment, not both.
 
 ## Captions from subtitles
 
@@ -88,9 +94,10 @@ python captions.py words.json --spec "Reel.spec.json" --karaoke --highlight "#C6
   for each project; never reuse a previously *tested* font as if it were chosen.
 - Sublines use `below: <headline id>` (never a fixed y offset); colours are contrast-checked by the builder.
 
-- The builder keeps every text inside the frame (3 % margin, at its biggest keyframe scale and every position): a
-  too-wide line is first split into two balanced lines (if that ends bigger), otherwise the size is reduced; it prints
-  `note: ...`. Tell the user when that happens; better: shorten the line or move a title away from the edge.
+- The builder keeps every text inside the frame (7 % side / 3 % top-bottom margin, at its biggest keyframe scale and
+  every position — Filmora draws a little wider than measured). A 3+ word line wider than 78 % of the frame (or one that
+  would have to shrink) is split into two balanced lines that grow **downward** (top edge stays, `below` sublines follow);
+  otherwise the size is reduced. It prints `note: ...` — tell the user; better: shorten the line.
 
 - Every caption inside the safe area; no two captions overlapping on the same row (captions.py trims overlaps).
 - Reading time: ≥ 0.6 s for 1–2 words, ≈ 0.25 s per word beyond that.

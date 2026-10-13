@@ -12,8 +12,18 @@ Tags live in assets/fx_tags.json (hand-tagged from preview frames, keyed by slug
   use     hit (one beat, 0.2-0.6 s) | bar (a phrase, 1-4 s) | clip (whole clip) | transition | intro | outro | look (whole
           section/video grade or overlay) | util (technical: sharpen, blur fill, LUT, text helpers)
   on      video | text | face | any
+  note    what it looks like (also checked: "split screen", "multi-panel", "intro", "outro", "pop out" ...)
 Resources installed later (or on another PC) without tags get name-based guesses (marked "guess").
 Returned names are slugs, accepted everywhere a spec takes an effect/filter/transition name.
+
+Matching rules (strict enough for automatic drafts):
+- A resource matches a style only through a specific tag word; "dynamic"/"energy"/"misc" alone never make a match.
+- Intro/outro resources (use or note) are never picked for hit/bar/clip/look/transition unless edge=True (--edge).
+- Layout-changing resources (split, slideshow, frame, polaroid, mockup, grid) only when the style/words ask for them
+  (short pure hits such as a split flash cut excepted).
+- on="video" excludes face-only effects (they need a visible subject); on="face" asks for them.
+- strict=True (--strict): when nothing carries the style words, return nothing instead of the closest others
+  (a style recipe like "Look: none or a light contrast look" then gets none). require=[tags]: must carry one of them.
 """
 import argparse, json, os, random, re, sys
 
@@ -25,7 +35,8 @@ TAGS_FILE = os.path.join(HERE, "..", "assets", "fx_tags.json")
 
 # Named edit styles -> wanted tag words, tag words to avoid, energy range.
 STYLES = {
-    "velocity":          (["velocity", "zoom", "blur", "flash", "shake", "dynamic", "speed-lines"], ["romantic", "soft"], (3, 5)),
+    "velocity":          (["velocity", "zoom", "blur", "flash", "shake", "dynamic", "speed-lines"],
+                          ["romantic", "soft", "warm", "film", "fire", "psychedelic", "cartoon", "clone", "crack", "heart"], (3, 5)),
     "glitch-party":      (["glitch", "rgb", "cyber", "flash", "slice", "neon", "music"], ["romantic", "vintage"], (3, 5)),
     "cinematic-trailer": (["cinematic", "light-leak", "smoke", "letterbox", "flash", "dark", "epic", "film"], ["cartoon", "fun", "heart"], (1, 4)),
     "hype-sport":        (["dynamic", "shake", "flash", "energy", "fire", "speed-lines", "sport", "zoom"], ["romantic", "soft"], (3, 5)),
@@ -40,6 +51,10 @@ STYLES = {
     "calm":              (["soft", "classic", "light", "zoom", "cinematic"],
                           ["glitch", "flash", "shake", "fire", "heart", "romantic", "party", "psychedelic", "horror", "fun", "cartoon"], (1, 2)),
 }
+GENERIC = {"dynamic", "energy", "misc"}                     # too common to decide a style on their own
+LAYOUT = {"split", "slideshow", "frame", "polaroid", "mockup", "grid"}  # change the whole picture layout: only when asked
+EDGE_USES = {"intro", "outro"}
+EDGE_NOTE = re.compile(r"(intro|outro|opening|ending|opener|closer|exit|pop[ -]?out|split[ -]?screen|multi[ -]?panel)", re.I)
 ALIASES = {  # Arabic / loose words -> style or tag
     "سريع": "velocity", "فيلوسيتي": "velocity", "قلتش": "glitch-party", "سينمائي": "cinematic-trailer", "تريلر": "cinematic-trailer",
     "حماسي": "hype-sport", "رياضي": "hype-sport", "فلوق": "smooth-vlog", "هادئ": "calm", "ديني": "calm", "ريترو": "retro-vhs",
@@ -101,13 +116,17 @@ class Picker:
     def __init__(self, seed=None):
         self.used, self.rng, self.lib, self.fallback = set(), random.Random(seed), library(), False
 
-    def pick(self, style=(), use=None, on=None, n=1, energy=None, kind=None, top=12):
+    def pick(self, style=(), use=None, on=None, n=1, energy=None, kind=None, top=12, strict=False, require=None, edge=False):
         """style: list of words. use: hit|bar|clip|transition|intro|outro|look|util. on: video|text|face.
-        kind: 'transition' or 'effect' (anything that is not a transition). energy: (lo, hi) overrides the style's range."""
+        kind: 'transition' or 'effect' (anything that is not a transition). energy: (lo, hi) overrides the style's range.
+        strict: return [] when nothing carries the style words (no 'closest other' fallback).
+        require: tag words of which a result must carry at least one. edge: allow intro/outro resources mid-edit."""
         want, avoid, e_style = resolve([style] if isinstance(style, str) else list(style))
+        want_set, need = set(want), set(require or [])
         lo, hi = energy or e_style or (1, 5)
         if use == "transition":
             kind = "transition"
+        mid = use in ("hit", "bar", "clip", "look", "transition") and not edge
         pool = []
         for slug, t in self.lib.items():
             if kind == "transition" and not t["is_transition"] or kind == "effect" and t["is_transition"]:
@@ -116,16 +135,25 @@ class Picker:
                 continue
             if not use and "util" in t["use"]:
                 continue
-            if on == "text" and t["on"] != "text" or on and t["on"] not in (on, "any") and not (on == "video" and t["on"] == "face"):
+            if on == "text" and t["on"] != "text" or on and t["on"] not in (on, "any"):
                 continue
             st = set(t["styles"])
             if st & set(avoid):
                 continue
-            score = 2 * len(st & set(want)) - (0 if lo <= t["energy"] <= hi else 3) - (1 if t.get("guess") else 0)
-            pool.append((score + self.rng.random(), slug))
-        matched = [x for x in pool if x[0] > 1] if want else pool
-        self.fallback = bool(want and not matched)      # nothing carries the style words: best of the rest (avoid list kept)
-        pool = sorted(matched or pool, reverse=True)
+            if st & LAYOUT and not st & LAYOUT & (want_set | need) and t["use"] != ["hit"]:
+                continue                                       # split/slideshow/frame layouts only when asked for
+            if mid and (set(t["use"]) & EDGE_USES or EDGE_NOTE.search(t.get("note") or "")):
+                continue                                       # an intro/outro (or split layout) in the middle of an edit
+            if need and not st & need:
+                continue
+            hit_specific = st & want_set - GENERIC
+            score = 2 * len(hit_specific) + len(st & want_set & GENERIC) - (0 if lo <= t["energy"] <= hi else 3)                 - (1 if t.get("guess") else 0)
+            pool.append((score + self.rng.random(), slug, bool(hit_specific)))
+        matched = [x for x in pool if x[2]] if want else pool
+        self.fallback = bool(want and not matched)      # nothing carries the style words
+        if self.fallback and strict:
+            return []
+        pool = [x[:2] for x in sorted(matched or pool, reverse=True)]
         fresh = [(sc, s) for sc, s in pool if s not in self.used]
         best = fresh[0][0] if fresh else 0                   # vary within the best-matching tier, widen only if needed
         tier = [s for sc, s in fresh if sc >= best - 2]
@@ -148,7 +176,9 @@ def main():
     ap.add_argument("--use"), ap.add_argument("--on"), ap.add_argument("--kind", choices=["transition", "effect"])
     ap.add_argument("-n", type=int, default=5), ap.add_argument("--energy", help="lo-hi, e.g. 3-5")
     ap.add_argument("--seed", type=int), ap.add_argument("--styles", action="store_true"), ap.add_argument("--info")
-    ap.add_argument("--json", action="store_true")
+    ap.add_argument("--json", action="store_true"), ap.add_argument("--require", help="comma-separated tags, one must match")
+    ap.add_argument("--strict", action="store_true", help="nothing instead of the closest others when no style match")
+    ap.add_argument("--edge", action="store_true", help="allow intro/outro resources for mid-edit uses")
     a = ap.parse_args()
     p = Picker(a.seed)
     if a.styles:
@@ -161,9 +191,10 @@ def main():
         print(json.dumps(p.info(a.info), ensure_ascii=False, indent=1))
         return
     energy = tuple(int(x) for x in a.energy.split("-")) if a.energy else None
-    res = p.pick(a.style, use=a.use, on=a.on, n=a.n, energy=energy, kind=a.kind)
+    res = p.pick(a.style, use=a.use, on=a.on, n=a.n, energy=energy, kind=a.kind, strict=a.strict,
+                 require=a.require.split(",") if a.require else None, edge=a.edge)
     if p.fallback:
-        print("(no resource carries those style words for this use - showing the closest others)")
+        print("(no resource carries those style words for this use - " + ("none picked)" if a.strict else "showing the closest others)"))
     if a.json:
         print(json.dumps([{"slug": s, **p.lib[s]} for s in res], ensure_ascii=False, indent=1))
     else:

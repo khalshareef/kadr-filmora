@@ -1,6 +1,6 @@
 {
   "name": "kadr-filmora",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Kadr for Filmora (كادر لفيلمورا): let Claude build native, fully editable Wondershare Filmora 16 projects (.wfp) as files — clips, real texts, effects, filters, overlays, transitions, beat-synced cuts, captions, music and SFX. No UI automation.",
   "author": {
     "name": "Kadr",

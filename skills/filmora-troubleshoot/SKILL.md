@@ -36,7 +36,10 @@ Filmora) are suggested as clicks.
 | "Back up project?" on **every** open (even backups get backed up) | project stamped with an older Filmora version | builder now stamps the installed version (`filmora_paths.installed_versions()`, read from a project Filmora saved itself) — rebuild. If it still asks: make + save any empty project in Filmora once, then rebuild |
 | Keyframes ignored / jumpy | keyframe times outside the clip, or duplicates | times are seconds from clip start, inside 0..duration; builder clamps and merges |
 | Wrong layer order | `z` values / effect layer below the footage | higher z = on top; effects need z above what they affect |
-| Volume too loud/quiet | gain defaults (-10 dB) | set `gain_db` per audio clip (music -2..-8) |
+| Volume too loud/quiet | builder default -10 dB when no gain is given | set `gain_db` per clip (SFX -13..-14, music -2..-8) |
+| Text animation missing / Filmora asks to download | preset is online-only or premium on this account | `filmora_text_anim.py search <name>` shows the source; pick a bundled one or download it once in the Animation panel |
+| Light/white edge around transparent motion layers | clip rendered as straight alpha by an older renderer (Filmora reads alpha premultiplied) | re-render with the current `motion_render.py` (premultiplies automatically) |
+| Sped-up clip shows the wrong part of the source | `src_in`/speed mix-up; reversed clips play the solved range backwards | check `filmora_speed.describe(clip)`; the source must hold `src_in + duration × speed` |
 
 ## Re-extracting templates (new Filmora version, JSON/parse errors, backup dialog)
 

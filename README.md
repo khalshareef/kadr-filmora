@@ -54,10 +54,17 @@
 بالمجلد اللي فاتح فيه محادثة Claude Code (أي درايف). بدك مجلد ثابت؟ قول لـ Claude، أو:
 `python scripts/filmora_paths.py set project_dir "D:/Filmora Projects"`.
 
+### كمان بيكتب بالملف
+- السرعة: ثابتة، منحنيات فيلمورا الجاهزة (Montage، Hero moment، Bullet time…)، منحنى خاص، عكس، وتنعيم الحركة.
+- الماسكات: دائرة، مستطيل، خط، خطين، نجمة، قلب، نص، صورة — وكمان متحركة.
+- أنيميشن النصوص الجاهزة بفيلمورا (دخول، خروج، متكرر) — حوالي 150 بيجوا مع البرنامج. كتير منها عليه علامة
+  الاشتراك المدفوع بفيلمورا.
+- تحريك قيم أي إفكت أو فلتر مع الوقت، وتحريك مستوى الصوت.
+- موشن غرافيك على طبقات: الخلفية لحال وكل عنصر شفاف لحال، بحواف نظيفة.
+
 ### الحدود الحالية
-- ما بينكتبوا بالملف لسا: Speed Ramp، قوالب Split Screen، أنيميشن النصوص الجاهزة بفيلمورا، الماسكات، ميزات الذكاء
-  الاصطناعي، وتحريك قيم الإفكتات. Claude بيقلك شو تكبس بعد ما تفتح المشروع.
-- طبقات الموشن الشفافة (كل عنصر لحال) تجريبية — بيبين حواف بيضا خفيفة بفيلمورا. الافتراضي: كليب واحد لكل مشهد.
+- ما بينكتبوا بالملف لسا: أكتر من ماسك على نفس المقطع، أنواع منحنيات الكي فريم الخاصة بفيلمورا، قوالب Split
+  Screen، طرق الدمج، الأشكال المرسومة، الكابشن الديناميكي، وميزات الذكاء الاصطناعي. Claude بيقلك شو تكبس بعد ما تفتح المشروع.
 
 ### شكر وإلهام
 أفكار الموشن مستوحاة (أفكار بس، بدون نسخ كود) من: prompt-motion.com،
@@ -119,11 +126,16 @@ sound-effects library, tell Claude where it is and it will catalog that too.
 Projects are saved in the folder the Claude Code conversation was opened in (any drive), unless you set
 `python scripts/filmora_paths.py set project_dir "<folder>"`.
 
+### Also written into the file
+- Speed: constant, Filmora's ramp presets (Montage, Hero moment, Bullet time…), custom curves, reverse, frame blending.
+- Masks: ellipse, rectangle, line, double line, star, heart, text and image masks — animated too.
+- Filmora's own text animation presets (in, out, loop; ~150 bundled). Many carry Filmora's premium mark (paid plan).
+- Keyframed values of any effect or filter, and volume automation.
+- Layered motion graphics: background and every element as separate transparent clips with clean edges.
+
 ### Not supported yet
-- Speed ramps, split-screen templates, Filmora's built-in text animation presets, masks, AI features, keyframed effect
-  parameters. Claude tells you the clicks to add them after opening.
-- Transparent per-element motion layers are experimental (a faint white edge shows in Filmora); the default is one
-  clip per scene.
+- Several masks on one clip, Filmora's own keyframe curve types, split-screen templates, blend modes, drawn shapes,
+  dynamic captions, AI features. Claude tells you the clicks to add them after opening.
 
 ### Credits
 Motion ideas inspired by (ideas only, no copied code): prompt-motion.com,

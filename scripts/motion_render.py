@@ -18,26 +18,36 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 
 def _ffmpeg(out, w, h, fps, alpha):
+    vf = f"scale={w}:{h}:flags=lanczos"
     if alpha:
+        # Filmora always reads ProRes alpha as PREMULTIPLIED (its alphaPremultiply flag changes nothing): straight
+        # alpha from Chromium gave a light fringe on every edge. Premultiply before scaling/encoding -> clean edges
+        # (measured on Filmora snapshots: edge overshoot 25 -> 0.7, projects\alpha_edge_test).
+        vf = "format=gbrap10le,premultiply=inplace=1," + vf
         enc = ["-c:v", "prores_ks", "-profile:v", "4444", "-pix_fmt", "yuva444p10le", "-vendor", "apl0"]
     else:
         enc = ["-c:v", "libx264", "-preset", "slow", "-crf", "12", "-pix_fmt", "yuv420p", "-profile:v", "high", "-movflags", "+faststart"]
     cmd = ["ffmpeg", "-y", "-v", "error", "-f", "image2pipe", "-framerate", str(fps), "-c:v", "png", "-i", "-",
-           "-vf", f"scale={w}:{h}:flags=lanczos", "-r", str(fps)] + enc + [out]
+           "-vf", vf, "-r", str(fps)] + enc + [out]
     return subprocess.Popen(cmd, stdin=subprocess.PIPE)
 
 
 def _blend(pngs):
-    """Average subframes -> real motion blur (what ffmpeg tmix does), returns PNG bytes."""
+    """Average subframes -> real motion blur (what ffmpeg tmix does), returns PNG bytes (straight alpha).
+    Colours are averaged premultiplied, so a moving edge over transparency doesn't pick up dark/light halos."""
     import io
     import numpy as np
     from PIL import Image
     acc = None
     for b in pngs:
         a = np.asarray(Image.open(io.BytesIO(b)).convert("RGBA"), dtype=np.float32)
+        a[..., :3] *= a[..., 3:4] / 255.0
         acc = a if acc is None else acc + a
+    acc /= len(pngs)
+    alpha = acc[..., 3:4]
+    acc[..., :3] = np.where(alpha > 0, acc[..., :3] * 255.0 / np.maximum(alpha, 1e-6), 0)
     out = io.BytesIO()
-    Image.fromarray((acc / len(pngs)).round().astype("uint8"), "RGBA").save(out, "PNG", compress_level=1)
+    Image.fromarray(acc.clip(0, 255).round().astype("uint8"), "RGBA").save(out, "PNG", compress_level=1)
     return out.getvalue()
 
 

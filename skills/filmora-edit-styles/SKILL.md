@@ -8,6 +8,7 @@ description: Ready-made editing styles and techniques for generated Filmora proj
 A style = **cut rhythm + camera moves + transitions + hits + one look + text treatment + sound**.
 Pick one, follow its recipe in [recipes.md](recipes.md), then build with filmora-core.
 Effect names always come from `fx_pick.py` (what's installed on *this* PC) — recipe names are examples only.
+When nothing installed fits a recipe slot, leave the slot empty (`strict=True`) rather than using an off-style effect.
 
 ## Choosing a style
 
@@ -36,7 +37,8 @@ If unsure, ask one question: "شو الإحساس اللي بدك ياه: حما
 - **Shake on the snare** — effect layer 0.25–0.4 s at the snare time:
   `pk.pick("shake", use="hit", n=1, energy=(3,5))`; or `"loop": "shake"` on a short clip.
 - **Black flash before the drop** — `{"type":"effect","name": <black flash>, "start": drop-0.12, "end": drop+0.05}`
-  (`fx_pick.py flash black --use hit`). White flash (0.15 s) for punchy cuts in the middle of a section.
+  (`fx_pick.py flash black --use hit`), with a **cut exactly on the drop** and a hit on it. White flash (0.15 s) for
+  punchy cuts in the middle of a section.
 - **Stutter** — 3 clips of ½ B each with the same `src_in`, then the 4th continues normally; add a hit on the 4th.
 - **Freeze + flash** — export the frame: `ffmpeg -ss <src time> -i clip.mp4 -frames:v 1 freeze.png`, place it as an
   image for 1–2 beats with a white flash on its first 0.15 s, scale 100→106, title on top.
@@ -53,18 +55,17 @@ If unsure, ask one question: "شو الإحساس اللي بدك ياه: حما
   user: "select the clip ▸ Speed ▸ Speed Ramping ▸ Montage/Hero" for the 1–2 key shots.
 - **Letterbox** — a cinema-bars overlay (`fx_pick.py letterbox --use look`) over the whole video, or for the intro only.
 - **Colour look** — one filter (`use: look`, `color` in styles) as an effect layer over a whole section, z just above
-  the footage. Respect the user's taste: if they shoot soft/flat on purpose, keep looks very light or skip them.
+  the footage. Footage shot soft/flat on purpose keeps a very light look or none.
 
 ## Sound design (with any style)
 
-- **Soft Foley first** (user rule): plastic and wooden taps/clicks, camera shutter, paper and fabric, soft whooshes —
-  the sound should feel relaxing. **Never** bells, chimes, dings or bling UI tones unless genuinely soft. Search the
-  user's library by these words and pick the gentlest takes.
-
-- Whoosh on transitions, impact/boom on drops, riser into drops, clicks/pops on text hits — all at **-10 dB**
-  default; music at -2..0 dB alone, -6..-8 dB under a voice.
+- **Soft Foley first** (house default): plastic and wooden taps/clicks, camera shutter, paper and fabric, soft
+  whooshes — the sound should feel relaxing. **No** bells, chimes, dings or bling UI tones. Search the sound library
+  by these words (filmora-sfx) and pick the gentlest takes.
+- Whoosh on transitions (−13 dB), soft taps/clicks on text hits (−14 dB), one impact on the drop (−10 dB), riser
+  into drops; music at -2..0 dB alone, -6..-8 dB under a voice.
 - Not on every cut: SFX on ≈ 1 of 3 transitions + every drop.
-- Sound files come from the user's own library (ask where it is) — never download random audio.
+- Sound files come from a local sound library (ask where it is if none is catalogued) — never download random audio.
 - Religious/Quranic content: no music, no tonal SFX, no jingles (ask before any sound).
 
 ## Workflow

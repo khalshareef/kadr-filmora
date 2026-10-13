@@ -26,7 +26,7 @@
   <g id="hud"></g>
   <circle id="wipe" data-layer="S7_orange" cx="540" cy="640" r="0" fill="#D97757"/>
   <g id="s7"></g>
-  <g id="top"></g>
+  <g id="topLayer"></g>
 </svg>
 <script>
 const { E, clamp, lerp, mapr, prog, win, pop, fade, draw, tr, $ } = KADR_HELPERS;
@@ -167,7 +167,7 @@ const cursor7 = el('path', { d: 'M 0 0 L 0 92 L 24 70 L 42 110 L 60 102 L 42 63 
 const click7 = el('circle', { cx: 0, cy: 0, r: 0, fill: 'none', stroke: INK, 'stroke-width': 5 }, L7c);
 
 // ---------------------------------------------------------------- HUD: progress bar, labels, scene counter
-const topG = $('top');
+const topG = $('topLayer');
 el('line', { x1: 80, y1: 130, x2: 1000, y2: 130, stroke: LINE, 'stroke-width': 6, 'stroke-linecap': 'round' }, topG);
 const prog7 = el('line', { x1: 1000, y1: 130, x2: 1000, y2: 130, stroke: OR, 'stroke-width': 6, 'stroke-linecap': 'round' }, topG);
 const lab = text('AI NEWS · 2026', 80, 92, 'en', 26, INK, topG, 'start');
@@ -305,7 +305,7 @@ function solo(name) {   // null = everything; 'bg' / 'hud' / a layer name = only
   document.querySelectorAll('[data-layer]').forEach(g => { g.style.display = name === null || g.dataset.layer === name ? '' : 'none'; });
   const bg = name === null || name === 'bg';
   $('bgrect').style.display = bg ? '' : 'none'; $('para').style.display = bg ? '' : 'none';
-  $('top').style.display = name === null || name === 'hud' ? '' : 'none';
+  $('topLayer').style.display = name === null || name === 'hud' ? '' : 'none';
 }
 window.KADR = { width: 1080, height: 1920, fps: 30, duration: 31.77, render, layers: LAYERS, solo };
 render(0);

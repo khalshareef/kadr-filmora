@@ -8,7 +8,9 @@ Fonts are read from Windows Fonts and the user's own fonts folder. For each fami
 exact Filmora names, "Family Style"), Arabic / Latin coverage, and a tag: quran (Quranic script — only for Quranic
 text), decorative (calligraphic/handwritten/display), or text. System fonts that look dated (Arial, Tahoma, Times,
 Segoe, Traditional/Simplified Arabic…) are hidden unless --all.
-The specimen shows the real headline in the heaviest weight and an optional caption line in a medium weight.
+The specimen shows the real headline in the heaviest weight and an optional caption line in a medium weight, both in
+the SAME family — to choose a Latin font for English sublines, render a separate --latin sheet. When the fonts need
+more than one page, --out fonts.png writes fonts_1.png, fonts_2.png, ... (the paths are printed).
 """
 import argparse, glob, json, os, sys, tempfile
 from collections import defaultdict
@@ -111,12 +113,16 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("cmd", choices=["list", "specimen"])
     ap.add_argument("--arabic", action="store_true"); ap.add_argument("--latin", action="store_true"); ap.add_argument("--all", action="store_true")
-    ap.add_argument("--families"); ap.add_argument("--text", default="هل تفهم الآلة لهجتك الإماراتية؟ Falcon ASR")
+    ap.add_argument("--families"); ap.add_argument("--text", default="كادر يكتب مشروعك ويفتح بفيلمورا Kadr")
     ap.add_argument("--sub", default=""); ap.add_argument("--out", default="fonts.png"); ap.add_argument("--bg", default="#F0EEE6")
     ap.add_argument("--ink", default="#141413"); ap.add_argument("--per-page", type=int, default=16); ap.add_argument("--json", action="store_true")
     a = ap.parse_args()
     names = {x.strip().lower() for x in a.families.split(",")} if a.families else None
     items = pick(scan(), a.arabic, a.latin, a.all, names)
+    if names:
+        missing = names - {f.lower() for f, _ in items}
+        if missing:
+            print("not found (check the spelling, or add --all for hidden system fonts): " + ", ".join(sorted(missing)))
     if a.cmd == "list":
         if a.json:
             print(json.dumps({f: {"tag": e["tag"], "arabic": e["arabic"], "latin": e["latin"], "styles": sorted(e["styles"])} for f, e in items}, ensure_ascii=False, indent=1))

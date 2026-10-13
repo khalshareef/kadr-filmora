@@ -11,7 +11,7 @@ sound) stay native in Filmora. Ask the user once: "the animated graphics come as
 editable" — then build.
 
 Files: `${CLAUDE_PLUGIN_ROOT}/assets/motion/kadr-motion.js` (helpers), `assets/motion/examples/camera_world_reel.html`
-(complete 7-scene 9:16 reel: speech bubble with live voice bars, skyline → falcon line art, speech→chip→text, dialect
+(complete 7-scene 9:16 reel: speech bubble with live voice bars, skyline → bird line art, speech→chip→text, dialect
 bubbles, benchmark bars, word-timing playhead, orange wipe CTA), `scripts/motion_render.py` (renderer).
 
 ## Read first
@@ -28,38 +28,49 @@ bubbles, benchmark bars, word-timing playhead, orange wipe CTA), `scripts/motion
 
 1. **Inputs**: voice-over (or music), design reference / palette, topic. Transcribe with word timings
    (faster-whisper `word_timestamps=True`, mark sentence ends `"break": true` for captions.py).
+   **No voice?** Time scenes by reading pace instead (≈ 0.4 s per word of on-screen text + 1 s to settle, 3–6 s a
+   scene), skip `data.js`/captions, and put the soft SFX on the visual events only.
 2. **Palette**: take colours from the reference (sample pixels) or the named brand; show 4–6 hex swatches to the user
    **before** building. Default modern look: cream background, black line art (stroke 6–9 px, round caps), one accent.
-3. **Scene plan**: one scene per sentence/idea; times from the word timings. Each scene = one visual idea that
+   When nobody can answer (a scripted/unattended run), pick one style from styles.md, say which, and go on — the same
+   applies to the reference/study steps of premium-playbook.md.
+3. **Scene plan**: one scene per sentence/idea; times from the word timings (or reading pace). Each scene = one visual idea that
    *explains* the sentence (not decoration). Write the plan as a short table and keep it.
-4. **Data for the page**: `AMP` (voice loudness per frame, librosa RMS at fps, normalised) and `WORDS`
+4. **Data for the page** (voice pieces only): `AMP` (voice loudness per frame, librosa RMS at fps, normalised) and `WORDS`
    (`[word, start, end]`) in `data.js` → bars, chips and playheads move with the real voice.
-5. **Write the page** (copy the example, replace scenes). Then **storyboard first**:
-   `python motion_render.py page.html --stills 2.2,5.8,10.9,… --out "stills/f_{t}.png"` → look at them (contact sheet),
+5. **Write the page** in the project folder (copy the example, replace scenes) and **copy
+   `assets/motion/kadr-motion.js` next to it** — the page loads `<script src="kadr-motion.js">`, so it keeps working
+   when the plugin folder moves. Then **storyboard first**:
+   `python motion_render.py page.html --stills 2.2,5.8,10.9,… --out "stills/f_{t}.png"` (files like `f_002_20.png`) → look at them (contact sheet),
    fix layout, send the user the key frames.
 6. **Render clips**: `python motion_render.py page.html --cuts 0,3.45,8.16,… --out "assets/motion_S{n}.mp4" --subframes 4`
-   (H.264 CRF 12, real motion blur from 4 averaged subframes; ~4 s render per second). Then
+   (H.264 CRF 12, real motion blur from 4 averaged subframes; about 13 s of rendering per second of video at
+   1080×1920 with 4 subframes, ~4 s without). Then
    `python motion_qa.py pops assets/motion_S*.mp4` must report 0 suspicious frames. `--alpha --out layer.mov` gives a transparent ProRes 4444 layer.
-7. **Spec**: motion clips on track `motion` at frame-exact times (`round(t*fps)/fps`), native headline + English
-   sub per scene (y ≈ 0.56 / 0.617), captions (y ≈ 0.70), SFX on the visual events, voice 0 dB. Build with filmora-core.
+7. **Spec**: motion clips on track `motion` at frame-exact times (`round(t*fps)/fps`), native headline (y ≈ 0.56,
+   `role`) + English sub with `below: <headline id>` (never a fixed y), captions (y ≈ 0.70), SFX on the visual events, voice 0 dB. Build with filmora-core.
 
-## Editable layers (optional, experimental — off by default)
+## Background and assets are separate from the start
 
-**Default delivery = one clip per scene** (step 6 above) + native texts and sound — it is stable and the user approved it.
-Layers only if the user asks for per-element control; known issue: a faint light fringe around edges in Filmora (alpha
-premultiply not solved yet). To make layers: wrap each element group with `lay(name, sceneGroup, sceneIndex)`
+Design every motion piece as **layers from the first line of code**, never as one flat video that is split later: the
+background (paper, gradient, grid) lives in its own group and renders as its own opaque clip; every asset group is
+drawn on a **transparent page** (no body/page colour, no background rect inside an asset group) and renders as its
+own transparent clip; texts stay native Filmora titles. The user then moves, times or swaps any element in Filmora.
+Edges: Filmora always reads ProRes alpha as premultiplied, so `motion_render.py` premultiplies every transparent clip
+(straight alpha gave the old light fringe; verified clean on Filmora snapshots). One clip per scene is still possible
+when the user asks for a single flat clip. To make layers: wrap each element group with `lay(name, sceneGroup, sceneIndex)`
 (`data-layer`), list them in `KADR.layers` (`{name, start, end, opaque?}`; background `opaque: true`) and provide
 `KADR.solo(name)` (show only that layer; `null` = all). Then
 `python motion_render.py page.html --layers assets/layers` → `NN_<name>.mov` (ProRes 4444 alpha, camera + blur baked in)
 + `layers.json`. In the spec: background z 0, element layers z 1.xx by order **inside their scene** (scenes don't
 overlap on the canvas, so they share tracks), HUD z 8, texts above. `--only a,b` re-renders single layers.
-Everything stays on the main timeline — **no compound clips** (user decision: users get lost inside them).
-Name layers by meaning (`S4_bubble_emirati`, `S5_bars_falcon`) — the file name is what the user sees on the clip.
+Everything stays on the main timeline — **no compound clips** (house rule: people get lost inside them).
+Name layers by meaning (`S4_bubble_chat`, `S5_bars_result`) — the file name is what the user sees on the clip.
 
 ## Page contract
 
 ```html
-<script src="…/kadr-motion.js"></script><script src="data.js"></script>
+<script src="kadr-motion.js"></script><script src="data.js"></script>  <!-- both copied next to the page -->
 <svg width="1080" height="1920"> … <g id="para"/> <g id="camwrap" filter="url(#mblur)"><g id="cam"/></g> <g id="hud"/> </svg>
 <script>
 const { E, prog, pop, fade, draw, tr, lerp, clamp, mapr, $ } = KADR_HELPERS;
@@ -97,19 +108,19 @@ Never name a global `top`, `window`, `name`, `status` (browser globals) — page
   to speed (≈ 26 px peak along the travel direction).
 - **Opening**: start zoomed in 1.3 and pull back to 1.0 in 0.9 s. **Parallax**: background dot grid moves at 0.45×.
 - Put a soft whoosh (−13 dB) at every flight start; headlines enter after the camera lands and leave before it flies.
-- **Sound = soft Foley** (user rule): plastic/wood taps for pops, paper slides for cards, camera shutter/clicks for
+- **Sound = soft Foley** (house default): plastic/wood taps for pops, paper slides for cards, camera shutter/clicks for
   buttons, soft whooshes for camera moves; relaxing, ASMR-like. No bells, chimes, dings or bling tones (unless very soft).
 
 ## Layout (9:16)
 
-Graphics in y 250–950 (centre ≈ 640); native headline y 0.56, English sub y 0.617, captions y 0.70; HUD (label,
+Graphics in y 250–950 (centre ≈ 640); native headline y 0.56, English sub `below` it, captions y 0.70; HUD (label,
 scene counter, progress bar) at y 90–130. Keep everything clear of the bottom 20 %.
 
 ## Text inside the graphics
 
 Small labels/words that are part of a graphic (chips, bubbles, legend) are SVG `<text>` with installed fonts
 (`font-family: 'Readex Pro'; font-weight: 700; direction: rtl`). Headlines and captions stay native Filmora texts —
-flat solid colour, no stroke (user rule), eased `rise`/`pop`.
+flat solid colour, no stroke (house style), eased `rise`/`pop`.
 
 ## Quality bar (check the storyboard against it)
 

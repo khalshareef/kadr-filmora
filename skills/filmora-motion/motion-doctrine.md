@@ -61,7 +61,7 @@ New group at: a pause ≥ 0.5 s, a sentence end, a comma + ≥ 0.25 s, a discour
 | shape freezes | negative SVG width/height/r | clamp to ≥ 0 |
 | gradient banding | 8-bit gradients | add grain/dither; avoid large smooth gradients |
 | page background in "transparent" layers | body/html background is painted even with omit_background | clear it for alpha renders (motion_render does) |
-| light fringe around alpha edges in Filmora | straight vs premultiplied alpha mismatch | open issue — default to one clip per scene |
+| light fringe around alpha edges in Filmora | Filmora reads alpha as premultiplied, Chromium gives straight | solved: motion_render premultiplies every alpha clip |
 
 ## Anti-slideshow lint (check the storyboard)
 

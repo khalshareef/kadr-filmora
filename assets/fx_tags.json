@@ -1,0 +1,5749 @@
+{
+"3D_Motion_3": {
+"title": "3D Motion Fly Left",
+"category": "filter",
+"styles": [
+"3d",
+"dynamic",
+"camera-move"
+],
+"energy": 3,
+"use": [
+"clip",
+"intro"
+],
+"on": "video",
+"note": "flies in from the left in 3D"
+},
+"3D_Motion_1": {
+"title": "3D Motion Forward",
+"category": "filter",
+"styles": [
+"3d",
+"dynamic",
+"camera-move"
+],
+"energy": 3,
+"use": [
+"clip",
+"intro"
+],
+"on": "video",
+"note": "pushes forward in 3D"
+},
+"3D_Motion_Right": {
+"title": "3D Motion Right",
+"category": "filter",
+"styles": [
+"3d",
+"dynamic",
+"camera-move"
+],
+"energy": 3,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "3D move right"
+},
+"3D_Motion_2": {
+"title": "3D Motion Up",
+"category": "filter",
+"styles": [
+"3d",
+"dynamic",
+"camera-move"
+],
+"energy": 3,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "3D move up"
+},
+"3D_Rotation_1": {
+"title": "3D Rotation 1",
+"category": "filter",
+"styles": [
+"3d",
+"dynamic",
+"camera-move"
+],
+"energy": 3,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "3D rotation of the frame"
+},
+"3D_Slideshow_Style_2": {
+"title": "3D Slideshow Style 2",
+"category": "filter",
+"styles": [
+"3d",
+"slideshow",
+"frame"
+],
+"energy": 2,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "picture card tilting in 3D"
+},
+"3D_Slideshow_Style_3": {
+"title": "3D Slideshow Style 3",
+"category": "filter",
+"styles": [
+"split",
+"3d",
+"dynamic",
+"slideshow"
+],
+"energy": 3,
+"use": [
+"clip",
+"bar"
+],
+"on": "video",
+"note": "multi-panel 3D split screen"
+},
+"3D_Slideshow_Style_4": {
+"title": "3D Slideshow Style 4",
+"category": "filter",
+"styles": [
+"split",
+"3d",
+"dynamic",
+"slideshow"
+],
+"energy": 3,
+"use": [
+"clip",
+"bar"
+],
+"on": "video",
+"note": "multi-panel 3D split screen"
+},
+"3D_Slideshow_Style_5": {
+"title": "3D Slideshow Style 5",
+"category": "filter",
+"styles": [
+"split",
+"3d",
+"dynamic",
+"slideshow"
+],
+"energy": 3,
+"use": [
+"clip",
+"bar"
+],
+"on": "video",
+"note": "multi-panel 3D split screen"
+},
+"3D_Slideshow_Style_6": {
+"title": "3D Slideshow Style 6",
+"category": "filter",
+"styles": [
+"split",
+"3d",
+"dynamic",
+"slideshow"
+],
+"energy": 3,
+"use": [
+"clip",
+"bar"
+],
+"on": "video",
+"note": "multi-panel 3D split screen"
+},
+"70s_5a": {
+"title": "70s",
+"category": "filter",
+"styles": [
+"retro",
+"color"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "70s colour look"
+},
+"DepthAerialPerspective": {
+"title": "Aerial Perspective",
+"category": "filter",
+"styles": [
+"zoom",
+"cinematic",
+"camera-move"
+],
+"energy": 2,
+"use": [
+"clip",
+"intro"
+],
+"on": "video",
+"note": "aerial push-in"
+},
+"Allpurpose_Color": {
+"title": "All-Purpose Color Fill",
+"category": "filter",
+"styles": [
+"util",
+"color"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "text",
+"note": "colour fill (mostly for text)"
+},
+"Allpurpose_Glitch": {
+"title": "Allpurpose Glitch",
+"category": "filter",
+"styles": [
+"glitch",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"hit"
+],
+"on": "text",
+"note": "text glitch"
+},
+"Allpurpose_Hightlight": {
+"title": "Allpurpose Hightlight",
+"category": "filter",
+"styles": [
+"util"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "text",
+"note": "text highlight"
+},
+"Allpurpose_Adjust": {
+"title": "Allpurpose_Adjust",
+"category": "filter",
+"styles": [
+"util",
+"color"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "any",
+"note": "colour adjust utility"
+},
+"Allpurpose_Edge": {
+"title": "Allpurpose_Edge",
+"category": "filter",
+"styles": [
+"util"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "text",
+"note": "text edge/outline"
+},
+"Allpurpose_Position": {
+"title": "Allpurpose_Position",
+"category": "filter",
+"styles": [
+"util"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "text",
+"note": "position utility for text"
+},
+"Allpurpose_RGB": {
+"title": "Allpurpose_RGB",
+"category": "filter",
+"styles": [
+"glitch",
+"util"
+],
+"energy": 2,
+"use": [
+"util"
+],
+"on": "text",
+"note": "RGB split for text"
+},
+"Allpurpose_Stripe": {
+"title": "Allpurpose_Stripe",
+"category": "filter",
+"styles": [
+"util"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "text",
+"note": "stripe fill for text"
+},
+"Anime_03": {
+"title": "Anime 03",
+"category": "filter",
+"styles": [
+"anime",
+"soft",
+"color"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "anime colour look"
+},
+"Anime_Flame_Effects_01": {
+"title": "Anime Flame Effects 01",
+"category": "filter",
+"styles": [
+"anime",
+"energy",
+"fire"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "anime flame burst"
+},
+"Anime_Flame_Effects_03": {
+"title": "Anime Flame Effects 03",
+"category": "filter",
+"styles": [
+"anime",
+"energy",
+"lightning"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "anime lightning burst"
+},
+"Audio_Light_Beam_Script": {
+"title": "Audio Light Beam",
+"category": "filter",
+"styles": [
+"light",
+"music",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "music-reactive light beams"
+},
+"Audio_Motion_Blur_Script": {
+"title": "Audio Motion Blur",
+"category": "filter",
+"styles": [
+"blur",
+"music",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "music-reactive motion blur"
+},
+"Axis_Shakes_2": {
+"title": "Axis Shakes 2",
+"category": "filter",
+"styles": [
+"shake",
+"dynamic",
+"cyber"
+],
+"energy": 4,
+"use": [
+"hit",
+"bar"
+],
+"on": "video",
+"note": "axis shake"
+},
+"Basic_3D_595414": {
+"title": "Basic 3D",
+"category": "filter",
+"styles": [
+"3d",
+"util"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "video",
+"note": "basic 3D transform"
+},
+"Basic_Blur": {
+"title": "Basic Background Blur",
+"category": "filter",
+"styles": [
+"blur",
+"util"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "video",
+"note": "blurred background fill (vertical from horizontal)"
+},
+"Basic_Blur_196795": {
+"title": "Basic Blur",
+"category": "filter",
+"styles": [
+"blur",
+"soft"
+],
+"energy": 1,
+"use": [
+"clip",
+"look"
+],
+"on": "video",
+"note": "plain blur"
+},
+"3_Beam_Flow_6": {
+"title": "Beam Flow 6",
+"category": "filter",
+"styles": [
+"frame",
+"light",
+"energy"
+],
+"energy": 2,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "glowing beam border"
+},
+"3_Beam_Flow_7": {
+"title": "Beam Flow 7",
+"category": "filter",
+"styles": [
+"frame",
+"light",
+"energy"
+],
+"energy": 2,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "glowing beam border (blue/red)"
+},
+"Beam_Text_ArcPath": {
+"title": "Beam Text Arc Path",
+"category": "filter",
+"styles": [
+"text-fx"
+],
+"energy": 2,
+"use": [
+"util"
+],
+"on": "text",
+"note": "beam text on arc path"
+},
+"Beam_Text_Particle_Converge": {
+"title": "Beam Text Particle Converge",
+"category": "filter",
+"styles": [
+"text-fx",
+"particles"
+],
+"energy": 3,
+"use": [
+"intro"
+],
+"on": "text",
+"note": "text particle converge"
+},
+"Beam_Text_Particle_Dissipate": {
+"title": "Beam Text Particle Dissipate",
+"category": "filter",
+"styles": [
+"text-fx",
+"particles"
+],
+"energy": 3,
+"use": [
+"outro"
+],
+"on": "text",
+"note": "text particle dissipate"
+},
+"Beam_Text_Saber_Arc": {
+"title": "Beam Text Saber Arc",
+"category": "filter",
+"styles": [
+"text-fx",
+"light"
+],
+"energy": 3,
+"use": [
+"util"
+],
+"on": "text",
+"note": "saber arc text"
+},
+"Beam_Text_Saber_Default": {
+"title": "Beam Text Saber Default",
+"category": "filter",
+"styles": [
+"text-fx",
+"light"
+],
+"energy": 3,
+"use": [
+"util"
+],
+"on": "text",
+"note": "saber text"
+},
+"Beat_Pulse": {
+"title": "Beat Pulse",
+"category": "filter",
+"styles": [
+"music",
+"frame"
+],
+"energy": 2,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "circular audio-wave ring"
+},
+"Face_Beautify": {
+"title": "Beautify",
+"category": "filter",
+"styles": [
+"beauty"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "face",
+"note": "beautify face"
+},
+"Beauty_Skin": {
+"title": "Beauty Skin",
+"category": "filter",
+"styles": [
+"beauty"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "face",
+"note": "skin beauty"
+},
+"Bevel_Cut_210075": {
+"title": "Bevel Cut",
+"category": "filter",
+"styles": [
+"dynamic",
+"cut"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "bevel slice cut"
+},
+"Allpurpose_BlendMode": {
+"title": "BlendMode",
+"category": "filter",
+"styles": [
+"util"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "any",
+"note": "blend mode"
+},
+"Blur": {
+"title": "Blur",
+"category": "filter",
+"styles": [
+"blur",
+"soft"
+],
+"energy": 1,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "blur"
+},
+"Blur_In": {
+"title": "Blur In",
+"category": "filter",
+"styles": [
+"blur",
+"soft"
+],
+"energy": 2,
+"use": [
+"intro"
+],
+"on": "video",
+"note": "blur in"
+},
+"Blur_Shrink": {
+"title": "Blur Shrink",
+"category": "filter",
+"styles": [
+"blur",
+"soft"
+],
+"energy": 2,
+"use": [
+"outro"
+],
+"on": "video",
+"note": "blur shrink"
+},
+"Blur_Spread": {
+"title": "Blur Spread",
+"category": "filter",
+"styles": [
+"blur",
+"soft"
+],
+"energy": 2,
+"use": [
+"intro",
+"outro"
+],
+"on": "video",
+"note": "blur spread"
+},
+"Blur_Text_In": {
+"title": "Blur Text In",
+"category": "filter",
+"styles": [
+"text-fx",
+"blur"
+],
+"energy": 2,
+"use": [
+"intro"
+],
+"on": "text",
+"note": "blur text in"
+},
+"Body_Tracking": {
+"title": "Body Tracking",
+"category": "filter",
+"styles": [
+"util"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "video",
+"note": "body tracking (needs a person)"
+},
+"Border_Spectrum": {
+"title": "Border Spectrum",
+"category": "filter",
+"styles": [
+"music",
+"frame",
+"cyber"
+],
+"energy": 3,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "spectrum bars border"
+},
+"Breaking_Dimension_Display_06": {
+"title": "Breaking Dimension Display 06",
+"category": "filter",
+"styles": [
+"social",
+"frame"
+],
+"energy": 2,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "phone/social UI display"
+},
+"7_Bubble_Cartridge_Pack_Element_07": {
+"title": "CB07",
+"category": "filter",
+"styles": [
+"social",
+"fun"
+],
+"energy": 3,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "flying 'like' stickers"
+},
+"Camera_Shake": {
+"title": "Camera Shake",
+"category": "filter",
+"styles": [
+"shake",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"hit",
+"bar"
+],
+"on": "video",
+"note": "camera shake"
+},
+"Canvas": {
+"title": "Canvas",
+"category": "filter",
+"styles": [
+"util"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "video",
+"note": "canvas"
+},
+"Capsule_Shape_Timer_Effect_01": {
+"title": "Capsule Shape Timer 01",
+"category": "filter",
+"styles": [
+"util",
+"timer"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "video",
+"note": "capsule countdown timer"
+},
+"Cartoon": {
+"title": "Cartoon",
+"category": "filter",
+"styles": [
+"cartoon",
+"kids",
+"color"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "cartoon look"
+},
+"Cartoon_Filter_03": {
+"title": "Cartoon Filter 03",
+"category": "filter",
+"styles": [
+"cartoon",
+"comic",
+"color"
+],
+"energy": 2,
+"use": [
+"look"
+],
+"on": "video",
+"note": "cartoon pop-art look"
+},
+"Celestial_Anime_Aura": {
+"title": "Celestial Anime Aura",
+"category": "filter",
+"styles": [
+"anime",
+"energy",
+"light"
+],
+"energy": 4,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "anime aura rings"
+},
+"Center_Flash_2": {
+"title": "Center Flash",
+"category": "filter",
+"styles": [
+"flash",
+"dynamic"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "centre flash"
+},
+"Chaos_1": {
+"title": "Chaos 01",
+"category": "filter",
+"styles": [
+"dynamic",
+"zoom",
+"glitch"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "chaotic zoom/jump"
+},
+"Chromatic_Aberration": {
+"title": "Chromatic Aberration",
+"category": "filter",
+"styles": [
+"glitch",
+"color",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"clip",
+"bar"
+],
+"on": "video",
+"note": "chromatic aberration RGB split"
+},
+"Circle_Countdown_Timer_Effect_07": {
+"title": "Circle Countdown Timer 07",
+"category": "filter",
+"styles": [
+"util",
+"timer"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "video",
+"note": "circle countdown timer"
+},
+"Collision_669692": {
+"title": "Collision",
+"category": "filter",
+"styles": [
+"flash",
+"dynamic"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "collision white burst"
+},
+"Color_Comic": {
+"title": "Color Comic",
+"category": "filter",
+"styles": [
+"comic",
+"color",
+"cartoon"
+],
+"energy": 2,
+"use": [
+"look"
+],
+"on": "video",
+"note": "colour comic"
+},
+"01_ColorGlitch": {
+"title": "Color Glitch",
+"category": "filter",
+"styles": [
+"glitch",
+"color"
+],
+"energy": 3,
+"use": [
+"hit",
+"bar"
+],
+"on": "video",
+"note": "colour glitch"
+},
+"retro_effect_12": {
+"title": "Color Glitch 02",
+"category": "filter",
+"styles": [
+"glitch",
+"color"
+],
+"energy": 3,
+"use": [
+"hit",
+"bar"
+],
+"on": "video",
+"note": "colour glitch 02"
+},
+"Color_Solution": {
+"title": "Color Solution",
+"category": "filter",
+"styles": [
+"color",
+"fun"
+],
+"energy": 2,
+"use": [
+"look"
+],
+"on": "video",
+"note": "colour solarise"
+},
+"Color_Streamer_1": {
+"title": "Color Streamer 1",
+"category": "filter",
+"styles": [
+"light",
+"color",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "colour streamers"
+},
+"Colorful_Sound_Wave_1": {
+"title": "Colorful Sound Wave 1",
+"category": "filter",
+"styles": [
+"music",
+"frame"
+],
+"energy": 2,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "colourful sound-wave ring"
+},
+"Comic_Book": {
+"title": "Comic Book",
+"category": "filter",
+"styles": [
+"comic",
+"kids",
+"color"
+],
+"energy": 2,
+"use": [
+"look"
+],
+"on": "video",
+"note": "comic book halftone"
+},
+"Comic_Split_1": {
+"title": "Comic Split 1",
+"category": "filter",
+"styles": [
+"comic",
+"split",
+"frame"
+],
+"energy": 3,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "comic panel split 1"
+},
+"Comic_Split_2": {
+"title": "Comic Split 2",
+"category": "filter",
+"styles": [
+"comic",
+"split",
+"frame"
+],
+"energy": 3,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "comic panel split 2"
+},
+"Comic_Split_3": {
+"title": "Comic Split 3",
+"category": "filter",
+"styles": [
+"comic",
+"split",
+"frame"
+],
+"energy": 3,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "comic panel split 3"
+},
+"Comic_Style_3": {
+"title": "Comic Style 3",
+"category": "filter",
+"styles": [
+"comic",
+"split",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "comic multi-panel"
+},
+"Cool_Film": {
+"title": "Cool Film",
+"category": "filter",
+"styles": [
+"cinematic",
+"color",
+"soft"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "cool film tone"
+},
+"Copy": {
+"title": "Copy",
+"category": "filter",
+"styles": [
+"split",
+"util"
+],
+"energy": 2,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "copy/duplicate frame"
+},
+"Corner_Pin_437040": {
+"title": "Corner Pin",
+"category": "filter",
+"styles": [
+"util",
+"3d"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "video",
+"note": "corner pin"
+},
+"Cross_Split_1": {
+"title": "Cross Split",
+"category": "filter",
+"styles": [
+"split",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "cross split screen"
+},
+"Curtain_Open": {
+"title": "Curtain Open",
+"category": "filter",
+"styles": [
+"intro",
+"reveal"
+],
+"energy": 2,
+"use": [
+"intro"
+],
+"on": "video",
+"note": "curtain open"
+},
+"Cyberpunk_Effect_02_963419": {
+"title": "Cyberpunk Effect 02",
+"category": "filter",
+"styles": [
+"cyber",
+"glitch",
+"color"
+],
+"energy": 3,
+"use": [
+"look",
+"bar"
+],
+"on": "video",
+"note": "cyberpunk"
+},
+"DepthSaturation": {
+"title": "Depth Saturation",
+"category": "filter",
+"styles": [
+"color",
+"cinematic"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "depth saturation"
+},
+"DepthTemperature": {
+"title": "Depth Temperature",
+"category": "filter",
+"styles": [
+"color",
+"cinematic"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "depth temperature"
+},
+"Details_display_2": {
+"title": "Details display",
+"category": "filter",
+"styles": [
+"slideshow",
+"split",
+"frame"
+],
+"energy": 2,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "details display collage"
+},
+"Diagonal_Slide_In": {
+"title": "Diagonal Slide In",
+"category": "filter",
+"styles": [
+"dynamic",
+"slide"
+],
+"energy": 3,
+"use": [
+"intro"
+],
+"on": "video",
+"note": "diagonal slide in"
+},
+"Direction_blur": {
+"title": "Direction Blur",
+"category": "filter",
+"styles": [
+"blur",
+"dynamic",
+"camera-move"
+],
+"energy": 3,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "direction blur"
+},
+"Displace_Erase": {
+"title": "Displace Erase",
+"category": "filter",
+"styles": [
+"dynamic",
+"reveal"
+],
+"energy": 3,
+"use": [
+"outro"
+],
+"on": "video",
+"note": "displace erase"
+},
+"Earthquake_Shake": {
+"title": "Earthquake Shake",
+"category": "filter",
+"styles": [
+"shake",
+"dynamic"
+],
+"energy": 5,
+"use": [
+"hit",
+"bar"
+],
+"on": "video",
+"note": "earthquake shake"
+},
+"Energy_Gate_2": {
+"title": "Energy Gate 2",
+"category": "filter",
+"styles": [
+"energy",
+"frame",
+"light"
+],
+"energy": 4,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "energy gate portal"
+},
+"Energy_Gate_5": {
+"title": "Energy Gate 5",
+"category": "filter",
+"styles": [
+"energy",
+"frame",
+"light"
+],
+"energy": 4,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "energy gate ring"
+},
+"Explosion_Fire": {
+"title": "Explosion Fire",
+"category": "filter",
+"styles": [
+"fire",
+"energy",
+"dynamic"
+],
+"energy": 5,
+"use": [
+"hit",
+"bar"
+],
+"on": "video",
+"note": "explosion fire"
+},
+"Extreme": {
+"title": "Extreme",
+"category": "filter",
+"styles": [
+"shake",
+"dynamic"
+],
+"energy": 5,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "extreme shake"
+},
+"FacePouch_280": {
+"title": "FacePouch",
+"category": "filter",
+"styles": [
+"beauty"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "face",
+"note": "face pouch"
+},
+"FaceTeethWhiten_280": {
+"title": "FaceTeethWhiten",
+"category": "filter",
+"styles": [
+"beauty"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "face",
+"note": "teeth whiten"
+},
+"FaceWrinkle_Removal": {
+"title": "FaceWrinkle Removal",
+"category": "filter",
+"styles": [
+"beauty"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "face",
+"note": "wrinkle removal"
+},
+"Text_Quick_Pop_out": {
+"title": "Fast Pop out",
+"category": "filter",
+"styles": [
+"dynamic",
+"zoom"
+],
+"energy": 4,
+"use": [
+"outro",
+"hit"
+],
+"on": "video",
+"note": "fast pop out"
+},
+"Fast_zoom": {
+"title": "Fast Zoom",
+"category": "filter",
+"styles": [
+"zoom",
+"dynamic"
+],
+"energy": 4,
+"use": [
+"hit",
+"intro"
+],
+"on": "video",
+"note": "fast zoom"
+},
+"Film_Grain": {
+"title": "Film Grain",
+"category": "filter",
+"styles": [
+"retro",
+"film",
+"texture"
+],
+"energy": 1,
+"use": [
+"look",
+"bar"
+],
+"on": "video",
+"note": "film grain"
+},
+"Filming_Shake": {
+"title": "Filming Shake",
+"category": "filter",
+"styles": [
+"shake",
+"camera-move"
+],
+"energy": 2,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "handheld filming shake"
+},
+"Flash_Exposure": {
+"title": "Flash Exposure",
+"category": "filter",
+"styles": [
+"flash",
+"dynamic"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "flash exposure"
+},
+"Flicker_Jitter_01": {
+"title": "Flicker Jitter 01",
+"category": "filter",
+"styles": [
+"glitch",
+"flash"
+],
+"energy": 3,
+"use": [
+"hit",
+"bar"
+],
+"on": "video",
+"note": "flicker jitter 01"
+},
+"Flicker_Jitter_03": {
+"title": "Flicker Jitter 03",
+"category": "filter",
+"styles": [
+"glitch",
+"flash",
+"color"
+],
+"energy": 3,
+"use": [
+"hit",
+"bar"
+],
+"on": "video",
+"note": "flicker jitter 03"
+},
+"Flicker_Slice_Leftward": {
+"title": "Flicker Slice Leftward",
+"category": "filter",
+"styles": [
+"glitch",
+"dynamic",
+"slice"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "flicker slice left"
+},
+"Flicker_Slice_Rightward": {
+"title": "Flicker Slice Rightward",
+"category": "filter",
+"styles": [
+"glitch",
+"dynamic",
+"slice"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "flicker slice right"
+},
+"Flicker_Slice_Upward": {
+"title": "Flicker Slice Upward",
+"category": "filter",
+"styles": [
+"glitch",
+"dynamic",
+"slice"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "flicker slice up"
+},
+"Flip_Flash_Cut": {
+"title": "Flip Flash Cut",
+"category": "filter",
+"styles": [
+"flash",
+"dynamic",
+"3d"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "flip flash cut"
+},
+"Flip_Through": {
+"title": "Flip Through",
+"category": "filter",
+"styles": [
+"3d",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"hit",
+"clip"
+],
+"on": "video",
+"note": "flip through"
+},
+"Floating_Window_Mockups_1": {
+"title": "Floating Window Mockups 1",
+"category": "filter",
+"styles": [
+"slideshow",
+"frame",
+"3d"
+],
+"energy": 2,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "floating window mockup"
+},
+"Four_Seasons": {
+"title": "FourSeason",
+"category": "filter",
+"styles": [
+"slideshow",
+"frame"
+],
+"energy": 1,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "four-season mockup"
+},
+"AmPlash": {
+"title": "Frosted Glass Texture",
+"category": "filter",
+"styles": [
+"texture",
+"soft"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "frosted glass"
+},
+"Glitch_Discolor_01": {
+"title": "Glitch Discolor 01",
+"category": "filter",
+"styles": [
+"glitch",
+"text-fx"
+],
+"energy": 3,
+"use": [
+"hit"
+],
+"on": "text",
+"note": "glitch discolour (text)"
+},
+"Glitch_Exit": {
+"title": "Glitch Exit",
+"category": "filter",
+"styles": [
+"glitch",
+"text-fx"
+],
+"energy": 3,
+"use": [
+"outro"
+],
+"on": "text",
+"note": "glitch exit (text)"
+},
+"Glow": {
+"title": "Glow",
+"category": "filter",
+"styles": [
+"light",
+"soft",
+"romantic"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "glow"
+},
+"3_Color_Blur": {
+"title": "Glow Color",
+"category": "filter",
+"styles": [
+"light",
+"color"
+],
+"energy": 2,
+"use": [
+"look"
+],
+"on": "video",
+"note": "glow colour"
+},
+"Glow_Flash_In": {
+"title": "Glow Flash In",
+"category": "filter",
+"styles": [
+"light",
+"flash"
+],
+"energy": 3,
+"use": [
+"intro"
+],
+"on": "video",
+"note": "glow flash in"
+},
+"Glow_Vibrate": {
+"title": "Glow Vibrate",
+"category": "filter",
+"styles": [
+"light",
+"shake",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"hit",
+"bar"
+],
+"on": "video",
+"note": "glow vibrate"
+},
+"Gunshot_Shake": {
+"title": "Gunshot Shake",
+"category": "filter",
+"styles": [
+"shake",
+"dynamic"
+],
+"energy": 5,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "gunshot shake"
+},
+"Heart_Pulse_Particles": {
+"title": "Heart Pulse Particles",
+"category": "filter",
+"styles": [
+"music",
+"particles",
+"romantic"
+],
+"energy": 2,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "heart pulse particles"
+},
+"Holo_Scan": {
+"title": "Holo Scan",
+"category": "filter",
+"styles": [
+"cyber",
+"tech",
+"light"
+],
+"energy": 3,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "holo scan"
+},
+"Inclined_Cutting_1": {
+"title": "Inclined Cutting 1",
+"category": "filter",
+"styles": [
+"dynamic",
+"cut"
+],
+"energy": 3,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "inclined cutting"
+},
+"Instant_Camera_154242": {
+"title": "Instant Camera",
+"category": "filter",
+"styles": [
+"slideshow",
+"frame",
+"retro"
+],
+"energy": 2,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "instant camera polaroids"
+},
+"Light_Streak_Traverse": {
+"title": "Light Streak Traverse",
+"category": "filter",
+"styles": [
+"light",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"hit",
+"bar"
+],
+"on": "video",
+"note": "light streak traverse"
+},
+"Luma_Sharp": {
+"title": "Luma Sharp",
+"category": "filter",
+"styles": [
+"util",
+"sharp"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "video",
+"note": "luma sharpen"
+},
+"AR_Lut_Color_Filter": {
+"title": "Lut Color Filter",
+"category": "filter",
+"styles": [
+"util",
+"color"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "LUT colour filter (load a LUT)"
+},
+"Melody_Sparks_02": {
+"title": "Melody Sparks 02",
+"category": "filter",
+"styles": [
+"music",
+"particles",
+"light",
+"neon"
+],
+"energy": 3,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "neon melody note sparks"
+},
+"Mild": {
+"title": "Mild",
+"category": "filter",
+"styles": [
+"shake",
+"soft"
+],
+"energy": 2,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "mild handheld drift"
+},
+"Mild_Shake": {
+"title": "Mild Shake",
+"category": "filter",
+"styles": [
+"shake"
+],
+"energy": 2,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "mild shake"
+},
+"Mini_Shake": {
+"title": "Mini Shake",
+"category": "filter",
+"styles": [
+"shake",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "mini shake"
+},
+"Mosaic_Zoom_828266": {
+"title": "Mosaic Zoom",
+"category": "filter",
+"styles": [
+"pixel",
+"zoom",
+"reveal"
+],
+"energy": 3,
+"use": [
+"intro",
+"transition"
+],
+"on": "video",
+"note": "mosaic pixels zoom into clear image"
+},
+"Motion_Blur": {
+"title": "Motion Blur",
+"category": "filter",
+"styles": [
+"blur",
+"dynamic"
+],
+"energy": 2,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "motion blur"
+},
+"No_Signal_Glitch_01": {
+"title": "No Signal Glitch 01",
+"category": "filter",
+"styles": [
+"glitch",
+"retro",
+"tv"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "no-signal glitch"
+},
+"Noise_Texture": {
+"title": "Noise Texture",
+"category": "filter",
+"styles": [
+"texture",
+"retro",
+"film"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "noise grain texture"
+},
+"Oblique_Text": {
+"title": "Oblique Text",
+"category": "filter",
+"styles": [
+"text-fx",
+"3d"
+],
+"energy": 2,
+"use": [
+"util"
+],
+"on": "text",
+"note": "oblique/skewed text"
+},
+"Old_Movie_2": {
+"title": "Old Movie 2",
+"category": "filter",
+"styles": [
+"retro",
+"film",
+"vintage"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "old movie grain + scratches"
+},
+"Old_TV_Screen_Border": {
+"title": "Old TV Border",
+"category": "filter",
+"styles": [
+"retro",
+"tv",
+"frame",
+"vintage"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "old TV screen border"
+},
+"Old_video": {
+"title": "Old video",
+"category": "filter",
+"styles": [
+"retro",
+"film",
+"dark",
+"vintage"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "old video vignette"
+},
+"One_Way_Movement": {
+"title": "One Way Movement",
+"category": "filter",
+"styles": [
+"dynamic",
+"camera-move",
+"slide"
+],
+"energy": 3,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "one-way slide movement"
+},
+"Orbit_Flip": {
+"title": "Orbit Flip",
+"category": "filter",
+"styles": [
+"3d",
+"dynamic",
+"reveal"
+],
+"energy": 4,
+"use": [
+"intro",
+"transition"
+],
+"on": "video",
+"note": "orbit flip shards reveal"
+},
+"Parallel_Photobook": {
+"title": "Parallel Photobook",
+"category": "filter",
+"styles": [
+"slideshow",
+"frame",
+"3d"
+],
+"energy": 2,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "parallel photobook cards"
+},
+"Perspective_Clone": {
+"title": "Perspective Clone",
+"category": "filter",
+"styles": [
+"clone",
+"fun",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"hit",
+"bar"
+],
+"on": "face",
+"note": "perspective clone trail of subject"
+},
+"Phantom_Particles": {
+"title": "Phantom Particles",
+"category": "filter",
+"styles": [
+"music",
+"particles",
+"light"
+],
+"energy": 2,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "phantom particles + audio wave"
+},
+"Phone_1": {
+"title": "Phone 1",
+"category": "filter",
+"styles": [
+"frame",
+"mockup",
+"social"
+],
+"energy": 1,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "phone mockup frame"
+},
+"Photo_Spread": {
+"title": "Photo Spread",
+"category": "filter",
+"styles": [
+"slideshow",
+"frame",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"clip",
+"bar"
+],
+"on": "video",
+"note": "photo spread polaroids"
+},
+"Picture_Dropin": {
+"title": "Picture Dropin",
+"category": "filter",
+"styles": [
+"slideshow",
+"frame"
+],
+"energy": 2,
+"use": [
+"intro"
+],
+"on": "video",
+"note": "picture drops in"
+},
+"Picture_Dropout": {
+"title": "Picture Dropout",
+"category": "filter",
+"styles": [
+"slideshow",
+"frame"
+],
+"energy": 2,
+"use": [
+"outro"
+],
+"on": "video",
+"note": "picture drops out"
+},
+"Polaroid_Set_01": {
+"title": "Polaroid Set 01",
+"category": "filter",
+"styles": [
+"slideshow",
+"frame",
+"retro"
+],
+"energy": 1,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "taped polaroid frame"
+},
+"Polaroid_Set_02": {
+"title": "Polaroid Set 02",
+"category": "filter",
+"styles": [
+"slideshow",
+"frame",
+"film"
+],
+"energy": 1,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "film-strip polaroid frame"
+},
+"Pulse_Glow_1": {
+"title": "Pulse Glow 1",
+"category": "filter",
+"styles": [
+"music",
+"particles",
+"neon",
+"glow"
+],
+"energy": 3,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "pulse glow particles ring (pink)"
+},
+"Pulse_Shake_03_889070": {
+"title": "Pulse Shake 03",
+"category": "filter",
+"styles": [
+"shake",
+"dynamic"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "pulse shake 03"
+},
+"Pulse_Shake_04_120309": {
+"title": "Pulse Shake 04",
+"category": "filter",
+"styles": [
+"shake",
+"dynamic"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "pulse shake 04"
+},
+"Radio_Explike_FX": {
+"title": "Radio Explike FX",
+"category": "filter",
+"styles": [
+"color",
+"psychedelic",
+"dynamic"
+],
+"energy": 4,
+"use": [
+"hit",
+"bar"
+],
+"on": "video",
+"note": "radial rainbow blast"
+},
+"Raining_1": {
+"title": "Raining 1",
+"category": "filter",
+"styles": [
+"weather",
+"rain",
+"dark"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "any",
+"note": "rain overlay"
+},
+"Raining_2": {
+"title": "Raining 2",
+"category": "filter",
+"styles": [
+"weather",
+"rain",
+"dark"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "any",
+"note": "rain overlay 2"
+},
+"01_Random_Block": {
+"title": "Random Block",
+"category": "filter",
+"styles": [
+"glitch",
+"cyber"
+],
+"energy": 3,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "random block glitch"
+},
+"01_Ray_Scan": {
+"title": "Ray Scan",
+"category": "filter",
+"styles": [
+"light",
+"tech"
+],
+"energy": 2,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "diagonal ray scan"
+},
+"Recording_01": {
+"title": "Recording 01",
+"category": "filter",
+"styles": [
+"frame",
+"camera-ui",
+"vlog"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "camcorder REC overlay"
+},
+"Rectangle_Countdown_Timer_Effect_09": {
+"title": "Rectangle Countdown Timer 09",
+"category": "filter",
+"styles": [
+"timer",
+"util",
+"music"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "any",
+"note": "player-style countdown timer"
+},
+"Resolution_Adaptation": {
+"title": "ResolutionAdaptation",
+"category": "filter",
+"styles": [
+"util"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "video",
+"note": "resolution adaptation"
+},
+"Rhythm_Waves": {
+"title": "Rhythm Waves",
+"category": "filter",
+"styles": [
+"music",
+"particles",
+"glow"
+],
+"energy": 3,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "rhythm waves gold particles"
+},
+"Rising_Smoke_Overlay_01_16-9": {
+"title": "Rising Smoke Overlay 01",
+"category": "filter",
+"styles": [
+"smoke",
+"dark",
+"cinematic"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "any",
+"note": "rising smoke overlay"
+},
+"Rising_Smoke_Overlay_02_16-9": {
+"title": "Rising Smoke Overlay 02",
+"category": "filter",
+"styles": [
+"smoke",
+"dark",
+"cinematic"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "any",
+"note": "rising smoke overlay 2"
+},
+"RocknRoll": {
+"title": "Rock'n'Roll",
+"category": "filter",
+"styles": [
+"shake",
+"dynamic",
+"retro"
+],
+"energy": 4,
+"use": [
+"hit",
+"bar"
+],
+"on": "video",
+"note": "rock'n'roll jitter"
+},
+"Screen_Crack_02": {
+"title": "Screen Crack 02",
+"category": "filter",
+"styles": [
+"crack",
+"dynamic"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "screen crack"
+},
+"Shadow_Blur": {
+"title": "Shadow Blur",
+"category": "filter",
+"styles": [
+"text-fx",
+"blur",
+"shadow"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "text",
+"note": "soft shadow blur behind text"
+},
+"Shake_Camera_Movement": {
+"title": "Shake Camera Movement",
+"category": "filter",
+"styles": [
+"shake",
+"camera-move",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"clip",
+"bar"
+],
+"on": "video",
+"note": "shaky camera movement"
+},
+"Shake_Left_and_Right_451734": {
+"title": "Shake Left and Right",
+"category": "filter",
+"styles": [
+"shake",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"hit",
+"bar"
+],
+"on": "video",
+"note": "shake left-right"
+},
+"Sharp": {
+"title": "Sharp",
+"category": "filter",
+"styles": [
+"util",
+"sharp"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "video",
+"note": "sharpen"
+},
+"Shattered_Glass_04": {
+"title": "Shattered Glass 04",
+"category": "filter",
+"styles": [
+"crack",
+"glass",
+"dynamic"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "shattered glass"
+},
+"Shock_Beam": {
+"title": "Shock Beam",
+"category": "filter",
+"styles": [
+"light",
+"flash",
+"energy"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "shock beam flash"
+},
+"Sideways_2": {
+"title": "Sideways 2",
+"category": "filter",
+"styles": [
+"glitch",
+"color",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "sideways colour shift"
+},
+"Simple_Sound_Wave": {
+"title": "Simple Sound Wave",
+"category": "filter",
+"styles": [
+"music",
+"frame"
+],
+"energy": 2,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "simple circular sound wave"
+},
+"Skill_Burst_02": {
+"title": "Skill Burst 02",
+"category": "filter",
+"styles": [
+"anime",
+"energy",
+"light",
+"game"
+],
+"energy": 4,
+"use": [
+"hit",
+"bar"
+],
+"on": "video",
+"note": "skill burst light rays"
+},
+"Skin_Color_Enhance": {
+"title": "Skin Color Enhance",
+"category": "filter",
+"styles": [
+"beauty",
+"color"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "face",
+"note": "skin colour enhance"
+},
+"Skin_Smooth": {
+"title": "Skin Smooth",
+"category": "filter",
+"styles": [
+"beauty",
+"soft"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "face",
+"note": "skin smooth"
+},
+"Slow_zoom": {
+"title": "Slow Zoom",
+"category": "filter",
+"styles": [
+"zoom",
+"cinematic",
+"camera-move",
+"soft"
+],
+"energy": 1,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "slow zoom (Ken Burns)"
+},
+"Smart_Highlight": {
+"title": "Smart Highlight",
+"category": "filter",
+"styles": [
+"util",
+"text-fx"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "text",
+"note": "smart highlight box behind words"
+},
+"Smart_Text_Magnifier": {
+"title": "Smart Text Magnifier",
+"category": "filter",
+"styles": [
+"util",
+"text-fx",
+"zoom"
+],
+"energy": 2,
+"use": [
+"util"
+],
+"on": "any",
+"note": "magnifier callout"
+},
+"Soften": {
+"title": "Soften",
+"category": "filter",
+"styles": [
+"soft",
+"blur",
+"romantic"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "soften"
+},
+"Sonic_Stardust": {
+"title": "Sonic Stardust",
+"category": "filter",
+"styles": [
+"music",
+"particles",
+"cyber"
+],
+"energy": 2,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "sonic stardust + spectrum"
+},
+"Soul_Jitter_285523": {
+"title": "Soul Jitter",
+"category": "filter",
+"styles": [
+"clone",
+"dynamic",
+"ghost"
+],
+"energy": 4,
+"use": [
+"hit",
+"bar"
+],
+"on": "video",
+"note": "soul jitter ghost"
+},
+"Special_Effect_Speed_Lines_01": {
+"title": "Special Effect Speed Lines 01",
+"category": "filter",
+"styles": [
+"anime",
+"speed-lines",
+"comic"
+],
+"energy": 3,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "speed lines 01"
+},
+"Special_Effect_Speed_Lines_02": {
+"title": "Special Effect Speed Lines 02",
+"category": "filter",
+"styles": [
+"anime",
+"speed-lines",
+"comic"
+],
+"energy": 3,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "speed lines 02"
+},
+"Special_Effect_Speed_Lines_04": {
+"title": "Special Effect Speed Lines 04",
+"category": "filter",
+"styles": [
+"anime",
+"speed-lines",
+"comic",
+"energy"
+],
+"energy": 4,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "speed lines 04 (yellow)"
+},
+"Special_Effect_Speed_Lines_06": {
+"title": "Special Effect Speed Lines 06",
+"category": "filter",
+"styles": [
+"anime",
+"speed-lines",
+"fire",
+"energy"
+],
+"energy": 5,
+"use": [
+"hit",
+"bar"
+],
+"on": "video",
+"note": "fire speed lines 06"
+},
+"Special_Effect_Speed_Lines_07": {
+"title": "Special Effect Speed Lines 07",
+"category": "filter",
+"styles": [
+"anime",
+"speed-lines",
+"comic"
+],
+"energy": 3,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "speed lines 07"
+},
+"Special_Effect_Speed_Lines_08": {
+"title": "Special Effect Speed Lines 08",
+"category": "filter",
+"styles": [
+"anime",
+"speed-lines",
+"comic",
+"energy"
+],
+"energy": 4,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "diagonal speed lines 08"
+},
+"Split_Flash_Cut_1": {
+"title": "Split Flash Cut 1",
+"category": "filter",
+"styles": [
+"split",
+"flash",
+"dynamic",
+"slice"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "split flash cut 1"
+},
+"Split_Flash_Cut_3": {
+"title": "Split Flash Cut 3",
+"category": "filter",
+"styles": [
+"split",
+"flash",
+"dynamic",
+"slice"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "split flash cut 3"
+},
+"Stage_Volumetric": {
+"title": "Stage Volumetric",
+"category": "filter",
+"styles": [
+"light",
+"stage",
+"color",
+"concert"
+],
+"energy": 2,
+"use": [
+"bar",
+"look"
+],
+"on": "video",
+"note": "stage volumetric light"
+},
+"01_StaggerGlitch": {
+"title": "Stagger Glitch",
+"category": "filter",
+"styles": [
+"glitch",
+"dynamic",
+"cyber"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "stagger glitch"
+},
+"Stretch_Vibrate": {
+"title": "Stretch Vibrate",
+"category": "filter",
+"styles": [
+"shake",
+"stretch",
+"dynamic"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "stretch vibrate"
+},
+"01_StripeFlash": {
+"title": "Stripe Flash",
+"category": "filter",
+"styles": [
+"flash",
+"dynamic",
+"stripe"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "stripe flash"
+},
+"retro_effect_13": {
+"title": "Strong Sharpening",
+"category": "filter",
+"styles": [
+"util",
+"sharp"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "video",
+"note": "strong sharpening"
+},
+"TVwall": {
+"title": "TVWall",
+"category": "filter",
+"styles": [
+"split",
+"grid",
+"retro",
+"tv"
+],
+"energy": 3,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "TV wall grid of copies"
+},
+"Text_Color_Glow": {
+"title": "Text Color Glow",
+"category": "filter",
+"styles": [
+"text-fx",
+"glow",
+"color"
+],
+"energy": 2,
+"use": [
+"util"
+],
+"on": "text",
+"note": "text colour glow"
+},
+"Text_Fill_Side": {
+"title": "Text Fill Side",
+"category": "filter",
+"styles": [
+"text-fx",
+"color"
+],
+"energy": 2,
+"use": [
+"intro"
+],
+"on": "text",
+"note": "text fill from the side"
+},
+"Text_Flare_Effect": {
+"title": "Text Flare Effect",
+"category": "filter",
+"styles": [
+"text-fx",
+"light",
+"cinematic"
+],
+"energy": 2,
+"use": [
+"util"
+],
+"on": "text",
+"note": "text lens flare sweep"
+},
+"Text_Progress_1": {
+"title": "Text Progress 1",
+"category": "filter",
+"styles": [
+"text-fx",
+"color"
+],
+"energy": 2,
+"use": [
+"util"
+],
+"on": "text",
+"note": "text progress fill"
+},
+"Text_Ripple": {
+"title": "Text Ripple",
+"category": "filter",
+"styles": [
+"text-fx",
+"water"
+],
+"energy": 2,
+"use": [
+"util"
+],
+"on": "text",
+"note": "text ripple"
+},
+"Text_Rolling": {
+"title": "Text Rolling",
+"category": "filter",
+"styles": [
+"text-fx",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"util"
+],
+"on": "text",
+"note": "rolling text"
+},
+"Tilted_Slide_Motion": {
+"title": "Tilted Slide Motion",
+"category": "filter",
+"styles": [
+"slideshow",
+"3d",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "tilted slide motion"
+},
+"TrackMatt": {
+"title": "TrackMatt",
+"category": "filter",
+"styles": [
+"util",
+"mask"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "video",
+"note": "track matte"
+},
+"Trance_Blast": {
+"title": "Trance Blast",
+"category": "filter",
+"styles": [
+"psychedelic",
+"light",
+"dynamic"
+],
+"energy": 4,
+"use": [
+"hit",
+"bar"
+],
+"on": "video",
+"note": "trance blast rings"
+},
+"Transparent_Title_1": {
+"title": "Transparent Title 1",
+"category": "filter",
+"styles": [
+"text-fx",
+"glass",
+"util"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "text",
+"note": "transparent/frosted title texture 1"
+},
+"Transparent_Title_2": {
+"title": "Transparent Title 2",
+"category": "filter",
+"styles": [
+"text-fx",
+"glass",
+"util"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "text",
+"note": "transparent/frosted title texture 2"
+},
+"Tunnel": {
+"title": "Tunnel",
+"category": "filter",
+"styles": [
+"3d",
+"dynamic",
+"psychedelic"
+],
+"energy": 4,
+"use": [
+"hit",
+"transition"
+],
+"on": "video",
+"note": "tunnel radial warp"
+},
+"Ultra_Blur": {
+"title": "Ultra Blur",
+"category": "filter",
+"styles": [
+"blur",
+"soft"
+],
+"energy": 1,
+"use": [
+"util",
+"look"
+],
+"on": "video",
+"note": "ultra blur"
+},
+"Undulate_Text_01": {
+"title": "Undulate_Text_01",
+"category": "filter",
+"styles": [
+"text-fx",
+"water"
+],
+"energy": 2,
+"use": [
+"util"
+],
+"on": "text",
+"note": "undulating wavy text"
+},
+"VCR_Distortion": {
+"title": "VCR Distortion",
+"category": "filter",
+"styles": [
+"retro",
+"vhs",
+"glitch"
+],
+"energy": 2,
+"use": [
+"look",
+"hit"
+],
+"on": "video",
+"note": "VCR distortion"
+},
+"Vector_Text_Shadow": {
+"title": "Vector Text Shadow",
+"category": "filter",
+"styles": [
+"text-fx",
+"shadow"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "text",
+"note": "vector long shadow for text"
+},
+"Very_Old_Film": {
+"title": "Very Old Film",
+"category": "filter",
+"styles": [
+"retro",
+"film",
+"vintage",
+"bw"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "very old B&W film"
+},
+"Water": {
+"title": "Water",
+"category": "filter",
+"styles": [
+"water",
+"distort",
+"psychedelic"
+],
+"energy": 2,
+"use": [
+"look"
+],
+"on": "video",
+"note": "water surface refraction"
+},
+"Water_Blur_984504": {
+"title": "Water Blur",
+"category": "filter",
+"styles": [
+"water",
+"blur",
+"distort"
+],
+"energy": 2,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "water blur"
+},
+"Water_wave": {
+"title": "Water Wave",
+"category": "filter",
+"styles": [
+"water",
+"distort"
+],
+"energy": 2,
+"use": [
+"hit",
+"look"
+],
+"on": "video",
+"note": "water wave distortion"
+},
+"01_WaveWarp": {
+"title": "Wave Warp",
+"category": "filter",
+"styles": [
+"distort",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "wave warp"
+},
+"Word_Pop": {
+"title": "Word Pop",
+"category": "filter",
+"styles": [
+"text-fx",
+"dynamic",
+"pop"
+],
+"energy": 3,
+"use": [
+"intro"
+],
+"on": "text",
+"note": "word pop-in"
+},
+"Zoom_lens": {
+"title": "Zoom Lens",
+"category": "filter",
+"styles": [
+"zoom",
+"lens",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"hit",
+"clip"
+],
+"on": "video",
+"note": "zoom lens bulge"
+},
+"3D_Business_Charts_Pack_Overlay_03": {
+"title": "3D Business Charts Pack Overlay 03",
+"category": "overlay",
+"styles": [
+"frame",
+"business",
+"tech",
+"mockup"
+],
+"energy": 1,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "overlay: 3D business chart frame"
+},
+"Action_Anime_Style_Overlay_01_16-9": {
+"title": "Action Anime Speedline 16-9",
+"category": "overlay",
+"styles": [
+"anime",
+"speed-lines",
+"energy",
+"neon"
+],
+"energy": 4,
+"use": [
+"bar",
+"intro"
+],
+"on": "video",
+"note": "overlay: neon anime speedline burst"
+},
+"Anime_Overlay_2": {
+"title": "Anime Overlay 2",
+"category": "overlay",
+"styles": [
+"anime",
+"fire",
+"energy",
+"speed-lines"
+],
+"energy": 4,
+"use": [
+"hit",
+"bar"
+],
+"on": "video",
+"note": "overlay: anime fire bokeh + lines"
+},
+"Cartoon_Style_MV_Pack_Overlay_02": {
+"title": "Cartoon Style MV Pack Overlay 02",
+"category": "overlay",
+"styles": [
+"cartoon",
+"speed-lines",
+"comic"
+],
+"energy": 3,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "overlay: cartoon focus lines"
+},
+"Cinema_219": {
+"title": "Cinema 21:9",
+"category": "overlay",
+"styles": [
+"cinematic",
+"letterbox",
+"frame"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: 21:9 cinema bars"
+},
+"4_Cinematic_Digital_Slideshow_Overlay_07": {
+"title": "Cinematic Digital Slideshow Overlay 07",
+"category": "overlay",
+"styles": [
+"cinematic",
+"letterbox",
+"frame"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: cinematic letterbox bars"
+},
+"Cinematic_Filters_Pack_Overlay_10": {
+"title": "Cinematic Filters Overlay 10",
+"category": "overlay",
+"styles": [
+"cinematic",
+"rain",
+"dark",
+"texture"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: cinematic rain/scratch"
+},
+"Cinematic_Filters_Pack_Overlay_09": {
+"title": "Cinematic Filters Pack Overlay 09",
+"category": "overlay",
+"styles": [
+"cinematic",
+"film",
+"frame",
+"retro"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: film strip frame (warm)"
+},
+"Cinematic_Flares_2": {
+"title": "Cinematic Flares 2",
+"category": "overlay",
+"styles": [
+"cinematic",
+"light",
+"flare",
+"footage-only"
+],
+"energy": 2,
+"use": [
+"bar",
+"transition"
+],
+"on": "video",
+"note": "overlay: purple cinematic flare - on dark graphics it reads as grey haze on the edges; use over real footage"
+},
+"Cinematic_Flares_5": {
+"title": "Cinematic Flares 5",
+"category": "overlay",
+"styles": [
+"cinematic",
+"light",
+"flare",
+"footage-only"
+],
+"energy": 2,
+"use": [
+"bar",
+"transition"
+],
+"on": "video",
+"note": "overlay: white soft flare sweep - on dark graphics it reads as grey haze on the edges; use over real footage"
+},
+"4_Buddy_Colorful": {
+"title": "Colorful Flicker",
+"category": "overlay",
+"styles": [
+"color",
+"flash",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "overlay: colourful colour flicker"
+},
+"Creative_Frame_CN_Overlay_13": {
+"title": "Creative Frame CN Overlay 13",
+"category": "overlay",
+"styles": [
+"frame",
+"texture",
+"vintage"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: grunge vignette frame"
+},
+"Horror_Movie_Filters_Overlay_08": {
+"title": "Dark Vibe 06",
+"category": "overlay",
+"styles": [
+"dark",
+"horror",
+"smoke",
+"cinematic"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: dark vibe fog"
+},
+"Horror_Stories_Pack_Overlay_01": {
+"title": "Dark Windows",
+"category": "overlay",
+"styles": [
+"dark",
+"horror",
+"cinematic"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: dark window shadows"
+},
+"Focus_Beam_Overlay_02_16-9": {
+"title": "Digital Data Overlay 03",
+"category": "overlay",
+"styles": [
+"tech",
+"cyber",
+"hud",
+"data"
+],
+"energy": 2,
+"use": [
+"look",
+"bar"
+],
+"on": "video",
+"note": "overlay: digital data HUD"
+},
+"4_Digital_Glitch_Effect_Overlay_01": {
+"title": "Digital Glitch Effect Overlay 01",
+"category": "overlay",
+"styles": [
+"tech",
+"cyber",
+"hud",
+"glitch"
+],
+"energy": 3,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "overlay: digital glitch HUD"
+},
+"Digital_Slideshow_Overlay_03": {
+"title": "Digital Slideshow Overlay 03",
+"category": "overlay",
+"styles": [
+"tech",
+"hud",
+"frame",
+"target"
+],
+"energy": 2,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: circular HUD viewfinder"
+},
+"4_RadialBlur": {
+"title": "Dispersion Blur",
+"category": "overlay",
+"styles": [
+"tech",
+"hud",
+"frame",
+"target"
+],
+"energy": 2,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: HUD rings (dispersion blur)"
+},
+"Energy_Elemental_Overlay_04_9-16": {
+"title": "Energy Elemental 04 9-16 Vertical",
+"category": "overlay",
+"styles": [
+"energy",
+"lightning",
+"dynamic"
+],
+"energy": 5,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "overlay: purple lightning (9:16)"
+},
+"Energy_Elemental_Overlay_05_16-9": {
+"title": "Energy Elemental 05 16-9",
+"category": "overlay",
+"styles": [
+"energy",
+"particles",
+"fire",
+"embers"
+],
+"energy": 2,
+"use": [
+"look",
+"bar"
+],
+"on": "video",
+"note": "overlay: rising embers"
+},
+"Energy_VFX_Overlay_11_1-1": {
+"title": "Energy VFX Overlay 11",
+"category": "overlay",
+"styles": [
+"energy",
+"fire",
+"smoke"
+],
+"energy": 3,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "overlay: orange energy burst"
+},
+"Energy_VFX_Overlay_12_16-9": {
+"title": "Energy VFX Overlay 12",
+"category": "overlay",
+"styles": [
+"energy",
+"particles",
+"magic"
+],
+"energy": 3,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "overlay: blue magic swirl"
+},
+"Film_4": {
+"title": "Film 4",
+"category": "overlay",
+"styles": [
+"film",
+"retro",
+"frame",
+"vintage"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: film border 4"
+},
+"Film_5": {
+"title": "Film 5",
+"category": "overlay",
+"styles": [
+"film",
+"retro",
+"frame",
+"vintage"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: film strip border 5"
+},
+"Film_6": {
+"title": "Film 6",
+"category": "overlay",
+"styles": [
+"film",
+"retro",
+"frame",
+"vintage"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: film frame 6"
+},
+"Film_Grain_Style_Overlay_08": {
+"title": "Film Grain Style Overlay 08",
+"category": "overlay",
+"styles": [
+"film",
+"grain",
+"texture",
+"retro"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: film grain"
+},
+"4_Film_Vlog_Life_Overlay_08": {
+"title": "Film Vlog Life Overlay 08",
+"category": "overlay",
+"styles": [
+"vlog",
+"camera-ui",
+"frame"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: camera viewfinder corners"
+},
+"4_Film_Vlog_Life_Overlay_15": {
+"title": "Film Vlog Life Overlay 15",
+"category": "overlay",
+"styles": [
+"vlog",
+"film",
+"frame",
+"retro"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: film strip vlog frame"
+},
+"4_Film_Vlog_Life_Overlay_18": {
+"title": "Film Vlog Life Overlay 18",
+"category": "overlay",
+"styles": [
+"vlog",
+"camera-ui",
+"frame"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: PLAY + progress bar vlog UI"
+},
+"4_Film_Vlog_Life_Overlay_22": {
+"title": "Film Vlog Life Overlay 22",
+"category": "overlay",
+"styles": [
+"vlog",
+"camera-ui",
+"frame",
+"retro"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: PLAY film frame vlog"
+},
+"Fire_Particle_Effect_Overlay_06": {
+"title": "Fire Particle Effect Overlay 06",
+"category": "overlay",
+"styles": [
+"fire",
+"particles",
+"embers",
+"energy"
+],
+"energy": 3,
+"use": [
+"bar",
+"look"
+],
+"on": "video",
+"note": "overlay: fire particles rising from bottom"
+},
+"4_Fire_Rahmen": {
+"title": "Fire Ramen",
+"category": "overlay",
+"styles": [
+"fire",
+"frame",
+"energy"
+],
+"energy": 4,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "overlay: burning fire border"
+},
+"Fitness_Power_Overlay": {
+"title": "Fitness Power Overlay",
+"category": "overlay",
+"styles": [
+"sport",
+"tech",
+"hud"
+],
+"energy": 2,
+"use": [
+"bar"
+],
+"on": "video",
+"note": "overlay: fitness power grid"
+},
+"4_Flash_Black": {
+"title": "Flash Black",
+"category": "overlay",
+"styles": [
+"flash",
+"dynamic",
+"cut",
+"black"
+],
+"energy": 4,
+"use": [
+"hit",
+"transition"
+],
+"on": "video",
+"note": "overlay: black flash (dip before drop)"
+},
+"4_Flash_White1": {
+"title": "Flash White1",
+"category": "overlay",
+"styles": [
+"flash",
+"dynamic",
+"light",
+"white"
+],
+"energy": 4,
+"use": [
+"hit",
+"transition"
+],
+"on": "video",
+"note": "overlay: white flash"
+},
+"Gaming_Set_Old_World_Overlay_3": {
+"title": "Gaming Set Old World Overlay 3",
+"category": "overlay",
+"styles": [
+"game",
+"smoke",
+"dark"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: old-world game fog"
+},
+"4_Glitch_Block2": {
+"title": "Glitch Block 2",
+"category": "overlay",
+"styles": [
+"glitch",
+"dynamic",
+"cyber"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "overlay: glitch block"
+},
+"4_Glitch_RGB_Split": {
+"title": "Glitch Dispersion",
+"category": "overlay",
+"styles": [
+"glitch",
+"rgb",
+"dynamic"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "overlay: RGB split glitch"
+},
+"4_Glitch_Screen_Overlay_Pack_Overlay_03": {
+"title": "Glitch Screen Overlay Pack Overlay 03",
+"category": "overlay",
+"styles": [
+"glitch",
+"retro",
+"tv",
+"frame"
+],
+"energy": 2,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: glitch screen frame 03"
+},
+"4_Glitch_Screen_Overlay_Pack_Overlay_05": {
+"title": "Glitch Screen Overlay Pack Overlay 05",
+"category": "overlay",
+"styles": [
+"glitch",
+"retro",
+"tv",
+"frame"
+],
+"energy": 2,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: old CRT TV screen"
+},
+"4_Glitch_Screen_Overlay_Pack_Overlay_06": {
+"title": "Glitch Screen Overlay Pack Overlay 06",
+"category": "overlay",
+"styles": [
+"glitch",
+"retro",
+"tv",
+"frame"
+],
+"energy": 2,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: CRT screen frame 06"
+},
+"4_Glitch_Line2": {
+"title": "Glitch Stripe 2",
+"category": "overlay",
+"styles": [
+"glitch",
+"dynamic",
+"stripe"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "overlay: glitch stripes"
+},
+"Halloween_Party_Overlay_06": {
+"title": "Halloween Party Overlay 06",
+"category": "overlay",
+"styles": [
+"halloween",
+"dark",
+"horror",
+"frame"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: halloween cobweb frame"
+},
+"Heart_2": {
+"title": "Heart 2",
+"category": "overlay",
+"styles": [
+"romantic",
+"heart",
+"frame",
+"glow"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: pink heart bokeh border"
+},
+"4_Heartbeat": {
+"title": "Heartbeat",
+"category": "overlay",
+"styles": [
+"flash",
+"dynamic",
+"pulse"
+],
+"energy": 4,
+"use": [
+"hit",
+"bar"
+],
+"on": "video",
+"note": "overlay: heartbeat white pulse"
+},
+"Heartbeat_Overlay_05": {
+"title": "Heartbeat Overlay 05",
+"category": "overlay",
+"styles": [
+"romantic",
+"heart",
+"particles"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: floating outline hearts"
+},
+"4_Heat_Map": {
+"title": "Heatmap",
+"category": "overlay",
+"styles": [
+"color",
+"psychedelic",
+"thermal"
+],
+"energy": 3,
+"use": [
+"look",
+"hit"
+],
+"on": "video",
+"note": "overlay: thermal heat map"
+},
+"Historical_Timeline_Overlay_05": {
+"title": "Historical Timeline Overlay 05",
+"category": "overlay",
+"styles": [
+"history",
+"smoke",
+"frame",
+"vintage"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: historical smoky vignette"
+},
+"Holi_Powder_Overlay_02_16-9": {
+"title": "Holi Powder Overlay 02 16-9",
+"category": "overlay",
+"styles": [
+"color",
+"holi",
+"powder",
+"fun"
+],
+"energy": 4,
+"use": [
+"transition",
+"hit"
+],
+"on": "video",
+"note": "overlay: holi colour powder burst"
+},
+"Horror_Film_Filter_Pack_Overlay_05": {
+"title": "Horror Film Filter Overlay 05",
+"category": "overlay",
+"styles": [
+"horror",
+"film",
+"retro",
+"dark"
+],
+"energy": 2,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: horror film scratches"
+},
+"Life_Mood_Vlog_Overlay_01": {
+"title": "Life Mood Vlog Overlay 01",
+"category": "overlay",
+"styles": [
+"vlog",
+"music",
+"frame"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: life-mood vlog bars"
+},
+"Light_Leak_4": {
+"title": "Light Leak 4",
+"category": "overlay",
+"styles": [
+"light-leak",
+"color",
+"soft",
+"cinematic"
+],
+"energy": 2,
+"use": [
+"transition",
+"bar"
+],
+"on": "video",
+"note": "overlay: colourful light leak"
+},
+"Love_Particles_Overlay_06_9-16": {
+"title": "Love Particles Overlay 06",
+"category": "overlay",
+"styles": [
+"romantic",
+"heart",
+"particles",
+"soft"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: pink love bokeh"
+},
+"Lovers_Photobook_Overlay_06_9-16": {
+"title": "Lovers Photobook Overlay 06",
+"category": "overlay",
+"styles": [
+"romantic",
+"heart",
+"frame",
+"slideshow"
+],
+"energy": 1,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "overlay: heart sparkle photobook (9:16)"
+},
+"4_Memory_Life_Record_Overlay_03": {
+"title": "Memory Life Record Overlay 03",
+"category": "overlay",
+"styles": [
+"film",
+"frame",
+"retro",
+"memory"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: film strip memory frame"
+},
+"Movie_Atmosphere_Overlay_05": {
+"title": "Movie Atmosphere Overlay 05",
+"category": "overlay",
+"styles": [
+"light-leak",
+"warm",
+"cinematic"
+],
+"energy": 2,
+"use": [
+"transition",
+"bar"
+],
+"on": "video",
+"note": "overlay: warm orange flare leak"
+},
+"Multiverse_Journey_Overlay_05": {
+"title": "Multiverse Journey Overlay 05",
+"category": "overlay",
+"styles": [
+"glitch",
+"color",
+"scifi"
+],
+"energy": 3,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "overlay: multiverse glitch blips"
+},
+"Music_Player_Overlay_02_16-9": {
+"title": "Music Player Overlay 02",
+"category": "overlay",
+"styles": [
+"music",
+"social",
+"ui",
+"frame"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: music player card"
+},
+"Mysterious_Gigantic_Things_Overlay_01": {
+"title": "Mysterious Gigantic Things Overlay 01",
+"category": "overlay",
+"styles": [
+"smoke",
+"mystery",
+"dark",
+"cinematic"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: rolling fog"
+},
+"4_Negative_Colorful": {
+"title": "Negative Colorful",
+"category": "overlay",
+"styles": [
+"color",
+"psychedelic",
+"neon"
+],
+"energy": 3,
+"use": [
+"look",
+"hit"
+],
+"on": "video",
+"note": "overlay: colourful negative"
+},
+"Very_Dirty_Film": {
+"title": "Old Film",
+"category": "overlay",
+"styles": [
+"film",
+"retro",
+"scratch",
+"vintage"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: old film dust & scratches"
+},
+"4_Old_Slideshow_Pack_Overlay_01": {
+"title": "Old Slideshow Pack Overlay 01",
+"category": "overlay",
+"styles": [
+"film",
+"frame",
+"slideshow",
+"retro"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: film strip slideshow frame"
+},
+"4_Old_Slideshow_Pack_Overlay_02": {
+"title": "Old Slideshow Pack Overlay 02",
+"category": "overlay",
+"styles": [
+"vignette",
+"dark",
+"retro"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: dark round vignette"
+},
+"16mm_Film_Look_Overlay_02": {
+"title": "Overlay 02",
+"category": "overlay",
+"styles": [
+"film",
+"frame",
+"retro",
+"16mm"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: 16mm film border"
+},
+"My_Daily_Vlog_Overlay_03": {
+"title": "Overlay 03",
+"category": "overlay",
+"styles": [
+"frame",
+"vlog",
+"polaroid"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: white photo border"
+},
+"4_Star_Shape_Overlay_Overlay_07": {
+"title": "Pink Heart Border",
+"category": "overlay",
+"styles": [
+"romantic",
+"heart",
+"frame",
+"glow"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: pink heart border"
+},
+"Pink_Trend_Vlog_Overlay_10_16-9": {
+"title": "Pink Trend Vlog Overlay 10",
+"category": "overlay",
+"styles": [
+"frame",
+"vlog",
+"sketch",
+"fun"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: hand-drawn white scribble frame"
+},
+"4_RGB_Stroke": {
+"title": "RGB Stroke",
+"category": "overlay",
+"styles": [
+"glitch",
+"rgb",
+"outline"
+],
+"energy": 3,
+"use": [
+"hit",
+"look"
+],
+"on": "video",
+"note": "overlay: RGB edge stroke"
+},
+"Retro_Cinema_Overlay_03": {
+"title": "Retro Cinema Overlay 03",
+"category": "overlay",
+"styles": [
+"retro",
+"film",
+"cinema",
+"texture"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: retro cinema grain"
+},
+"Retro_DV_Overlay_06": {
+"title": "Retro DVD 06",
+"category": "overlay",
+"styles": [
+"retro",
+"camera-ui",
+"vhs",
+"frame"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: DV camcorder REC UI"
+},
+"Retro_Film_Overlay_08": {
+"title": "Retro Film Overlay 08",
+"category": "overlay",
+"styles": [
+"retro",
+"camera-ui",
+"frame"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: retro film camera UI"
+},
+"Retro_Film_Overlay_12": {
+"title": "Retro Film Overlay 12",
+"category": "overlay",
+"styles": [
+"retro",
+"vhs",
+"camera-ui",
+"frame"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: VHS REC date stamp (1992)"
+},
+"Retro_Film_Overlay_14": {
+"title": "Retro Film Overlay 14",
+"category": "overlay",
+"styles": [
+"retro",
+"vhs",
+"camera-ui",
+"frame"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: VHS REWIND screen"
+},
+"Retro_Film_Overlay_15": {
+"title": "Retro Film Overlay 15",
+"category": "overlay",
+"styles": [
+"retro",
+"vhs",
+"camera-ui",
+"frame"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: VHS PLAY screen"
+},
+"Retro_Films_Show_Vol_03_Overlay_12": {
+"title": "Retro Films Show Vol 03 Overlay 12",
+"category": "overlay",
+"styles": [
+"retro",
+"film",
+"vignette",
+"warm"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: warm retro film vignette"
+},
+"Retro_Noise_Overlay_07": {
+"title": "Retro Noise Overlay 07",
+"category": "overlay",
+"styles": [
+"retro",
+"noise",
+"texture",
+"film"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: retro noise/dust"
+},
+"Retro_Photographic_Overlay_06": {
+"title": "Retro Photographic Overlay 06",
+"category": "overlay",
+"styles": [
+"retro",
+"frame",
+"photo",
+"vintage"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: worn white photo border"
+},
+"Retro_Renovation_Phoframe_Overlay_02": {
+"title": "Retro Renovation Phoframe Overlay 02",
+"category": "overlay",
+"styles": [
+"retro",
+"frame",
+"photo",
+"scrapbook"
+],
+"energy": 1,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "overlay: vintage scrapbook photo frame"
+},
+"Romantic_Memories_Overlay_02": {
+"title": "Romantic Memories Overlay 02",
+"category": "overlay",
+"styles": [
+"romantic",
+"light-leak",
+"warm",
+"soft"
+],
+"energy": 2,
+"use": [
+"transition",
+"intro"
+],
+"on": "video",
+"note": "overlay: warm burn-in light"
+},
+"Shiny_Golden_Pack_CN_Overlay_08": {
+"title": "Shiny Golden Overlay 08",
+"category": "overlay",
+"styles": [
+"gold",
+"particles",
+"glow",
+"luxury"
+],
+"energy": 2,
+"use": [
+"look",
+"bar"
+],
+"on": "video",
+"note": "overlay: golden sparkles"
+},
+"Silent_Film": {
+"title": "Silent Film",
+"category": "overlay",
+"styles": [
+"silent-film",
+"vignette",
+"retro",
+"bw"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: silent film vignette"
+},
+"Silent_Film_2": {
+"title": "Silent Film 2",
+"category": "overlay",
+"styles": [
+"silent-film",
+"vignette",
+"retro",
+"bw"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: silent film vignette 2"
+},
+"Simple_Life_Vlog_Overlay_06": {
+"title": "Simple Life Vlog Overlay 06",
+"category": "overlay",
+"styles": [
+"vlog",
+"light-leak",
+"soft"
+],
+"energy": 2,
+"use": [
+"intro"
+],
+"on": "video",
+"note": "overlay: simple-life vlog bars + leak"
+},
+"4_Smoke_Effect_Overlays_Overlay_02": {
+"title": "Smoke Effect 02",
+"category": "overlay",
+"styles": [
+"smoke",
+"cinematic"
+],
+"energy": 2,
+"use": [
+"look",
+"transition"
+],
+"on": "video",
+"note": "overlay: smoke from bottom"
+},
+"4_Smoke_Effect_Overlays_Overlay_07": {
+"title": "Smoke Effect 07",
+"category": "overlay",
+"styles": [
+"smoke",
+"cinematic",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "overlay: thick smoke wave (cover transition)"
+},
+"4_Smoke_Effect_Overlays_Overlay_10": {
+"title": "Smoke Effect 10",
+"category": "overlay",
+"styles": [
+"smoke",
+"cinematic"
+],
+"energy": 2,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "overlay: smoke from right"
+},
+"Social_Media_Post_Overlay_16": {
+"title": "Social Media Post Overlay 16",
+"category": "overlay",
+"styles": [
+"social",
+"frame",
+"mockup",
+"pink"
+],
+"energy": 1,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "overlay: three phone social posts"
+},
+"Social_Media_Post_Overlay_18": {
+"title": "Social Media Post Overlay 18",
+"category": "overlay",
+"styles": [
+"social",
+"frame",
+"mockup",
+"polaroid"
+],
+"energy": 1,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "overlay: social post card"
+},
+"Social_Media_Slideshow_Overlay_03": {
+"title": "Social Media Slideshow Overlay 03",
+"category": "overlay",
+"styles": [
+"social",
+"frame",
+"mockup",
+"slideshow"
+],
+"energy": 1,
+"use": [
+"clip"
+],
+"on": "video",
+"note": "overlay: social media player window"
+},
+"Special_FX_Motion_Overlay_04_16-9": {
+"title": "Special FX Motion Overlay 04",
+"category": "overlay",
+"styles": [
+"energy",
+"cartoon",
+"fire",
+"comic"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "overlay: cartoon fire/energy flicks"
+},
+"Shiny_Golden_Pack_CN_Overlay_09": {
+"title": "Star Particle Effect Overlay 08",
+"category": "overlay",
+"styles": [
+"gold",
+"particles",
+"light",
+"dreamy"
+],
+"energy": 2,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: star particles with sun flare"
+},
+"4_Star_Particle_Effect_Pack_Overlay_04": {
+"title": "Star Particle Overlay 04",
+"category": "overlay",
+"styles": [
+"particles",
+"stars",
+"soft"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: white star particles"
+},
+"Static_A": {
+"title": "Static A",
+"category": "overlay",
+"styles": [
+"noise",
+"static",
+"tv",
+"retro"
+],
+"energy": 2,
+"use": [
+"transition",
+"hit"
+],
+"on": "video",
+"note": "overlay: TV static A"
+},
+"Strong_Glitch": {
+"title": "Strong Glitch",
+"category": "overlay",
+"styles": [
+"glitch",
+"dynamic",
+"rgb"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "overlay: strong glitch"
+},
+"TV_Retro_Effect_Overlay_07": {
+"title": "TV Retro Effect Overlay 07",
+"category": "overlay",
+"styles": [
+"retro",
+"tv",
+"power-off"
+],
+"energy": 3,
+"use": [
+"outro",
+"transition"
+],
+"on": "video",
+"note": "overlay: TV switch-off dot"
+},
+"The_Power_Of_Love_Overlay_08": {
+"title": "The Power Of Love Overlay 08",
+"category": "overlay",
+"styles": [
+"romantic",
+"heart",
+"particles"
+],
+"energy": 2,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: red outline hearts"
+},
+"Halloween_Party_Overlay_04": {
+"title": "Thick Fog Right",
+"category": "overlay",
+"styles": [
+"smoke",
+"fog",
+"cinematic"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: thick ground fog"
+},
+"VHS_Static_1": {
+"title": "VHS Static 1",
+"category": "overlay",
+"styles": [
+"vhs",
+"static",
+"retro",
+"noise"
+],
+"energy": 2,
+"use": [
+"look",
+"transition"
+],
+"on": "video",
+"note": "overlay: VHS static"
+},
+"Vintage_Movie_Pack_Overlay_2": {
+"title": "Vintage Movie Overlay 02",
+"category": "overlay",
+"styles": [
+"vintage",
+"film",
+"scratch",
+"retro"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: vintage movie dust 02"
+},
+"Vintage_Movie_Pack_Overlay_1": {
+"title": "Vintage Movie Pack Overlay 1",
+"category": "overlay",
+"styles": [
+"vintage",
+"film",
+"scratch",
+"retro"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: vintage movie dust 1"
+},
+"4_Glitch_Scan_Line": {
+"title": "Weak Signal 1",
+"category": "overlay",
+"styles": [
+"glitch",
+"dynamic",
+"scanline"
+],
+"energy": 4,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "overlay: weak signal scanline tear"
+},
+"4_Glitch_Scan_Line_RGBSplit": {
+"title": "Weak Signal 2",
+"category": "overlay",
+"styles": [
+"glitch",
+"rgb",
+"scanline"
+],
+"energy": 3,
+"use": [
+"hit"
+],
+"on": "video",
+"note": "overlay: weak signal RGB split"
+},
+"Weather_Overlay_Pack_Overlay_21": {
+"title": "Weather Overlay Overlay 21",
+"category": "overlay",
+"styles": [
+"weather",
+"snow",
+"soft"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "overlay: light snow/dust"
+},
+"Beetle_Bug": {
+"title": "Beetle Bug",
+"category": "resFilterNew",
+"styles": [
+"color",
+"cinematic",
+"teal",
+"moody"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "filter: teal moody (Beetle Bug)"
+},
+"Chaotic_Carnival": {
+"title": "Chaotic Carnival",
+"category": "resFilterNew",
+"styles": [
+"color",
+"cinematic",
+"night",
+"neon",
+"cyberpunk"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "filter: night neon teal (Chaotic Carnival)"
+},
+"Filter_Stranger_Filter_Effect_18": {
+"title": "CineMagic",
+"category": "resFilterNew",
+"styles": [
+"color",
+"cinematic",
+"warm",
+"film"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "filter: warm cinematic (CineMagic)"
+},
+"Filter_CinematicThree": {
+"title": "Cinematic 03",
+"category": "resFilterNew",
+"styles": [
+"color",
+"cinematic",
+"warm",
+"soft"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "filter: warm golden cinematic 03"
+},
+"Dead_Army_Filter": {
+"title": "Dead Army",
+"category": "resFilterNew",
+"styles": [
+"color",
+"cinematic",
+"war",
+"desaturated",
+"teal"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "filter: gritty war teal-orange (Dead Army)"
+},
+"Epic_Cinematic": {
+"title": "Epic Cinematic",
+"category": "resFilterNew",
+"styles": [
+"color",
+"cinematic",
+"epic",
+"warm",
+"contrast"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "filter: epic sunset contrast"
+},
+"Filter_American_Vintage_Film_08": {
+"title": "Flashback Fever",
+"category": "resFilterNew",
+"styles": [
+"color",
+"retro",
+"faded",
+"nostalgia"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "filter: faded flashback (Flashback Fever)"
+},
+"Frozen_memories": {
+"title": "Frozen memories",
+"category": "resFilterNew",
+"styles": [
+"color",
+"retro",
+"faded",
+"memory",
+"vintage"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "filter: frozen memories faded"
+},
+"Filter_3_G3": {
+"title": "GA03",
+"category": "resFilterNew",
+"styles": [
+"color",
+"film",
+"magenta",
+"fashion"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "face",
+"note": "filter: GA03 film magenta portrait"
+},
+"Filter_GREEN_TOWN": {
+"title": "Green Town",
+"category": "resFilterNew",
+"styles": [
+"color",
+"retro",
+"green",
+"vintage"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "filter: green town vintage"
+},
+"Filter_History_Slideshow_Pack_Filter_01": {
+"title": "History Lane",
+"category": "resFilterNew",
+"styles": [
+"color",
+"history",
+"sepia",
+"vintage"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "filter: history lane sepia"
+},
+"Holo_Dream": {
+"title": "Holo Dream",
+"category": "resFilterNew",
+"styles": [
+"color",
+"neon",
+"psychedelic",
+"cyberpunk",
+"holo"
+],
+"energy": 2,
+"use": [
+"look"
+],
+"on": "video",
+"note": "filter: holographic neon (Holo Dream)"
+},
+"Natural_Enhance": {
+"title": "Natural Enhance",
+"category": "resFilterNew",
+"styles": [
+"color",
+"natural",
+"vivid",
+"util"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "filter: natural enhance"
+},
+"Filter_Stranger_Filter_Effect_21": {
+"title": "Retro Fade 01",
+"category": "resFilterNew",
+"styles": [
+"color",
+"retro",
+"faded",
+"warm"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "filter: retro fade 01"
+},
+"Sharpen": {
+"title": "Sharpen",
+"category": "resFilterNew",
+"styles": [
+"util",
+"sharp"
+],
+"energy": 1,
+"use": [
+"util"
+],
+"on": "video",
+"note": "filter: sharpen"
+},
+"Filter_Sunrise": {
+"title": "Sunrise",
+"category": "resFilterNew",
+"styles": [
+"color",
+"warm",
+"sunrise",
+"soft"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "filter: sunrise warm"
+},
+"Filter_Retro_Lut_Pack_Filter_06": {
+"title": "Vintage Car",
+"category": "resFilterNew",
+"styles": [
+"color",
+"retro",
+"warm",
+"vintage"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "filter: vintage car warm"
+},
+"Vintage_Decay": {
+"title": "Vintage Decay",
+"category": "resFilterNew",
+"styles": [
+"color",
+"vintage",
+"decay",
+"desaturated"
+],
+"energy": 1,
+"use": [
+"look"
+],
+"on": "video",
+"note": "filter: vintage decay"
+},
+"Action_Blur_1": {
+"title": "Action Blur 1",
+"category": "transition",
+"styles": [
+"blur",
+"dynamic",
+"sport"
+],
+"energy": 4,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: action motion blur"
+},
+"Blur_Dissolve_Transition": {
+"title": "Blur Dissolve",
+"category": "transition",
+"styles": [
+"blur",
+"soft"
+],
+"energy": 2,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: blur dissolve"
+},
+"Blur_Expose_Transition": {
+"title": "Blur Expose",
+"category": "transition",
+"styles": [
+"blur",
+"light",
+"flash"
+],
+"energy": 3,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: blur overexpose"
+},
+"Box_Turn_2": {
+"title": "Box Turn Left",
+"category": "transition",
+"styles": [
+"3d",
+"dynamic",
+"blur"
+],
+"energy": 4,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: box turn left"
+},
+"Cartoon_Liquid_Transition_05": {
+"title": "Cartoon Liquid Transition 05",
+"category": "transition",
+"styles": [
+"cartoon",
+"liquid",
+"fun",
+"flash"
+],
+"energy": 3,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: cartoon liquid wipe"
+},
+"Cherry_Blossom_Season_Transition_02": {
+"title": "Cherry Blossom Season Transition 02",
+"category": "transition",
+"styles": [
+"romantic",
+"petals",
+"soft",
+"spring"
+],
+"energy": 2,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: cherry blossom petals"
+},
+"Cinematic_Media_Opener_Pack_Transition_02": {
+"title": "Cinematic Transition 02",
+"category": "transition",
+"styles": [
+"cinematic",
+"light-leak",
+"warm"
+],
+"energy": 2,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: cinematic warm leak"
+},
+"Cinematic_Media_Opener_Pack_Transition_04": {
+"title": "Cinematic Transition 04",
+"category": "transition",
+"styles": [
+"cinematic",
+"light-leak",
+"prism"
+],
+"energy": 2,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: prism light leak"
+},
+"Classic_Movies_Transition_06": {
+"title": "Classic Movies Transition 06",
+"category": "transition",
+"styles": [
+"flash",
+"classic",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: classic white flash"
+},
+"Cross_Zoom": {
+"title": "Cross Zoom",
+"category": "transition",
+"styles": [
+"zoom",
+"dynamic",
+"blur",
+"velocity"
+],
+"energy": 4,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: cross zoom"
+},
+"Dissolve": {
+"title": "Dissolve",
+"category": "transition",
+"styles": [
+"soft",
+"classic"
+],
+"energy": 1,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: dissolve"
+},
+"Dissolve_Skew_02": {
+"title": "Dissolve Skew 02",
+"category": "transition",
+"styles": [
+"soft",
+"dynamic"
+],
+"energy": 2,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: dissolve skew"
+},
+"Distort_Glitch_Primary": {
+"title": "Distort Glitch",
+"category": "transition",
+"styles": [
+"glitch",
+"distort",
+"dynamic"
+],
+"energy": 4,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: distort glitch"
+},
+"2_Explosion_Flash": {
+"title": "Explosion Flash",
+"category": "transition",
+"styles": [
+"flash",
+"explosion",
+"energy"
+],
+"energy": 4,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: explosion white flash"
+},
+"Fade": {
+"title": "Fade",
+"category": "transition",
+"styles": [
+"classic",
+"soft",
+"black"
+],
+"energy": 1,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: fade through black"
+},
+"Fade_Dissolve_Up": {
+"title": "Fade Dissolve Up",
+"category": "transition",
+"styles": [
+"soft",
+"classic"
+],
+"energy": 2,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: fade dissolve up"
+},
+"Fast_Glitch_Transition_Script": {
+"title": "Fast Glitch",
+"category": "transition",
+"styles": [
+"glitch",
+"dynamic",
+"cyber"
+],
+"energy": 4,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: fast glitch"
+},
+"Fast_Motion_Blur_Up": {
+"title": "Fast Motion Blur Up",
+"category": "transition",
+"styles": [
+"blur",
+"dynamic",
+"velocity"
+],
+"energy": 4,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: fast motion blur up"
+},
+"Fast_RGB": {
+"title": "Fast RGB",
+"category": "transition",
+"styles": [
+"glitch",
+"rgb",
+"dynamic"
+],
+"energy": 4,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: fast RGB split"
+},
+"2_Fast_Wip_Left": {
+"title": "Fast Wipe Left",
+"category": "transition",
+"styles": [
+"wipe",
+"blur",
+"dynamic",
+"velocity"
+],
+"energy": 4,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: fast whip left"
+},
+"2_Fast_Wipe_Right": {
+"title": "Fast Wipe Right",
+"category": "transition",
+"styles": [
+"wipe",
+"blur",
+"dynamic",
+"velocity"
+],
+"energy": 4,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: fast whip right"
+},
+"2_Fast_Zoom": {
+"title": "Fast Zoom",
+"category": "transition",
+"styles": [
+"zoom",
+"dynamic",
+"velocity"
+],
+"energy": 5,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: fast zoom"
+},
+"2_Fast_Zoom_in": {
+"title": "Fast Zoom in",
+"category": "transition",
+"styles": [
+"zoom",
+"dynamic",
+"velocity"
+],
+"energy": 5,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: fast zoom in"
+},
+"New_Year_Memory_Book_Transition_01": {
+"title": "Film Burn Light 01",
+"category": "transition",
+"styles": [
+"film",
+"light-leak",
+"flash",
+"warm"
+],
+"energy": 3,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: film burn white 01"
+},
+"New_Year_Memory_Book_Transition_04": {
+"title": "Film Burn Light 04",
+"category": "transition",
+"styles": [
+"film",
+"light-leak",
+"warm",
+"fire"
+],
+"energy": 3,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: film burn orange 04"
+},
+"Flash": {
+"title": "Flash",
+"category": "transition",
+"styles": [
+"flash",
+"classic",
+"light"
+],
+"energy": 3,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: white flash"
+},
+"Flash_Zoom_In": {
+"title": "Flash Zoom In",
+"category": "transition",
+"styles": [
+"flash",
+"zoom",
+"dynamic",
+"velocity"
+],
+"energy": 5,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: flash zoom in"
+},
+"Flash_Zoom_Out": {
+"title": "Flash Zoom Out",
+"category": "transition",
+"styles": [
+"flash",
+"zoom",
+"dynamic",
+"velocity"
+],
+"energy": 5,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: flash zoom out"
+},
+"2_Glitch_Blocks": {
+"title": "Glitch Blocks",
+"category": "transition",
+"styles": [
+"glitch",
+"dynamic",
+"cyber"
+],
+"energy": 4,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: glitch blocks"
+},
+"Glow_Switch": {
+"title": "Glow Switch",
+"category": "transition",
+"styles": [
+"light",
+"glow",
+"blur",
+"dynamic"
+],
+"energy": 3,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: glow switch"
+},
+"Light_Leaks_Transition_Pack_Transition_11": {
+"title": "Light Leaks Transition 11",
+"category": "transition",
+"styles": [
+"light-leak",
+"warm",
+"cinematic"
+],
+"energy": 2,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: bright light leak 11"
+},
+"Lovely_Romantic_Wedding_Transition_01": {
+"title": "Lovely Romantic Wedding Transition 01",
+"category": "transition",
+"styles": [
+"romantic",
+"soft",
+"wedding",
+"light-leak"
+],
+"energy": 1,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: soft romantic wedding fade"
+},
+"2_Push_Left": {
+"title": "Push Left",
+"category": "transition",
+"styles": [
+"slide",
+"push",
+"classic"
+],
+"energy": 2,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: push left"
+},
+"RGB_Error_Drift": {
+"title": "RGB Error Drift",
+"category": "transition",
+"styles": [
+"glitch",
+"rgb",
+"dynamic"
+],
+"energy": 4,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: RGB error drift"
+},
+"RGB_Glitch_Transition_288477": {
+"title": "RGB Glitch 01",
+"category": "transition",
+"styles": [
+"glitch",
+"rgb",
+"cyber"
+],
+"energy": 4,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: RGB glitch 01 (script)"
+},
+"RGB_Signal_Glitch": {
+"title": "RGB Signal Glitch",
+"category": "transition",
+"styles": [
+"glitch",
+"rgb",
+"flash"
+],
+"energy": 4,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: RGB signal glitch"
+},
+"Rain_of_Rose_Petals_Transition_02_16-9": {
+"title": "Rain of Rose Petals Transition 02",
+"category": "transition",
+"styles": [
+"romantic",
+"petals",
+"wedding"
+],
+"energy": 3,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: rain of rose petals"
+},
+"Round_Zoom_In": {
+"title": "Round Zoom In",
+"category": "transition",
+"styles": [
+"zoom",
+"vignette",
+"soft"
+],
+"energy": 2,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: round zoom in"
+},
+"2_Slow_Zoom": {
+"title": "Slow Zoom",
+"category": "transition",
+"styles": [
+"zoom",
+"soft",
+"cinematic"
+],
+"energy": 2,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: slow zoom"
+},
+"Swing_Left_852225": {
+"title": "Swing Left",
+"category": "transition",
+"styles": [
+"blur",
+"swing",
+"dynamic",
+"velocity"
+],
+"energy": 4,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: swing left motion blur"
+},
+"16mm_Film_Look_Transition_04": {
+"title": "Transition 04",
+"category": "transition",
+"styles": [
+"film",
+"light-leak",
+"16mm",
+"warm"
+],
+"energy": 3,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: 16mm film burn"
+},
+"Warp_Zoom_3": {
+"title": "Warp Zoom 3",
+"category": "transition",
+"styles": [
+"zoom",
+"warp",
+"dynamic",
+"velocity"
+],
+"energy": 5,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: warp zoom 3"
+},
+"Warp_Zoom_6": {
+"title": "Warp Zoom 6",
+"category": "transition",
+"styles": [
+"zoom",
+"warp",
+"dynamic",
+"velocity"
+],
+"energy": 5,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: warp zoom 6"
+},
+"Zoom_Ghost": {
+"title": "Zoom Ghost",
+"category": "transition",
+"styles": [
+"zoom",
+"ghost",
+"dreamy",
+"soft"
+],
+"energy": 2,
+"use": [
+"transition"
+],
+"on": "video",
+"note": "transition: zoom ghost"
+}
+}

@@ -1,0 +1,7 @@
+# Python 3.10+ ; also needs ffmpeg/ffprobe on PATH
+pillow
+numpy
+playwright      # then: playwright install chromium
+fonttools       # reading installed fonts (font specimens)
+librosa         # beat edits + sound-effect catalog
+# optional: faster-whisper   # transcribe a voice-over into word timings for captions

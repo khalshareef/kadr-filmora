@@ -1,0 +1,14 @@
+{
+  "name": "kadr",
+  "description": "Kadr (كادر) — free Claude Code plugins for video editors.",
+  "owner": {
+    "name": "Kadr"
+  },
+  "plugins": [
+    {
+      "name": "kadr-filmora",
+      "source": "./",
+      "description": "Kadr for Filmora: build editable Filmora 16 projects from a JSON spec — texts, effects, transitions, beat edits, captions, styles."
+    }
+  ]
+}

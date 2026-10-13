@@ -72,6 +72,8 @@ python captions.py words.json --spec "Reel.spec.json" --karaoke --highlight "#C6
   6 words / 2.5 s; one group on screen; never animate Arabic letter by letter (whole words / lines only).
 - `--offset` shifts all times (e.g. when the voice starts later on the timeline).
 - `--karaoke` (needs word JSON): each spoken word pops above the line in the highlight colour.
+- Native alternative: spec `"subtitles"` writes ONE editable Filmora subtitle track (and Dynamic Captions with the
+  spoken word highlighted from `words`) instead of separate text clips — see filmora-core spec.md.
 - No subtitles yet? If `faster-whisper` is installed, transcribe with word timestamps; otherwise ask the user for an
   SRT (Filmora's own Auto Captions can export one). Always show the user the caption text to confirm the wording
   before building — they check it closely.

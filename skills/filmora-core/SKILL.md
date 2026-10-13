@@ -113,8 +113,14 @@ the plugin scripts already do this. Relative paths work with every script (curre
   `"ease"`; on a clip filter `{"name": ..., "params": ..., "keyframes": ...}`; audio `"volume_kf": [[0, -60], [1.5, -14]]`.
 Details and every field: [spec.md](spec.md).
 
+## Also in files (verified in Filmora 16)
+
+Blend modes (`blend`), several masks per clip (`masks`), AI Portrait Cutout (`cutout`, computed by Filmora, no
+credits), native shapes and self-drawing lines (`type: shape`), split screens on the main timeline (`type: split`),
+motion tracking (`follow`), Filmora's own curve keyframes (`ease`), native subtitle track + Dynamic Captions
+(`subtitles`, from our own word timings). Fields: [spec.md](spec.md).
+
 ## Limits (be honest with the user)
 
-Not yet supported in files: several masks on one clip, Filmora's own keyframe curve types (eases are baked into
-straight steps), split-screen templates, blend modes, shapes/pen paths, dynamic captions, AI features (auto captions,
-AI portrait, smart cutout, tracking). Do these as a short "after opening, click…" note.
+Filmora features that need its paid AI credits (speech-to-text, AI captions, AI voice/music/image tools) are left to
+the user. Captions come from our own transcription instead (filmora-text).

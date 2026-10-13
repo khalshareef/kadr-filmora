@@ -20,7 +20,7 @@ def guid():
 
 
 def thisuid():
-    return str(uuid.uuid1())
+    return str(uuid.uuid4())      # random (uuid1 would embed the PC's network address)
 
 
 def ud(key, raw):
@@ -125,6 +125,40 @@ def speed_param(total_sec):
     md5 = kf_md5([(0.0, 6, 1.0), (total_sec, 6, 1.0)])
     return ('{"Version": 3,"ParameterType": 0,"keyframeSets": [{"_time": 0.0,"Interpolation": 6,"_value": 1.0},'
             f'{{"_time": {num(total_sec)},"Interpolation": 6,"_value": 1.0}}],"MD5": "{md5}","_totalTime": {num(total_sec)}}}')
+
+
+BLEND_MODES = ["Normal", "Darken", "Multiply", "Color Burn", "Linear Burn", "Lighten", "Screen", "Color Dodge",
+               "Linear Dodge", "Overlay", "Soft Light", "Hard Light", "Vivid Light", "Linear Light", "Pin Light",
+               "Hard Mix", "Difference", "Exclusion"]   # Filmora 16 Compositing > Blend Mode, stored by name in pipBuf
+
+
+def set_blend(clip, mode):
+    """Blend mode of a video/image/title clip (verified: Filmora saves "BlendMode": "<name>", Normal = 0)."""
+    names = {m.lower().replace(" ", ""): m for m in BLEND_MODES}
+    key = str(mode).lower().replace(" ", "").replace("_", "").replace("-", "")
+    if key not in names:
+        raise ValueError(f"unknown blend mode {mode!r}; choose from {', '.join(BLEND_MODES)}")
+    d = json.loads(clip["pipBuf"])
+    d["BlendMode"] = 0 if names[key] == "Normal" else names[key]
+    s = json.dumps(d, separators=(",", ":"))
+    clip["pipBuf"], clip["pipBufSize"] = s, len(s.encode()) + 1
+    return clip
+
+
+def portrait_cutout(clip, feather=0.0, edge_thickness=0.0):
+    """Filmora's AI Portrait Cutout (removes the background behind people). Verified: written from a file, Filmora
+    computes the cutout itself when the project opens, on the PC, without AI credits."""
+    for ch in clip["effectChainList"]:
+        if ch["name"] == "Effect":
+            ch["effectList"] = [e for e in ch["effectList"] if e.get("display") != "HumanSegmentationHairEffect"]
+            ch["effectList"].append({
+                "display": "HumanSegmentationHairEffect", "id": "B4CF1D0F-D10A-1613-6EF4-A4F0D0364978",
+                "paramList": [{"fxParam": {"paramType": 5, "unValue": 0}, "name": "isHaveHumanSegmentationHairCache"}],
+                "placeholder": False, "placeholderStatus": 0, "thisUId": thisuid(), "type": 3,
+                "userData": [ud_guid64(3, guid()), ud(36880, b"0\0"), ud(7, b"\0")]})
+    clip["humanseg_hair"] = {"edge_thickness": float(edge_thickness), "feather": float(feather), "mode": 0,
+                             "status": 1, "version": 1.0}
+    return clip
 
 
 def pip_buf(opacity=100.0, opacity_kf=None):

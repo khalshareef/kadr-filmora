@@ -81,6 +81,40 @@ baked into short straight steps). Clip `filters` take the same: `"filters": ["Na
 `volume_kf`: [[t, dB], ...] (−100..+20 dB, seconds from the clip start) for fades and dips.
 Overlapping audio clips get separate audio tracks automatically.
 
+**masks** (video and image) — several masks combined: `"masks": [{"shape": "ellipse", "mode": "add"}, {"shape": "rect",
+"mode": "subtract", "keyframes": {"x": [[0, 0.5], [3, 0.6]]}}]`; modes add | subtract | intersect | none; per-mask
+`opacity` 0..100 and the same geometry/keyframes as `mask` (shapes ellipse, rect, double_line, line, star, heart).
+
+**blend** (video, image, text, shape) — Filmora's blend mode by name: Normal, Darken, Multiply, Color Burn, Linear Burn,
+Lighten, Screen, Color Dodge, Linear Dodge, Overlay, Soft Light, Hard Light, Vivid Light, Linear Light, Pin Light,
+Hard Mix, Difference, Exclusion.
+
+**cutout** (video, image) — `true` or `{"feather": 0..1, "edge": ..}`: Filmora's AI Portrait Cutout (background behind
+people removed). Filmora computes it on the PC when the project opens — no AI credits.
+
+**shape** — native Filmora drawing: `"kind"` rect | ellipse/circle | triangle | polygon (`sides`) | star (`points`,
+`inner_ratio`) | arrow (block) | line (`p1`, `p2` end points), `x`, `y`, `w`, `h` (fractions of the frame; `h` omitted
+= square/circle), `fill` / `stroke` (`"#RRGGBB"` or null), `stroke_width`, `corner_radius`, `cap`, `join`,
+`line_style`, `arrow_begin` / `arrow_end` (arrow, triangle, circle, diamond_arrow, reverse_triangle), self-drawing line:
+`trim_preset` linear | ease_in | ease_out | ease_in_out (+ `trim_dur`, `trim_delay`) or `trim: {"end": [[0, 0], [1, 100]]}`.
+Shapes take `in`/`out`/`keyframes`/`blend` like other clips. Flat colours (house style: no glow/shadow).
+
+**split** — split screen built on the main timeline (each part is a real clip on its own track with a mask, no
+container): `"layout"` 2v | 2h | 3v | 3h | 1+2 | 2x2 | diag2, `"clips": [{"path", "src_in", "focus": [fx, fy],
+"zoom"}]`, `gap` / `margin` px, `radius`, `background` colour, `divider` colour or `{"color", "width"}`.
+
+**follow** (text, image, shape) — motion tracking: `"follow": {"video": "<id of a video clip>", "box": [cx, cy, w, h]}`
+(the object's box as fractions of the video picture at the element's start). The builder tracks it on the PC (OpenCV)
+and moves the element with it, and writes Filmora's own tracking data + Link Element so the Tracking panel shows it.
+The video must play at normal speed.
+
+**subtitles** (top level of the spec, next to "clips") — Filmora's native subtitle track (editable in its subtitle
+editor, exports SRT): `{"srt": "file.srt"}` or `{"cues": [[start, end, "text"], ...]}` or `{"words": [[word, start,
+end(, is_key)], ...]}` (from faster-whisper), plus `font` (the user's pick) and `size` (required), `color`, `y`,
+`max_width`, `box` ({"color", "alpha", "pad", "radius"}). `"dynamic": "blue_and_yellow"` | `"none"` | {"active": hex,
+"keyword": hex} turns it into Filmora 16 Dynamic Captions (spoken word highlighted, key words in a second colour) built
+from our own word timings — no AI credits.
+
 ## Naming effects
 
 Any of: slug (`4_Glitch_Block2`), English title (`Glitch Block 2`), Arabic title. Slugs are unambiguous — prefer

@@ -11,12 +11,19 @@ import argparse, json, os, subprocess, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from filmora_fx import FxProject          # noqa: E402
+from filmora_wfp import set_blend, portrait_cutout   # noqa: E402
 from text_measure import measure          # noqa: E402
 import filmora_paths                       # noqa: E402
 import filmora_speed                       # noqa: E402  speed / ramps / reverse (verified in Filmora 16)
 import filmora_mask                        # noqa: E402  shape, text and image masks (verified)
 import filmora_text_anim                   # noqa: E402  Filmora's own text animation presets (verified)
 import filmora_effect_kf                   # noqa: E402  keyframed effect params + volume (verified)
+import filmora_shape                       # noqa: E402  native drawn shapes + self-drawing lines (verified)
+
+SHAPE_OPTS = ("rotation", "scale", "opacity", "fill", "fill_opacity", "stroke", "stroke_width", "stroke_opacity", "cap",
+              "join", "line_style", "corner_radius", "sides", "polygon_inner", "points", "inner_ratio", "top_offset",
+              "arrow_shaft", "arrow_head", "arrow_begin", "arrow_end", "p1", "p2", "trim", "trim_preset", "trim_dur",
+              "trim_delay")
 
 
 def _pairs(points):
@@ -274,6 +281,72 @@ def fix_contrast(clips, texts, W, H, need=3.0, text_w=None):
         print(f"contrast check: {checked} text(s) checked against the picture underneath, {changed} recoloured")
 
 
+
+def expand_splits(spec):
+    """"type": "split" -> one real video clip per part on its own track, cut by a rect mask (no container clip), plus
+    optional divider lines (shapes) and a background colour. Layouts: 2v 2h 3v 3h 1+2 2x2 diag2."""
+    import filmora_split
+    from motion_track import picture_size
+    W, H = spec.get("width", 1080), spec.get("height", 1920)
+    out = []
+    for n, c in enumerate(spec["clips"]):
+        if c.get("type") != "split":
+            out.append(c)
+            continue
+        srcs = c["clips"]
+        info = [dict(zip(("w", "h"), picture_size(s["path"])), focus=s.get("focus", (0.5, 0.5)), zoom=s.get("zoom", 1.0))
+                for s in srcs]
+        parts = filmora_split.plan_split(W, H, c.get("layout", "2v"), info, gap=c.get("gap", 0), margin=c.get("margin", 0),
+                                         ratio=c.get("ratio", 0.6), big=c.get("big", "auto"), radius=c.get("radius", 0))
+        z0 = c.get("z", 0)
+        if c.get("background"):
+            out.append({"type": "shape", "kind": "rect", "x": 0.5, "y": 0.5, "w": 1.0, "h": 1.0, "fill": c["background"],
+                        "stroke": None, "start": c["start"], "end": c["end"], "z": z0, "track": f"split{n}_bg"})
+        for k, part in enumerate(parts):
+            s = srcs[k % len(srcs)]
+            v = {"type": "video", "path": s["path"], "src_in": s.get("src_in", 0.0), "start": c["start"], "end": c["end"],
+                 "x": part["x"], "y": part["y"], "scale": part["scale"], "mask": dict(part["mask"]),
+                 "z": z0 + 0.1 + k * 0.01, "track": f"split{n}_{k}"}
+            for key in ("speed", "filters", "blend", "cutout"):
+                if key in s:
+                    v[key] = s[key]
+            out.append(v)
+        d = c.get("divider")
+        if d:
+            d = d if isinstance(d, dict) else {"color": d}
+            for j, ((x0, y0), (x1, y1)) in enumerate(filmora_split.divider_segments(W, H, c.get("layout", "2v"),
+                                                                                    c.get("ratio", 0.6), c.get("big", "auto"))):
+                out.append({"type": "shape", "kind": "line", "p1": [x0 / W, y0 / H], "p2": [x1 / W, y1 / H],
+                            "stroke": d.get("color", "#FFFFFF"), "stroke_width": d.get("width", 6), "fill": None,
+                            "start": c["start"], "end": c["end"], "z": z0 + 0.5, "track": f"split{n}_div{j}"})
+    spec["clips"] = out
+
+
+def apply_follow(spec):
+    """"follow": {"video": "<id of a video clip>", "box": [cx, cy, w, h]} on a text/image/shape: track that object (box =
+    fractions of the video picture at the element's start) and move the element with it, like Filmora's Motion Tracking
+    + Link Element. Returns [(element, video, info)] so build() can also write Filmora's own tracking data."""
+    import motion_track
+    W, H, fps = spec.get("width", 1080), spec.get("height", 1920), spec.get("fps", 30)
+    by_id = {c["id"]: c for c in spec["clips"] if c.get("id")}
+    links = []
+    for c in spec["clips"]:
+        f = c.get("follow")
+        if not f:
+            continue
+        v = by_id[f["video"]]
+        src = v.get("src_in", 0.0) + (c["start"] - v["start"])
+        pts, info = motion_track.track_points(v["path"], src, c["end"] - c["start"], tuple(f["box"]), fps=fps,
+                                              return_info=True, quiet=True)
+        pl = motion_track.placement(v["path"], W, H, v.get("scale", 100.0), v.get("x", 0.5), v.get("y", 0.5))
+        kf = motion_track.to_frame_keyframes(pts, pl, (c.get("x", 0.5), c.get("y", 0.5)), simplify=f.get("simplify", 0.0005))
+        c.setdefault("keyframes", {}).update(kf)
+        c["ease"] = "linear"
+        if info.get("lost"):
+            print(f"note: tracking lost the object on {len(info['lost'])} frame(s) (bridged)")
+        links.append((c, v, info, motion_track.link_offset(pts, pl, (c.get("x", 0.5), c.get("y", 0.5)))))
+    return links
+
 SAFE = 0.03     # keep every text this far (fraction of the frame) from the top/bottom edges
 SAFE_X = 0.07   # ...and from the side edges (Filmora can draw a few % wider than measured; reels crop the sides)
 WIDE = 0.78     # a 3+ word line wider than this share of the frame is broken into two balanced lines
@@ -304,6 +377,9 @@ def fit_text_size(c, em_width, W, H, kf, quiet=False):
 
 
 def build(spec, out=None, register=True):
+    if any(c.get("type") == "split" for c in spec["clips"]):
+        expand_splits(spec)
+    links = apply_follow(spec) if any(c.get("follow") for c in spec["clips"]) else []
     p = FxProject(spec["name"], spec.get("width", 1080), spec.get("height", 1920), spec.get("fps", 30))
     clips = spec["clips"]
     texts = [c for c in clips if c["type"] == "text"]
@@ -373,6 +449,12 @@ def build(spec, out=None, register=True):
                     obj, filmora_text_anim.inner_clip_of(p, obj), in_=c.get("anim_in"), out=c.get("anim_out"),
                     loop=c.get("anim_loop"), in_dur=c.get("anim_in_dur"), out_dur=c.get("anim_out_dur"),
                     loop_dur=c.get("anim_loop_dur"))
+        elif c["type"] == "shape":                      # rect, ellipse, triangle, polygon, star, arrow, line
+            obj = filmora_shape.shape_clip(p, c.get("kind", "rect"), c["start"], c["end"], x=c.get("x", 0.5),
+                                           y=c.get("y", 0.5), w=c.get("w", 0.3), h=c.get("h"),
+                                           kf_x=kf.get("x"), kf_y=kf.get("y"), kf_rot=kf.get("rotation"),
+                                           kf_scale=kf.get("scale"), kf_opacity=kf.get("opacity"),
+                                           **{k: c[k] for k in SHAPE_OPTS if k in c})
         elif c["type"] == "effect":
             obj = p.fx(c["name"], c["start"], c["end"], params=c.get("params"))
             _apply_effect_kf(obj, c["name"], c.get("keyframes"), c.get("ease"), p.fps)
@@ -382,6 +464,19 @@ def build(spec, out=None, register=True):
             f = {"name": f} if isinstance(f, str) else f
             p.filter(obj, f["name"], f.get("params"))
             _apply_effect_kf(obj, f["name"], f.get("keyframes"), f.get("ease"), p.fps)
+        if c.get("cutout") and c["type"] in ("image", "video"):   # AI Portrait Cutout (computed by Filmora, no credits)
+            cut = c["cutout"] if isinstance(c["cutout"], dict) else {}
+            portrait_cutout(obj, feather=cut.get("feather", 0.0), edge_thickness=cut.get("edge", 0.0))
+        if c.get("blend") and c["type"] in ("image", "video", "text", "shape"):
+            set_blend(obj, c["blend"])                  # Screen, Multiply, Overlay, Soft Light, ... (18 modes)
+        if c.get("masks") and c["type"] in ("image", "video"):   # several masks: add / subtract / intersect
+            ms = []
+            for m in c["masks"]:
+                m = dict(m)
+                if m.get("keyframes"):
+                    m["keyframes"] = {k: _pairs(v) for k, v in m["keyframes"].items()}
+                ms.append(m)
+            filmora_mask.add_masks(obj, ms, project=p)
         if c.get("mask") and c["type"] in ("image", "video"):
             m = dict(c["mask"])
             if m.get("keyframes"):
@@ -389,6 +484,13 @@ def build(spec, out=None, register=True):
             filmora_mask.add_mask(obj, m.pop("shape", "ellipse"), project=p, **m)
         made.append((c, obj))
 
+    if links:                                         # Filmora's own tracking data + "Link Element" (panel shows it)
+        import motion_track
+        objs = {id(c): o for c, o in made}
+        for el, v, info, off in links:
+            if id(v) in objs and id(el) in objs:
+                motion_track.attach_tracking(objs[id(v)], info, info["src_in"], info["duration"], info["fps"])
+                motion_track.link_element(objs[id(el)], objs[id(v)], off)
     # named tracks keep their clips together (needed for transitions); everything else is packed automatically
     named, free = {}, []
     for c, obj in made:
@@ -438,6 +540,20 @@ def build(spec, out=None, register=True):
     for _, objs, _z in sorted(lanes, key=lambda l: l[2]):
         p.add_lane(sorted(objs, key=lambda o: o["tlBegin"]))
 
+    sub = spec.get("subtitles")                       # Filmora's native subtitle track (editable, exports SRT)
+    if sub:
+        import filmora_subtitle
+        cues = sub.get("cues")
+        if sub.get("srt"):
+            cues = filmora_subtitle.from_srt(sub["srt"])
+        words = [tuple(w) for w in sub["words"]] if sub.get("words") else None
+        if not sub.get("font") or not sub.get("size"):
+            raise ValueError("subtitles need the user's chosen font and a size")
+        kw = {k: sub[k] for k in ("color", "y", "x", "max_width", "align", "box") if k in sub}
+        if sub.get("dynamic"):                        # spoken-word highlight like Filmora's Dynamic Caption
+            kw["dynamic"], kw["words"] = sub["dynamic"], words
+        filmora_subtitle.subtitle_track(p, [tuple(c) for c in cues] if cues else None, font=sub["font"], size=sub["size"],
+                                        **kw)
     alanes = []
     for c in sorted((c for c in clips if c["type"] == "audio"), key=lambda a: a["start"]):
         obj = p.audio_clip(c["path"], c["start"], dur=c.get("duration"), gain_db=c.get("gain_db", -10.0), fade_out=c.get("fade_out", 0.0),

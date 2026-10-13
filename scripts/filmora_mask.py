@@ -26,6 +26,22 @@ Usage (after building the clip with FxProject.video_clip / Project.image_clip):
 x, y: centre in 0..1 of the clip's source picture.  w, h: size as a fraction of the source picture's width/height
 (h=None -> same length as w, i.e. a circle/square).  Keyframes accept the friendly names x, y, w, h, scale,
 rotation, feather, radius (or raw Filmora names), times in seconds from the clip start.
+
+Multi-mask (Filmora 16 "Mask" panel, several layers combined with Add / Subtract / Intersect, per-mask opacity) —
+decoded from projects/samples/Sample Multi Mask.wfp (saved by Filmora 16.0.12), see _work/decode_multimask.md:
+
+  * the "Mask" chain holds [ComplexMask, path_stroke, path_innershadow, path_dropshadow] (the last three disabled).
+  * ComplexMask paramList[0] = "IComplexMask" (paramType 12) {"complex_mask": {"complexmask_data": "<json> + NUL"}}
+    where <json> = {"mask_count", "used_for_effectmask": false, "masks": [{mask_type, mask_id, mask_name,
+    mask_enabled}], "params": [{"name": "<mask_id>:<Param>", "value": {"type": float|int|bool|keyframe, "value"}}]}
+    (params sorted by name).  The same float params are mirrored as flat paramList entries "<mask_id>:<Param>"
+    and keyframed ones as paramMapList entries with the same names (key 3, kf_param string).
+  * mask_type: 0 line, 1 double_line, 2 ellipse, 3 rect, 4 heart, 5 star (9 image, 6 draw — not written here).
+  * MaskMode (int): 0 none, 1 add (default), 2 subtract, 3 intersect.  Opacity 0..100 per mask.
+  * geometry params are the legacy ones (same units: Filmora migrates legacy masks into this system 1:1).
+
+    fm.add_masks(c, [dict(shape="ellipse", w=0.3),
+                     dict(shape="rect", w=0.3, h=0.5, mode="subtract", keyframes={"x": [(0, 0.5), (3, 0.6)]})], project=p)
 """
 import base64, glob, json, os, struct, uuid, warnings
 
@@ -49,7 +65,7 @@ ALIASES = {"circle": "ellipse", "oval": "ellipse", "rectangle": "rect", "roundre
 PTYPE = {"InvMask": 1, "DisplayMask": 1, "CharSpace": 5, "LineSpace": 5, "CaptionJson": 6, "MotionPath": 6,
          "Profile": 6, "x": 5, "y": 5, "width": 5, "height": 5, "invertMask": 5}
 FRIENDLY = {"x": "Position_x", "y": "Position_y", "scale": "Scale", "rotation": "Rotation", "rot": "Rotation",
-            "feather": "Feather", "radius": "Radius"}
+            "feather": "Feather", "radius": "Radius", "opacity": "Opacity"}
 
 
 def _guid64():
@@ -60,7 +76,7 @@ def _guid64():
 
 
 def _thisuid():
-    return str(uuid.uuid1())
+    return str(uuid.uuid4())
 
 
 def source_size(clip, project=None):
@@ -110,9 +126,48 @@ def remove_mask(clip):
     return clip
 
 
+def _shape_vals(shape, x, y, w, h, rotation, feather, invert, radius, fw, fh):
+    """Geometry params of a shape mask (legacy units, shared by both systems) -> (values, Scale used)."""
+    _eid, _display, hv_max, s_max, _names = SHAPES[shape]
+    vals = {"Position_x": float(x), "Position_y": float(y), "Rotation": float(rotation),
+            "Feather": max(0.0, min(1.0, float(feather))), "InvMask": bool(invert)}
+    scale = 1.0
+    if shape in ("ellipse", "rect", "star", "heart"):
+        H, V = w * fw, (h if h is not None else w * fw / fh) * fh   # fractions of source -> short-side units
+        big = max(H, V)
+        if big > hv_max:                     # keep Horizontal/Vertical in range by raising Scale
+            scale = min(s_max, big / hv_max)
+            H, V = H / scale, V / scale
+        vals.update(Scale=scale, Horizontal=H, Vertical=V)
+        if shape == "rect":
+            vals["Radius"] = float(radius if radius is not None else 0.0)
+        if shape == "star":
+            vals["Radius"] = float(radius if radius is not None else 0.5)
+    elif shape == "double_line":
+        t = (h * fh) if h is not None else (w * fw)
+        if t > hv_max:
+            scale = min(s_max, t / hv_max)
+            t = t / scale
+        vals.update(Scale=scale, Horizontal=t)
+    return vals, scale
+
+
+def _kf_conv(shape, name, scale, fw, fh):
+    """Friendly keyframe name -> (Filmora param name, value converter)."""
+    if name in ("w", "h"):
+        if shape not in ("ellipse", "rect", "star", "heart", "double_line"):
+            raise ValueError(f"{shape} has no size to keyframe")
+        if shape == "double_line":
+            return "Horizontal", (lambda v: (v * (fh if name == "h" else fw)) / scale)
+        if name == "w":
+            return "Horizontal", (lambda v: v * fw / scale)
+        return "Vertical", (lambda v: v * fh / scale)
+    return FRIENDLY.get(name, name), float
+
+
 def add_mask(clip, shape="ellipse", x=0.5, y=0.5, w=0.5, h=None, rotation=0.0, feather=0.0, invert=False,
              opacity=1.0, radius=None, keyframes=None, project=None, src_size=None,
-             text="TEXT", font=None, text_color=-1, image=None):
+             text="TEXT", font=None, text_color=-1, image=None, multi=False, mode="add"):
     """Insert a mask effect into clip (a dict from Project.image_clip / FxProject.video_clip). Returns the effect.
 
     shape: ellipse|rect|double_line|line|star|heart (+ experimental text|image); aliases circle, rectangle, ...
@@ -127,10 +182,17 @@ def add_mask(clip, shape="ellipse", x=0.5, y=0.5, w=0.5, h=None, rotation=0.0, f
     project / src_size: needed to convert w/h for non-square sources (src_size=(width, height) wins).
     text mask: text, font (required: the user's chosen font), text_color (ARGB int, -1 = white).
     image mask: image = path to a white-on-transparent PNG or an int 1..40 (Filmora's built-in shapes).
+    multi=True: write it with Filmora 16's multi-mask system instead (add_masks with this one mask): opacity is then
+           honoured (1.0 = 100 %; "opacity" keyframes in 0..100), mode add|subtract|intersect|none.
+           Returns the ComplexMask effect.
     """
     shape = ALIASES.get(shape, shape)
     if shape not in SHAPES:
         raise ValueError(f"unknown mask shape {shape!r}; choose from {sorted(SHAPES)}")
+    if multi:
+        return add_masks(clip, [dict(shape=shape, x=x, y=y, w=w, h=h, rotation=rotation, feather=feather, invert=invert,
+                                     opacity=float(opacity) * 100.0, radius=radius, keyframes=keyframes, mode=mode)],
+                         project=project, src_size=src_size)
     if abs(float(opacity) - 1.0) > 1e-6:
         warnings.warn("Filmora shape masks have no opacity parameter; opacity ignored (use the clip opacity instead)")
     eid, display, hv_max, s_max, names = SHAPES[shape]
@@ -138,10 +200,6 @@ def add_mask(clip, shape="ellipse", x=0.5, y=0.5, w=0.5, h=None, rotation=0.0, f
     short = float(min(sw, sh))
     fw, fh = sw / short, sh / short            # source width/height in short-side units
 
-    def hv(wv, hvv):                            # fractions of source -> (Horizontal, Vertical) at Scale 1
-        return wv * fw, (hvv if hvv is not None else wv * fw / fh) * fh
-
-    vals = {}
     scale = 1.0
     if shape == "image":
         imgs = filmora_mask_images()
@@ -162,25 +220,7 @@ def add_mask(clip, shape="ellipse", x=0.5, y=0.5, w=0.5, h=None, rotation=0.0, f
                 "Rotation": float(rotation) % 360.0, "CharSpace": 0, "LineSpace": 0, "InvMask": bool(invert),
                 "DisplayMask": False, "CaptionJson": _caption_json(text, font, text_color), "MotionPath": ""}
     else:
-        vals = {"Position_x": float(x), "Position_y": float(y), "Rotation": float(rotation),
-                "Feather": max(0.0, min(1.0, float(feather))), "InvMask": bool(invert)}
-        if shape in ("ellipse", "rect", "star", "heart"):
-            H, V = hv(w, h)
-            big = max(H, V)
-            if big > hv_max:                     # keep Horizontal/Vertical in range by raising Scale
-                scale = min(s_max, big / hv_max)
-                H, V = H / scale, V / scale
-            vals.update(Scale=scale, Horizontal=H, Vertical=V)
-            if shape == "rect":
-                vals["Radius"] = float(radius if radius is not None else 0.0)
-            if shape == "star":
-                vals["Radius"] = float(radius if radius is not None else 0.5)
-        elif shape == "double_line":
-            t = (h * fh) if h is not None else (w * fw)
-            if t > hv_max:
-                scale = min(s_max, t / hv_max)
-                t = t / scale
-            vals.update(Scale=scale, Horizontal=t)
+        vals, scale = _shape_vals(shape, x, y, w, h, rotation, feather, invert, radius, fw, fh)
 
     eff = {"display": display, "id": eid,
            "paramList": [{"fxParam": {"paramType": PTYPE.get(n, 3), "unValue": vals[n]}, "name": n} for n in names if n in vals],
@@ -191,18 +231,7 @@ def add_mask(clip, shape="ellipse", x=0.5, y=0.5, w=0.5, h=None, rotation=0.0, f
         base = clip.get("inPoint", 0) / TICKS        # keyframe times are source seconds, like transform keyframes
         maps = {}
         for name, pts in keyframes.items():
-            n = FRIENDLY.get(name, name)
-            if name in ("w", "h"):
-                if shape not in ("ellipse", "rect", "star", "heart", "double_line"):
-                    raise ValueError(f"{shape} has no size to keyframe")
-                if shape == "double_line":
-                    n, conv = "Horizontal", (lambda v, name=name: (v * (fh if name == "h" else fw)) / scale)
-                elif name == "w":
-                    n, conv = "Horizontal", (lambda v: v * fw / scale)
-                else:
-                    n, conv = "Vertical", (lambda v: v * fh / scale)
-            else:
-                conv = float
+            n, conv = _kf_conv(shape, name, scale, fw, fh)
             if n not in names:
                 raise ValueError(f"{shape} mask has no parameter {name!r}")
             maps[n] = {"key": 3, "keyFrame": {"parameter": kf_param([(base + float(t), conv(v)) for t, v in pts])}, "name": n}
@@ -221,3 +250,180 @@ def add_mask(clip, shape="ellipse", x=0.5, y=0.5, w=0.5, h=None, rotation=0.0, f
         clip["userData"] = [u for u in clip.get("userData", []) if u["key"] != 13003] + \
                            [{"data": base64.b64encode(raw).decode(), "key": 13003, "size": len(raw)}]
     return eff
+
+
+# ======================================================================= multi-mask (ComplexMask, Filmora 15.6+/16)
+MASK_TYPE = {"line": 0, "double_line": 1, "ellipse": 2, "rect": 3, "heart": 4, "star": 5}
+# source: Filmora's own log "convert old mask effect id:<legacy id> to complex mask type:N" (image mask = 9;
+# draw/custom = 6 by the order of libservice-effect's name table; text / AI unknown) -> not written here.
+MASK_MODE = {"none": 0, "add": 1, "subtract": 2, "intersect": 3}
+MODE_ALIASES = {"normal": "add", "union": "add", "+": "add", "sub": "subtract", "minus": "subtract", "-": "subtract",
+                "difference": "subtract", "intersection": "intersect", "and": "intersect", "&": "intersect",
+                "off": "none", None: "add"}
+# order of the flat paramList entries (Filmora's own order follows the editing history; any order loads)
+MULTI_FLOATS = ("Position_x", "Position_y", "Scale", "Horizontal", "Rotation", "Vertical", "Radius", "Feather", "Opacity")
+PATH_FX = ("path_stroke", "path_innershadow", "path_dropshadow")   # disabled companions Filmora puts after ComplexMask
+
+
+def new_mask_id():
+    """Filmora writes "mask-<uuid1>" (ends in the PC's network address); a random uuid4 in the same layout is used."""
+    return "mask-" + str(uuid.uuid4())
+
+
+def _cm_num(v):
+    r = repr(float(v))
+    return r if ("e" not in r and len(r.split(".")[1]) <= 8) else f"{float(v):.8f}"
+
+
+def _cm_value(v):
+    """Typed value inside complexmask_data, spelled like Filmora (space after ':', none after ',')."""
+    if isinstance(v, tuple) and v[0] == "keyframe":
+        return '{"type": "keyframe","value": %s}' % json.dumps(v[1])
+    if isinstance(v, bool):
+        return '{"type": "bool","value": %s}' % ("true" if v else "false")
+    if isinstance(v, int):
+        return '{"type": "int","value": %d}' % v
+    return '{"type": "float","value": %s}' % _cm_num(v)
+
+
+def _cm_data(layers, params, used_for_effectmask=False):
+    """layers: [(mask_type, mask_id, name, enabled)], params: [(full name, value)] -> complexmask_data string."""
+    ls = ['{"mask_type": %d,"mask_id": %s,"mask_name": %s,"mask_enabled": %s}' % (
+        t, json.dumps(i), json.dumps(n), "true" if e else "false") for t, i, n, e in layers]
+    ps = ['{"name": %s,"value": %s}' % (json.dumps(n), _cm_value(v)) for n, v in sorted(params, key=lambda kv: kv[0])]
+    return ('{"mask_count": %d,"used_for_effectmask": %s,"masks": [%s],"params": [%s]}' % (
+        len(ls), "true" if used_for_effectmask else "false", ",".join(ls), ",".join(ps))) + "\0"
+
+
+def _companion(name):
+    return {"display": name, "enable": False, "id": "graphic/effect/" + name, "placeholder": False, "placeholderStatus": 0,
+            "thisUId": str(uuid.uuid4()), "type": 3,
+            "userData": [_guid64(), {"data": base64.b64encode(b"\x01").decode(), "key": 7, "size": 1}]}
+
+
+def add_masks(clip, masks, project=None, src_size=None):
+    """Write several masks on one clip with Filmora 16's multi-mask system (Mask panel layers). Returns the effect.
+
+    masks: list in Filmora's layer order (first = first evaluated, like the first mask added in the panel), each a dict:
+      shape     ellipse|rect|double_line|line|star|heart (aliases circle, rectangle, love, ...)
+      mode      add|subtract|intersect|none (default add) — how this layer combines with the layers before it
+      x, y      centre, 0..1 of the source picture;  w, h  fractions of the source width / height (h None -> circle)
+      rotation  degrees;  feather 0..1;  radius 0..1 (rect corners / star inner);  invert bool
+      opacity   0..100 % (default 100) — per-mask opacity exists only in this system
+      keyframes {name: [(sec_from_clip_start, value), ...]}; names x, y, w, h, scale, rotation, feather, radius,
+                opacity (0..100) or raw Filmora names; scale multiplies the mask's base size (1 = as given by w/h).
+                Like Filmora, every float param of a keyframed mask gets a key track (constant ones one key).
+      name      optional layer name;  enabled  bool (default True);  id  optional mask id
+      Position_x, Scale, Horizontal, Vertical, ... raw Filmora values, override the computed ones
+    project / src_size: needed for non-square sources (src_size=(width, height) wins).
+    Replaces whatever the clip's Mask chain held (legacy single mask or an earlier multi-mask).
+    """
+    sw, sh = src_size or source_size(clip, project) or (1, 1)
+    short = float(min(sw, sh))
+    fw, fh = sw / short, sh / short
+    base = clip.get("inPoint", 0) / TICKS            # keyframe axis = clip inPoint (source seconds), like legacy masks
+    layers, data_params, flat, maps = [], [], [], []
+    for spec in masks:
+        spec = dict(spec)
+        shape = spec.pop("shape", "ellipse")
+        shape = ALIASES.get(shape, shape)
+        if shape not in MASK_TYPE:
+            raise ValueError(f"multi-mask shape {shape!r}: choose from {sorted(MASK_TYPE)} "
+                             "(text / image / draw masks are not written by the multi-mask writer; use add_mask)")
+        mode = spec.pop("mode", "add")
+        mode = MODE_ALIASES.get(mode, mode)
+        if mode not in MASK_MODE:
+            raise ValueError(f"unknown mask mode {mode!r}; choose from {sorted(MASK_MODE)}")
+        mid = spec.pop("id", None) or new_mask_id()
+        vals, scale = _shape_vals(shape, spec.pop("x", 0.5), spec.pop("y", 0.5), spec.pop("w", 0.5), spec.pop("h", None),
+                                  spec.pop("rotation", 0.0), spec.pop("feather", 0.0), spec.pop("invert", False),
+                                  spec.pop("radius", None), fw, fh)
+        vals["Opacity"] = max(0.0, min(100.0, float(spec.pop("opacity", 100.0))))
+        names = [n for n in MULTI_FLOATS if n in vals]
+        for n in [k for k in spec if k in names]:   # raw Filmora values win (e.g. Scale=0.5, Horizontal=1.0)
+            vals[n] = float(spec.pop(n))
+        kfs = {}
+        for name, pts in (spec.pop("keyframes", None) or {}).items():
+            n, conv = _kf_conv(shape, name, scale, fw, fh)
+            if n == "Scale":
+                conv = (lambda v, s=scale: float(v) * s)
+            if n not in names:
+                raise ValueError(f"{shape} mask has no keyframable parameter {name!r} (it has {names})")
+            pts = sorted((float(p[0]), conv(p[1])) for p in pts)
+            kfs[n] = pts
+            vals[n] = pts[0][1]                      # static value = first key (what Filmora shows off-keyframe)
+        layers.append((MASK_TYPE[shape], mid, str(spec.pop("name", "")), bool(spec.pop("enabled", True))))
+        if spec:
+            raise ValueError(f"unknown mask option(s) {sorted(spec)}")
+        t0 = min((p[0] for pts in kfs.values() for p in pts), default=None)
+        for n in names:
+            full = f"{mid}:{n}"
+            flat.append({"fxParam": {"paramType": 3, "unValue": float(vals[n])}, "name": full})
+            if t0 is not None:                       # keyframed layer: every float param becomes a key track
+                kstr = kf_param([(base + t, v) for t, v in kfs.get(n, [(t0, vals[n])])])
+                maps.append({"key": 3, "keyFrame": {"parameter": kstr}, "name": full})
+                data_params.append((full, ("keyframe", kstr)))
+            else:
+                data_params.append((full, float(vals[n])))
+        if MASK_MODE[mode] != 1:                     # Filmora mirrors only non-default ints/bools in the flat list
+            flat.append({"fxParam": {"paramType": 5, "unValue": MASK_MODE[mode]}, "name": f"{mid}:MaskMode"})
+        if vals["InvMask"]:
+            flat.append({"fxParam": {"paramType": 1, "unValue": True}, "name": f"{mid}:InvMask"})
+        data_params += [(f"{mid}:InvMask", bool(vals["InvMask"])), (f"{mid}:MaskMode", int(MASK_MODE[mode]))]
+
+    eff = {"display": "ComplexMask", "id": "video/effect/complexmask",
+           "paramList": [{"fxParam": {"paramType": 12, "unValue": {"complex_mask": {"complexmask_data": _cm_data(layers, data_params)}}},
+                          "name": "IComplexMask"}] + flat,
+           "placeholder": False, "placeholderStatus": 0, "thisUId": str(uuid.uuid4()), "type": 3,
+           "userData": [_guid64(), {"data": base64.b64encode(b"\x01").decode(), "key": 7, "size": 1}]}
+    if maps:
+        eff["paramMapList"] = maps
+    ch = mask_chain(clip)
+    ch["effectList"] = [eff] + [_companion(n) for n in PATH_FX]
+    clip["userData"] = [u for u in clip.get("userData", []) if u["key"] != 13003]   # legacy panel-preset hint
+    return eff
+
+
+def _complex(clip):
+    for ch in clip.get("effectChainList", []):
+        for e in ch.get("effectList", []):
+            if e.get("id") == "video/effect/complexmask":
+                return e
+    return None
+
+
+def read_masks(clip):
+    """A clip's ComplexMask decoded -> (layers [{mask_type, mask_id, ...}], {"<mask_id>:<Param>": value or kf string})."""
+    e = _complex(clip)
+    if not e:
+        return [], {}
+    d = json.loads(e["paramList"][0]["fxParam"]["unValue"]["complex_mask"]["complexmask_data"].rstrip("\0"))
+    return d["masks"], {p["name"]: p["value"]["value"] for p in d["params"]}
+
+
+def sync_complex_mask(clip):
+    """Copy the paramMapList keyframe strings back into complexmask_data. Call after anything that rewrites clip
+    keyframes in place (e.g. filmora_speed._rebase_keyframes / shift_param) so both copies stay identical."""
+    e = _complex(clip)
+    if not e or not e.get("paramMapList"):
+        return clip
+    kmap = {m["name"]: m["keyFrame"]["parameter"] for m in e["paramMapList"]}
+    cm = e["paramList"][0]["fxParam"]["unValue"]["complex_mask"]
+    d = json.loads(cm["complexmask_data"].rstrip("\0"))
+    params = []
+    for p in d["params"]:
+        t, v = p["value"]["type"], p["value"]["value"]
+        if p["name"] in kmap:
+            val = ("keyframe", kmap[p["name"]])
+        elif t == "keyframe":
+            val = ("keyframe", v)
+        elif t == "bool":
+            val = bool(v)
+        elif t == "int":
+            val = int(v)
+        else:
+            val = float(v)
+        params.append((p["name"], val))
+    layers = [(m["mask_type"], m["mask_id"], m.get("mask_name", ""), m.get("mask_enabled", True)) for m in d["masks"]]
+    cm["complexmask_data"] = _cm_data(layers, params, d.get("used_for_effectmask", False))
+    return clip

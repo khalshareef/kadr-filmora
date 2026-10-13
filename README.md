@@ -62,14 +62,16 @@
 - تحريك قيم أي إفكت أو فلتر مع الوقت، وتحريك مستوى الصوت.
 - موشن غرافيك على طبقات: الخلفية لحال وكل عنصر شفاف لحال، بحواف نظيفة.
 
-### الحدود الحالية
-- ما بينكتبوا بالملف لسا: أكتر من ماسك على نفس المقطع، أنواع منحنيات الكي فريم الخاصة بفيلمورا، قوالب Split
-  Screen، طرق الدمج، الأشكال المرسومة، الكابشن الديناميكي، وميزات الذكاء الاصطناعي. Claude بيقلك شو تكبس بعد ما تفتح المشروع.
+- طرق الدمج الـ18، وأكتر من ماسك على نفس المقطع (جمع، طرح، تقاطع).
+- قص الشخص من الخلفية (يحسبه فيلمورا على جهازك بدون نقاط).
+- أشكال مرسومة (مستطيل، دائرة، سهم، نجمة، مضلّع، خط) وخطوط بترسم حالها.
+- تقسيم الشاشة على الخط الزمني نفسه (2، 3، 4 أجزاء، قطري) — كل جزء مقطع باين.
+- تتبّع الحركة: نص أو صورة أو شكل بيلحق شي متحرك بالفيديو.
+- مسار ترجمة أصلي بفيلمورا، وكابشن ديناميكي (الكلمة اللي عم تنقال بلون تاني) من تفريغنا للصوت — بدون نقاط.
 
-### شكر وإلهام
-أفكار الموشن مستوحاة (أفكار بس، بدون نسخ كود) من: prompt-motion.com،
-[HyperFrames](https://github.com/heygen-com/hyperframes)، [cinetic](https://github.com/Leonxlnx/cinetic)،
-[product-film-skill](https://github.com/Rieranthony/product-film-skill)، [brag](https://github.com/latent-spaces/brag).
+### الحدود الحالية
+- الميزات اللي بتصرف نقاط الذكاء الاصطناعي المدفوعة بفيلمورا (تحويل الكلام لنص، الكابشن الذكي، توليد صوت وصور)
+  بتضل بإيدك. الكابشن بيجي من تفريغ الصوت عندنا بدالها.
 
 ### تواصل
 للتعاون التجاري، الشراكات، أو أي استفسار: **kadr.studio3@gmail.com**
@@ -137,14 +139,16 @@ Projects are saved in the folder the Claude Code conversation was opened in (any
 - Keyframed values of any effect or filter, and volume automation.
 - Layered motion graphics: background and every element as separate transparent clips with clean edges.
 
-### Not supported yet
-- Several masks on one clip, Filmora's own keyframe curve types, split-screen templates, blend modes, drawn shapes,
-  dynamic captions, AI features. Claude tells you the clicks to add them after opening.
+- All 18 blend modes, several masks per clip (add, subtract, intersect).
+- AI Portrait Cutout (computed by Filmora on your PC, no credits).
+- Native shapes (rectangle, ellipse, arrow, star, polygon, line) and self-drawing lines.
+- Split screens built on the main timeline (2, 3, 4 parts, diagonal) — every part a visible clip.
+- Motion tracking: a text, image or shape follows a moving object in the video.
+- Native Filmora subtitle track and Dynamic Captions (spoken word highlighted) from our own word timings — no credits.
 
-### Credits
-Motion ideas inspired by (ideas only, no copied code): prompt-motion.com,
-[HyperFrames](https://github.com/heygen-com/hyperframes), [cinetic](https://github.com/Leonxlnx/cinetic),
-[product-film-skill](https://github.com/Rieranthony/product-film-skill), [brag](https://github.com/latent-spaces/brag).
+### Not supported yet
+- Filmora features that spend its paid AI credits (speech-to-text, AI captions, AI voice/image tools) stay manual;
+  captions come from our own transcription instead.
 
 ### Contact
 Business, partnerships or licensing: **kadr.studio3@gmail.com**

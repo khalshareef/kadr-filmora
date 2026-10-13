@@ -1,0 +1,601 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+  html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #F0EEE6; }
+  svg { display: block; }
+  /* placeholder faces for the few words inside the graphics — the user picks the real fonts from specimens */
+  @font-face { font-family: 'KadrHead'; src: local('Readex Pro Bold'), local('ReadexPro-Bold'), local('Readex Pro'); }
+  @font-face { font-family: 'KadrBody'; src: local('Readex Pro Medium'), local('ReadexPro-Medium'), local('Readex Pro'); }
+  @font-face { font-family: 'KadrMono'; src: local('Cascadia Mono'), local('CascadiaMono-Regular'), local('Consolas'); }
+  .ar { font-family: 'KadrHead'; direction: rtl; }
+  .ar2 { font-family: 'KadrBody'; direction: rtl; }
+  .en { font-family: 'KadrBody'; }
+  .mono { font-family: 'KadrMono'; }
+</style>
+<script src="../kadr-motion.js"></script>
+<script src="data.js"></script>
+</head><body>
+<svg id="svg" width="1080" height="1920" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="dots" width="54" height="54" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="2.4" fill="#C9C1B2" fill-opacity=".55"/></pattern>
+    <filter id="mblur" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feGaussianBlur id="mblurk" stdDeviation="0.01 0.01"/></filter>
+    <clipPath id="wmClip"><rect id="wmClipR" x="0" y="0" width="1080" height="10"/></clipPath>
+    <clipPath id="splitL"><rect id="splitLR" x="0" y="0" width="10" height="10"/></clipPath>
+    <clipPath id="splitR"><rect id="splitRR" x="0" y="0" width="10" height="10"/></clipPath>
+  </defs>
+  <rect id="bgrect" width="1080" height="1920" fill="#F0EEE6"/>
+  <g id="para"><rect x="-6000" y="-6000" width="12000" height="12000" fill="url(#dots)"/></g>
+  <g id="camwrap" filter="url(#mblur)"><g id="cam"></g></g>
+</svg>
+<script>
+/* KADR FOR FILMORA — official example. One continuous cream world, one orange dot (the user's voice / intent) that
+   carries the whole film: voice → caret → send → pen → courier → playhead → spring → logo. Every element group is its
+   own transparent layer (KADR.layers + KADR.solo); the background (cream + parallax dot grid) is separate. */
+const { E, clamp, lerp, mapr, prog, pop, fade, draw, tr, spring, springs, expOut, zoomLerp, $ } = KADR_HELPERS;
+const INK = '#141413', OR = '#D97757', BG = '#F0EEE6', GREY = '#B4AC9D';
+const NS = 'http://www.w3.org/2000/svg';
+const DUR = 30.2, FPS = 30;
+const SIO = u => 0.5 - 0.5 * Math.cos(Math.PI * clamp(u, 0, 1));          // sine in-out (gentle peak speed for flights)
+const lin = (t, a, b) => clamp((t - a) / (b - a), 0, 1);
+const bump = (t, a, d) => Math.sin(Math.PI * lin(t, a, a + d));            // 0 → 1 → 0
+const amp = t => AMP[clamp(Math.round(t * FPS), 0, AMP.length - 1)] || 0;
+const W = WORDS.map(w => ({ w: w[0], s: w[1], e: w[2] }));
+const wordAt = (txt, after = 0) => W.find(w => w.w.replace(/[،.؟]/g, '') === txt && w.s >= after);
+
+// ---- world: scene origins (camera centre = origin + (540, 670)); dominant travel = leftward (RTL), then up for the end
+const O = { A: [0, 0], B: [-1300, 120], C: [-2600, 0], D: [-2600, -1300] };
+const wpt = (k, x, y) => [O[k][0] + x, O[k][1] + y];
+
+function el(tag, attrs = {}, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  (parent || $('cam')).appendChild(e);
+  return e;
+}
+const line = (d, p, extra = {}) => el('path', Object.assign({ d, pathLength: 1, fill: 'none', stroke: INK, 'stroke-width': 7,
+  'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, extra), p);
+const text = (s, x, y, cls, size, fill, p, anchor = 'middle') => { const e = el('text', { x, y, class: cls, 'font-size': size, fill,
+  'text-anchor': anchor, 'dominant-baseline': 'middle' }, p); e.textContent = s; return e; };
+const scene = k => el('g', { transform: `translate(${O[k][0]} ${O[k][1]})` });
+const setT = (e, s) => e.setAttribute('transform', s);
+
+// ---- layers: every group made with lay() is one transparent clip in Filmora
+const LAYERS = [{ name: 'bg', start: 0, end: DUR, opaque: true }];
+const LG = [];
+const lay = (lname, parent, a, b) => { const g = el('g', { 'data-layer': lname }, parent); LG.push({ name: lname, start: Math.max(0, a), end: Math.min(DUR, b), g }); return g; };
+
+// ================================================================ scene A — S1 voice bubble → S2 composer
+const gA = scene('A');
+const L_bubble = lay('S1-2_bubble_to_composer', gA, 0, 8.4);
+const bubble = line('', L_bubble, { fill: BG, 'fill-opacity': 0 });
+const L_frame = lay('S1-2_kadr_frame', gA, 1.4, 8.4);
+const brk = [0, 1, 2, 3].map(() => line('', L_frame, { 'stroke-width': 9 }));
+const L_bars = lay('S1_voice_bars', gA, 0, 3.75);
+const bars1 = [...Array(13)].map(() => el('rect', { x: 0, y: 0, width: 18, height: 18, rx: 9, fill: OR }, L_bars));
+const L_typed = lay('S2_typed_request', gA, 3.6, 8.4);
+const REQ = [['بدّي', 'ريل', 'من', 'هالفيديو،'], ['قص', 'السكتات', 'وحط', 'ترجمة']];
+const typed = REQ.map((ln, li) => ln.map(w => text(w, 0, li ? 648 : 568, 'ar2', 50, INK, L_typed)));
+const L_chip = lay('S2_model_chip', gA, 5.4, 8.4);
+const chipR = el('rect', { x: 760, y: 707, width: 160, height: 54, rx: 27, fill: BG, stroke: INK, 'stroke-width': 5 }, L_chip);
+const chipT = text('Claude', 840, 735, 'en', 30, INK, L_chip);
+const L_send = lay('S2_send_button', gA, 3.8, 8.4);
+const sendRing = el('circle', { cx: 178, cy: 734, r: 36, fill: 'none', stroke: GREY, 'stroke-width': 5 }, L_send);
+
+// ================================================================ scene B — S3 file, S4 four parts, S5 editor, S6 timeline
+const gB = scene('B');
+const FILE0 = [370, 430, 710, 870], FILE1 = [418, 682, 662, 998], WIN = [90, 300, 990, 1060];
+const L_file = lay('S3-5_file_to_window', gB, 7.6, 20.4);
+const filePath = line('', L_file, { fill: BG, 'fill-opacity': 1 });
+const fold = line('', L_file, { 'stroke-width': 6 });
+const L_lines = lay('S3_written_lines', gB, 7.6, 14.7);
+const LW = [210, 170, 245, 130, 200], LY = [560, 615, 670, 725, 780];
+const wl = LW.map((w, i) => line(`M 655 ${LY[i]} H ${655 - w}`, L_lines, { 'stroke-width': i ? 12 : 17 }));
+const L_tag = lay('S3_wfp_tag', gB, 9.2, 14.7);
+el('rect', { x: 318, y: 810, width: 150, height: 60, rx: 30, fill: INK }, L_tag);
+text('.wfp', 393, 841, 'mono', 32, BG, L_tag);
+
+// S5 editor chrome (drawn after the file opens into the window)
+const L_panels = lay('S5_editor_panels', gB, 14.3, 20.4);
+const chrome = [
+  line('M 90 352 H 990', L_panels, { 'stroke-width': 6 }),
+  ...[130, 158, 186].map(x => line(`M ${x - 8} 326 a 8 8 0 1 0 16 0 a 8 8 0 1 0 -16 0`, L_panels, { 'stroke-width': 4 })),
+  line('M 470 326 H 610', L_panels, { stroke: GREY, 'stroke-width': 8 }),
+];
+const preview = line('M 342 378 H 738 Q 750 378 750 390 V 602 Q 750 614 738 614 H 342 Q 330 614 330 602 V 390 Q 330 378 342 378 Z', L_panels, { 'stroke-width': 6 });
+const binTh = [...Array(6)].map((_, i) => line(`M ${118 + (i % 2) * 92} ${388 + Math.floor(i / 2) * 76} h 78 v 60 h -78 Z`, L_panels, { stroke: GREY, 'stroke-width': 4 }));
+const props = [...Array(4)].map((_, i) => line(`M 790 ${402 + i * 56} H 960`, L_panels, { stroke: GREY, 'stroke-width': 4 }));
+const knobs = [0.3, 0.7, 0.45, 0.85].map((u, i) => el('circle', { cx: 790 + 170 * u, cy: 402 + i * 56, r: 9, fill: BG, stroke: INK, 'stroke-width': 4 }, L_panels));
+const tlDiv = line('M 90 640 H 990', L_panels, { 'stroke-width': 6 });
+const ruler = [...Array(20)].map((_, i) => line(`M ${210 + i * 39} 656 V ${i % 4 ? 664 : 672}`, L_panels, { stroke: GREY, 'stroke-width': 3 }));
+const LANE = [715, 790, 865, 940];
+const laneHead = LANE.map(y => line(`M 112 ${y - 24} H 178 M 112 ${y + 24} H 178`, L_panels, { stroke: GREY, 'stroke-width': 3 }));
+const L_prev = lay('S5_preview_voice', gB, 14.8, 20.4);
+const miniB = line('M 466 440 H 614 Q 630 440 630 456 V 524 Q 630 540 614 540 H 500 L 482 560 L 486 540 H 466 Q 450 540 450 524 V 456 Q 450 440 466 440 Z', L_prev, { 'stroke-width': 5 });
+const miniBars = [...Array(7)].map(() => el('rect', { x: 0, y: 0, width: 9, height: 9, rx: 4.5, fill: OR }, L_prev));
+
+// S6 clips (each its own layer) + playhead
+const CLIP = [[205, 640], [300, 520], [420, 610], [205, 760]];
+const clipL = ['S6_clip_video', 'S6_clip_title', 'S6_clip_effect', 'S6_clip_audio'].map(n => lay(n, gB, 15.6, 20.4));
+const clips = CLIP.map(([x0, x1], k) => {
+  const g = el('g', {}, clipL[k]);
+  const r = el('rect', { x: x0, y: LANE[k] - 27, width: x1 - x0, height: 54, rx: 10, fill: BG, stroke: INK, 'stroke-width': 5 }, g);
+  return { g, r, x0, x1, inner: el('g', {}, g) };
+});
+[...Array(6)].map((_, i) => line(`M ${267 + i * 62} 692 V 738`, clips[0].inner, { stroke: GREY, 'stroke-width': 3 }));
+line('M 318 776 H 346 M 332 776 V 806', clips[1].inner, { 'stroke-width': 5 });
+line('M 362 784 H 470 M 362 798 H 430', clips[1].inner, { stroke: GREY, 'stroke-width': 4 });
+el('path', { d: sparkD(450, 865, 15), fill: INK }, clips[2].inner);
+line('M 480 865 H 585', clips[2].inner, { stroke: GREY, 'stroke-width': 4, 'stroke-dasharray': '2 10' });
+const AUD = [...Array(78)].map((_, i) => { const x = 216 + i * 9;
+  let a = 0; for (let k = 0; k < 11; k++) a = Math.max(a, AMP[Math.min(AMP.length - 1, Math.round((i * 11 + k) * 0.98))] || 0);
+  return el('rect', { x: x - 1.75, y: 940 - (4 + 34 * a) / 2, width: 3.5, height: 4 + 34 * a, rx: 1.75, fill: INK }, clips[3].inner); });
+const trimH = el('rect', { x: 0, y: 913, width: 12, height: 54, rx: 6, fill: OR }, clipL[3]);
+const L_play = lay('S6_playhead', gB, 15.2, 20.4);
+const playLine = line('M 0 652 V 980', L_play, { stroke: OR, 'stroke-width': 5 });
+
+// S4 four parts — rounded tiles on an arc (created after the window so they fly over it into their lanes)
+const L_con = lay('S4_connectors', gB, 10.4, 14.7);
+const TILE = [[870, 455], [650, 385], [430, 385], [210, 455]];
+const cons = TILE.map(([x, y]) => line(`M 540 684 Q ${x} ${y + 230} ${x} ${y + 66}`, L_con, { stroke: GREY, 'stroke-width': 5 }));
+const tileNames = ['S4_part_clips', 'S4_part_texts', 'S4_part_effects', 'S4_part_sounds'];
+const parts = TILE.map(([x, y], k) => {
+  const g = lay(tileNames[k], gB, 10.4, 16.5);
+  const box = el('rect', { x: x - 65, y: y - 65, width: 130, height: 130, rx: 30, fill: BG, stroke: INK, 'stroke-width': 7 }, g);
+  const gl = glyph(k, g, x, y, 1);
+  return { g, box, gl, x, y };
+});
+function sparkD(cx, cy, s) {
+  return `M ${cx} ${cy - s} C ${cx + s * .12} ${cy - s * .25} ${cx + s * .25} ${cy - s * .12} ${cx + s} ${cy} C ${cx + s * .25} ${cy + s * .12} ${cx + s * .12} ${cy + s * .25} ${cx} ${cy + s} C ${cx - s * .12} ${cy + s * .25} ${cx - s * .25} ${cy + s * .12} ${cx - s} ${cy} C ${cx - s * .25} ${cy - s * .12} ${cx - s * .12} ${cy - s * .25} ${cx} ${cy - s} Z`;
+}
+function glyph(k, p, x, y, s) {               // returns {acc:[elements that take the accent], all:[...]}
+  const g = el('g', {}, p), acc = [];
+  if (k === 0) {        // clip: film frame + play
+    line(`M ${x - 40} ${y - 28} H ${x + 40} V ${y + 28} H ${x - 40} Z M ${x - 40} ${y - 14} H ${x - 28} M ${x - 40} ${y + 14} H ${x - 28} M ${x + 28} ${y - 14} H ${x + 40} M ${x + 28} ${y + 14} H ${x + 40}`, g, { 'stroke-width': 6 });
+    acc.push(el('path', { d: `M ${x - 9} ${y - 14} L ${x + 15} ${y} L ${x - 9} ${y + 14} Z`, fill: INK, 'stroke-linejoin': 'round' }, g));
+  } else if (k === 1) { // text: T with a caret line
+    acc.push(line(`M ${x - 30} ${y - 26} H ${x + 22} M ${x - 4} ${y - 26} V ${y + 30}`, g, { 'stroke-width': 9 }));
+    line(`M ${x + 30} ${y - 6} V ${y + 30}`, g, { 'stroke-width': 5 });
+  } else if (k === 2) { // effects: sparkle
+    acc.push(el('path', { d: sparkD(x - 6, y + 6, 34), fill: INK }, g));
+    acc.push(el('path', { d: sparkD(x + 26, y - 26, 12), fill: INK }, g));
+  } else {              // sounds: live bars
+    [-30, -15, 0, 15, 30].forEach(dx => acc.push(el('rect', { x: x + dx - 4.5, y: y - 10, width: 9, height: 20, rx: 4.5, fill: INK }, g)));
+  }
+  return { g, acc };
+}
+
+// ================================================================ scene C — S7 four features, S8 "anything"
+const gC = scene('C');
+const T7 = [[558, 322], [102, 322], [558, 688], [102, 688]];   // tile top-left corners: TR, TL, BR, BL
+const TW = 420, TH = 330;
+const tnames = ['S7_tile_beat_cut', 'S7_tile_captions', 'S7_tile_motion', 'S7_tile_split'];
+const TSTART = [20.1, 21.4, 22.66, 23.58];
+const tiles = T7.map(([x, y], k) => {
+  const g = lay(tnames[k], gC, TSTART[k] - 0.3, 26.1);
+  const frame = line(`M ${x + 30} ${y} H ${x + TW - 30} Q ${x + TW} ${y} ${x + TW} ${y + 30} V ${y + TH - 30} Q ${x + TW} ${y + TH} ${x + TW - 30} ${y + TH} H ${x + 30} Q ${x} ${y + TH} ${x} ${y + TH - 30} V ${y + 30} Q ${x} ${y} ${x + 30} ${y} Z`, g, { fill: BG, 'fill-opacity': 0 });
+  return { g, frame, cx: x + TW / 2, cy: y + TH / 2 };
+});
+// tile 1 — beat cut: music waveform with beats, a clip strip that gets cut on every beat as the playhead passes
+const BEATX = [650, 735, 820, 900];
+const wv1 = [...Array(30)].map((_, i) => { const x = 600 + i * 11.6;
+  const b = Math.max(...BEATX.map(bx => Math.exp(-Math.pow((x - bx) / 9, 2))));
+  const h = 12 + 22 * (0.5 + 0.5 * Math.sin(i * 2.3)) * 0.6 + 70 * b;
+  return { e: el('rect', { x: x - 2.75, y: 0, width: 5.5, height: h, rx: 2.75, fill: b > 0.5 ? INK : GREY }, tiles[0].g), h, x }; });
+const strip = [...Array(5)].map(() => el('rect', { x: 0, y: 512, width: 10, height: 64, rx: 10, fill: BG, stroke: INK, 'stroke-width': 5 }, tiles[0].g));
+const cutMk = BEATX.map(bx => line(`M ${bx} 498 V 590`, tiles[0].g, { stroke: OR, 'stroke-width': 5 }));
+const play1 = line('M 0 395 V 600', tiles[0].g, { stroke: OR, 'stroke-width': 4 });
+// tile 2 — word-by-word captions on the real voice
+const voiceLine = el('path', { d: '', fill: 'none', stroke: INK, 'stroke-width': 5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, tiles[1].g);
+const CW = [wordAt('ترجمة'), wordAt('كلمة', 21), wordAt('بكلمة')];
+const chips2 = CW.map((w, i) => { const g = el('g', {}, tiles[1].g);
+  const r = el('rect', { x: 0, y: 532, width: 10, height: 66, rx: 33, fill: BG, stroke: INK, 'stroke-width': 5 }, g);
+  const tx = text(w.w.replace(/[،.]/g, ''), 0, 566, 'ar', 30, INK, g); return { g, r, tx, s: w.s, e: w.e }; });
+// tile 3 — motion: a spring curve drawn by the dot
+const axes3 = line('M 600 722 V 978 H 944', tiles[2].g, { stroke: GREY, 'stroke-width': 4 });
+const goal3 = line('M 606 795 H 944', tiles[2].g, { stroke: GREY, 'stroke-width': 3, 'stroke-dasharray': '3 11' });
+const trail3 = el('path', { d: '', fill: 'none', stroke: INK, 'stroke-width': 6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, tiles[2].g);
+const SPX0 = 608, SPX1 = 936, SPY0 = 972, SPY1 = 795, SP_T0 = 22.72, SP_T1 = 23.5;
+const springY = u => lerp(SPY0, SPY1, spring(u * 1.6, 0, 1.25, 0.32));
+// tile 4 — split screen: one landscape frame, the dot draws the divider, a portrait slides into the right half
+const fr4 = line('M 156 728 H 468 Q 482 728 482 742 V 964 Q 482 978 468 978 H 156 Q 142 978 142 964 V 742 Q 142 728 156 728 Z', tiles[3].g, { 'stroke-width': 6 });
+const leftC = el('g', { 'clip-path': 'url(#splitL)' }, tiles[3].g), rightC = el('g', { 'clip-path': 'url(#splitR)' }, tiles[3].g);
+const mount = line('M 150 960 L 230 860 L 282 918 L 340 840 L 440 960', leftC, { 'stroke-width': 6 });
+const sun4 = line('M 392 790 a 22 22 0 1 0 44 0 a 22 22 0 1 0 -44 0', leftC, { 'stroke-width': 6 });
+const person = el('g', {}, rightC);
+line('M 397 830 a 30 30 0 1 0 0.1 0', person, { 'stroke-width': 6 });
+line('M 340 978 Q 342 892 397 888 Q 452 892 454 978', person, { 'stroke-width': 6 });
+const div4 = line('M 312 728 V 978', tiles[3].g, { 'stroke-width': 6 });
+// S8 — twelve more tiles around the four: "anything you want"
+const L_more = lay('S8_more_tiles', gC, 24.6, 26.1);
+const CX = [204, 428, 652, 876], CY = [391, 577, 763, 949];
+const more = [];
+CY.forEach((cy, r) => CX.forEach((cx, c) => { if ((r === 1 || r === 2) && (c === 1 || c === 2)) return;
+  const g = el('g', {}, L_more);
+  line(`M ${cx - 87} ${cy - 86} H ${cx + 87} Q ${cx + 105} ${cy - 86} ${cx + 105} ${cy - 68} V ${cy + 68} Q ${cx + 105} ${cy + 86} ${cx + 87} ${cy + 86} H ${cx - 87} Q ${cx - 105} ${cy + 86} ${cx - 105} ${cy + 68} V ${cy - 68} Q ${cx - 105} ${cy - 86} ${cx - 87} ${cy - 86} Z`, g, { fill: BG, 'stroke-width': 5 });
+  miniGlyph(more.length, g, cx, cy);
+  more.push({ g, cx, cy, d: Math.hypot(cx - 540, (cy - 670) * 1.1) }); }));
+const rank = more.map(m => m.d).sort((a, b) => a - b);
+more.forEach(m => m.rank = rank.indexOf(m.d) + 0.01 * more.indexOf(m));
+function miniGlyph(i, g, x, y) {
+  const P = { 'stroke-width': 5 }, s = [
+    `M ${x - 26} ${y - 18} H ${x + 26} V ${y + 18} H ${x - 26} Z M ${x - 6} ${y - 8} L ${x + 8} ${y} L ${x - 6} ${y + 8} Z`,              // clip
+    `M ${x - 12} ${y + 22} a 9 9 0 1 0 0.1 0 M ${x + 14} ${y + 14} a 9 9 0 1 0 0.1 0 M ${x - 3} ${y + 20} V ${y - 24} L ${x + 23} ${y - 30} V ${y + 12}`, // music
+    `M ${x - 28} ${y - 20} H ${x + 28} V ${y + 12} H ${x - 4} L ${x - 16} ${y + 24} V ${y + 12} H ${x - 28} Z`,                        // chat
+    `M ${x - 26} ${y - 8} V ${y - 24} H ${x - 10} M ${x + 10} ${y - 24} H ${x + 26} V ${y - 8} M ${x + 26} ${y + 8} V ${y + 24} H ${x + 10} M ${x - 10} ${y + 24} H ${x - 26} V ${y + 8}`, // crop
+    `M ${x - 28} ${y + 14} A 28 28 0 0 1 ${x + 28} ${y + 14} M ${x} ${y + 14} L ${x + 14} ${y - 6}`,                                   // speed
+    `M ${x - 28} ${y - 14} H ${x + 10} V ${y + 18} H ${x - 28} Z M ${x + 10} ${y - 2} L ${x + 28} ${y - 12} V ${y + 16} L ${x + 10} ${y + 6}`, // camera
+    `M ${x} ${y - 26} L ${x + 28} ${y - 12} L ${x} ${y + 2} L ${x - 28} ${y - 12} Z M ${x - 28} ${y + 2} L ${x} ${y + 16} L ${x + 28} ${y + 2}`, // layers
+    `M ${x - 10} ${y - 10} a 10 10 0 1 0 0.1 0 M ${x + 10} ${y + 10} a 10 10 0 1 0 0.1 0 M ${x - 2} ${y - 4} L ${x + 26} ${y - 24} M ${x + 2} ${y + 4} L ${x + 26} ${y + 24}`, // scissors
+    `M ${x - 30} ${y + 20} L ${x - 8} ${y - 8} L ${x + 6} ${y + 8} L ${x + 14} ${y} L ${x + 30} ${y + 20} Z M ${x + 14} ${y - 22} a 7 7 0 1 0 0.1 0`, // image
+    `M ${x - 6} ${y - 22} a 6 14 0 0 1 12 0 V ${y} a 6 14 0 0 1 -12 0 Z M ${x - 18} ${y - 2} a 18 18 0 0 0 36 0 M ${x} ${y + 16} V ${y + 26}`,   // mic
+    `M ${x - 24} ${y - 14} H ${x + 24} M ${x - 24} ${y} H ${x + 14} M ${x - 24} ${y + 14} H ${x + 4}`,                                   // text lines
+    `M ${x - 26} ${y} a 26 26 0 1 0 52 0 a 26 26 0 1 0 -52 0 M ${x} ${y - 14} V ${y} L ${x + 10} ${y + 8}`,                              // clock
+  ][i % 12];
+  line(s, g, P);
+}
+
+// ================================================================ scene D — S9 logo: the frame (كادر) + the dot
+const gD = scene('D');
+const L_lframe = lay('S9_logo_frame', gD, 25.7, DUR);
+const lbrk = [0, 1, 2, 3].map(() => line('', L_lframe, { 'stroke-width': 10 }));
+const L_word = lay('S9_wordmark', gD, 26.2, DUR);
+const wmG = el('g', { 'clip-path': 'url(#wmClip)' }, L_word);
+const WM_Y = 700;
+const wordmark = el('text', { x: 556, y: WM_Y, class: 'ar', 'font-size': 230, fill: INK, 'text-anchor': 'middle' }, wmG);
+wordmark.textContent = 'كادر';
+const L_inst = lay('S9_install_chip', gD, 27.3, DUR);
+const instG = el('g', {}, L_inst);
+const instR = line('M 188 958 H 892 Q 930 958 930 996 Q 930 1034 892 1034 H 188 Q 150 1034 150 996 Q 150 958 188 958 Z', instG, { 'stroke-width': 6 });
+const freeG = el('g', {}, instG);
+el('rect', { x: 772, y: 968, width: 146, height: 56, rx: 28, fill: OR }, freeG);
+text('مجاني', 845, 998, 'ar', 30, BG, freeG);
+const CMD = '/plugin install kadr-filmora@kadr';
+const cmdT = el('text', { x: 182, y: 998, class: 'mono', 'font-size': 30, fill: INK, 'dominant-baseline': 'middle' }, instG);
+
+// ================================================================ the hero dot + things that sit above it
+const L_dot = lay('hero_dot', $('cam'), 0, DUR);
+const dot = el('ellipse', { cx: 0, cy: 0, rx: 10, ry: 10, fill: OR }, L_dot);
+const gA2 = scene('A'), gB2 = scene('B');
+const L_sendArrow = lay('S2_send_arrow', gA2, 7.2, 8.0);
+const sendArrow = line('M 178 752 V 716 M 162 731 L 178 715 L 194 731', L_sendArrow, { stroke: BG, 'stroke-width': 6 });
+const L_check = lay('S3_done_check', gB2, 10.0, 10.8);
+const check3 = line('M 696 430 L 708 442 L 728 418', L_check, { stroke: BG, 'stroke-width': 7 });
+const L_cur = lay('cursor', gB2, 13.6, 20.0);
+const ripple = el('circle', { cx: 0, cy: 0, r: 0, fill: 'none', stroke: INK, 'stroke-width': 4 }, L_cur);
+const cursor = el('path', { d: 'M 0 0 L 0 76 L 20 58 L 35 91 L 50 84 L 35 52 L 61 51 Z', fill: BG, stroke: INK, 'stroke-width': 5.5, 'stroke-linejoin': 'round' }, L_cur);
+
+// ================================================================ measured layout (after fonts load)
+let M = null;
+const meas = el('text', { x: -999, y: -999, opacity: 0 }, $('svg'));
+function tw(str, cls, size) { meas.setAttribute('class', cls); meas.setAttribute('font-size', size); meas.textContent = str; return meas.getComputedTextLength(); }
+function measure() {
+  if (M && M.ok) return M;
+  const ok = document.fonts.status === 'loaded';
+  M = { ok, typed: [], chips: [], wm: null };
+  REQ.forEach((ln, li) => { let x = 914; ln.forEach((w, k) => { const e = typed[li][k], wd = tw(w, 'ar2', 50);
+    e.setAttribute('x', x - wd / 2); M.typed.push({ li, k, left: x - wd, y: li ? 648 : 568 }); x -= wd + 16; }); });
+  const ws = chips2.map(c => tw(c.tx.textContent, 'ar', 30) + 36), tot = ws.reduce((a, b) => a + b, 0) + 12 * 2;
+  let x = 312 + tot / 2;
+  chips2.forEach((c, i) => { const cx = x - ws[i] / 2; c.r.setAttribute('x', cx - ws[i] / 2); c.r.setAttribute('width', ws[i]);
+    c.tx.setAttribute('x', cx); M.chips.push(cx); x -= ws[i] + 12; });
+  const ww = tw('كادر', 'ar', 230); M.wm = { x: 556 - ww / 2, width: ww };
+  return M;
+}
+document.fonts.load("50px KadrBody", "بدّي"); document.fonts.load("230px KadrHead", "كادر"); document.fonts.load("27px KadrMono", "kadr");
+
+// ================================================================ shape builders
+function bubbleD(x0, y0, x1, y1, r, tail) {
+  const tx = x0 + 150;
+  return `M ${x0 + r} ${y0} H ${x1 - r} Q ${x1} ${y0} ${x1} ${y0 + r} V ${y1 - r} Q ${x1} ${y1} ${x1 - r} ${y1} H ${tx + 46} L ${tx - 18} ${y1 + tail} L ${tx} ${y1} H ${x0 + r} Q ${x0} ${y1} ${x0} ${y1 - r} V ${y0 + r} Q ${x0} ${y0} ${x0 + r} ${y0} Z`;
+}
+function fileD(x0, y0, x1, y1, r, k, round) {     // k = fold size (or corner radius), round 0 = folded diagonal, 1 = rounded
+  const cx = lerp(x1 - k / 2, x1, round), cy = lerp(y0 + k / 2, y0, round);
+  return `M ${x0 + r} ${y0} H ${x1 - k} Q ${cx} ${cy} ${x1} ${y0 + k} V ${y1 - r} Q ${x1} ${y1} ${x1 - r} ${y1} H ${x0 + r} Q ${x0} ${y1} ${x0} ${y1 - r} V ${y0 + r} Q ${x0} ${y0} ${x0 + r} ${y0} Z`;
+}
+function bracketsD(x0, y0, x1, y1, a) {
+  return [`M ${x0} ${y0 + a} V ${y0} H ${x0 + a}`, `M ${x1 - a} ${y0} H ${x1} V ${y0 + a}`,
+          `M ${x1} ${y1 - a} V ${y1} H ${x1 - a}`, `M ${x0 + a} ${y1} H ${x0} V ${y1 - a}`];
+}
+const lerp4 = (a, b, u) => a.map((v, i) => lerp(v, b[i], u));
+const hop = (t, t0, t1, p0, p1, h) => { const u = SIO(lin(t, t0, t1)); return [lerp(p0[0], p1[0], u), lerp(p0[1], p1[1], u) - h * Math.sin(Math.PI * u)]; };
+
+// ================================================================ camera (one continuous take)
+const SHOTS = [   // holds: [t0, t1, scene, x, y, z0, z1] ; moves between consecutive holds: 'fly' (roll + zoom dip) or 'push'
+  [0, 7.6, 'A', 540, 670, 1.0, 1.06], [8.35, 16.2, 'B', 540, 670, 1.0, 1.03], [16.95, 19.6, 'B', 540, 680, 1.065, 1.08],
+  [20.3, 25.85, 'C', 540, 670, 1.0, 1.05], [26.55, DUR, 'D', 540, 670, 1.0, 1.07]];
+const MOVES = ['fly', 'push', 'fly', 'fly'];
+function camRaw(t) {
+  let i = 0; while (i < SHOTS.length - 1 && t >= SHOTS[i + 1][0]) i++;
+  const S = SHOTS[i], drift = [8 * Math.sin(t * 0.7), 6 * Math.cos(t * 0.5)], roll0 = 0.5 * Math.sin(t * 0.4);
+  if (t <= S[1] || i === SHOTS.length - 1) {
+    const [x, y] = wpt(S[2], S[3], S[4]);
+    let z = zoomLerp(S[5], S[6], prog(t, S[0], S[1], 'inout'));
+    if (i === 0) z *= 1 + 0.35 * (1 - prog(t, 0, 1.15, 'out'));               // opening pull-back from the dot
+    return { x: x + drift[0], y: y + drift[1], z, r: roll0 };
+  }
+  const N = SHOTS[i + 1], [x0, y0] = wpt(S[2], S[3], S[4]), [x1, y1] = wpt(N[2], N[3], N[4]);
+  if (MOVES[i] === 'push') {
+    const u = prog(t, S[1], N[0], 'inout'), m = Math.sin(Math.PI * u);
+    return { x: lerp(x0, x1, u) + drift[0], y: lerp(y0, y1, u) + drift[1], z: zoomLerp(S[6], N[5], u), r: roll0 + 1.2 * m };
+  }
+  const u = SIO(lin(t, S[1], N[0])), m = Math.sin(Math.PI * u), sg = i % 2 ? -1 : 1;
+  return { x: lerp(x0, x1, u) + drift[0], y: lerp(y0, y1, u) + drift[1], z: zoomLerp(S[6], N[5], u) * (1 - 0.22 * m), r: roll0 + sg * 3.5 * m };
+}
+function camera(t) {
+  const c = camRaw(t), h = 1 / 120, a = camRaw(t - h), b = camRaw(t + h);
+  const vx = (b.x - a.x) / (2 * h) * c.z / FPS, vy = (b.y - a.y) / (2 * h) * c.z / FPS;   // screen px per frame
+  c.bx = Math.min(30, Math.max(0.01, 0.38 * (Math.abs(vx) - 3)));
+  c.by = Math.min(30, Math.max(0.01, 0.38 * (Math.abs(vy) - 3)));
+  return c;
+}
+
+// ================================================================ the hero dot's path through the film
+function filePt(p) { const L = filePath.getTotalLength(), q = filePath.getPointAtLength(L * clamp(p, 0, 1)); return [O.B[0] + q.x, O.B[1] + q.y]; }
+function caretSteps(m) {
+  const st = [[3.5, 540, 640], [3.52, 930, 568]];
+  m.typed.forEach((w, k) => st.push([4.6 + k * 0.3 - 0.14, w.left - 26, w.y]));
+  st.push([7.24, 178, 734]);
+  return st;
+}
+function hero(t, m) {
+  let p = [0, 0], r = 14, sx = 1, sy = 1, o = 1;
+  const A = (x, y) => wpt('A', x, y), B = (x, y) => wpt('B', x, y), C = (x, y) => wpt('C', x, y), D = (x, y) => wpt('D', x, y);
+  if (t < 3.5) { p = A(540, 640); r = 27 * (1 + 0.22 * amp(t)); o = 1 - lin(t, 0.02, 0.2); }
+  else if (t < 7.62) {
+    const st = caretSteps(m);
+    p = A(springs(t, st.map(s => [s[0], s[1]]), 2.2, 0.92), springs(t, st.map(s => [s[0], s[2]]), 2.2, 0.92));
+    r = springs(t, [[3.5, 20], [3.62, 12], [7.24, 36]], 3.2, 0.8) * (1 - 0.12 * bump(t, 7.5, 0.16));
+    o = lin(t, 3.42, 3.56);
+  } else if (t < 8.25) {
+    const u = SIO(lin(t, 7.62, 8.25)), a = A(178, 734), b = filePt(0);
+    p = [lerp(a[0], b[0], u), lerp(a[1], b[1], u) - 120 * Math.sin(Math.PI * u)]; r = lerp(36, 14, prog(t, 7.62, 7.85, 'out'));
+    sx = 1 + 0.5 * Math.sin(Math.PI * u); sy = 1 / sx;
+  } else if (t < 9.15) { p = filePt(SIO(lin(t, 8.25, 9.15))); }
+  else if (t < 10.45) {
+    const st = [[9.15, ...filePt(1)], ...LY.map((y, i) => [9.17 + i * 0.17, ...B(680, y)]), [9.92, ...B(712, 428)]];
+    p = [springs(t, st.map(s => [s[0], s[1]]), 3.6, 0.85), springs(t, st.map(s => [s[0], s[2]]), 3.6, 0.85)];
+    r = 14 + 20 * pop(t, 10.1, 0.4);
+  } else if (t < 13.96) {
+    const T = [10.74, 11.5, 12.26, 13.1], prev = [B(712, 428), ...TILE.map(([x, y]) => B(x, y - 66))];
+    let k = 0; while (k < 3 && t >= T[k] + 0.0001) k++;
+    if (t >= T[3]) k = 4;
+    if (k < 4 && t > T[k] - 0.34) p = hop(t, T[k] - 0.34, T[k], prev[k], prev[k + 1], 70); else p = prev[k];
+    r = t < 10.6 ? lerp(34, 15, prog(t, 10.38, 10.56, 'out')) : 15;
+    const land = T.map(tt => bump(t, tt - 0.02, 0.22)).reduce((a, b) => a + b, 0); sx = 1 + 0.3 * land; sy = 1 - 0.25 * land;
+  } else if (t < 15.45) {
+    if (t < 14.36) p = hop(t, 13.96, 14.36, B(210, 389), B(540, 840), 40);
+    else if (t < 15.05) p = B(540, 840);
+    else p = hop(t, 15.05, 15.45, B(540, 840), B(230, 652), 40);
+    r = lerp(15, 13, lin(t, 15.05, 15.45));
+  } else if (t < 19.6) { p = B(playX(t), 652); r = 13; }
+  else if (t < 20.28) {
+    const u = SIO(lin(t, 19.6, 20.28)), a = B(playX(19.6), 652), b = C(598, 395);
+    p = [lerp(a[0], b[0], u), lerp(a[1], b[1], u) - 140 * Math.sin(Math.PI * u)]; sx = 1 + 0.5 * Math.sin(Math.PI * u); sy = 1 / sx; r = 13;
+  } else if (t < 21.42) {
+    if (t < 21.0) p = C(lerp(598, 938, prog(t, 20.3, 21.0, 'lin')), 395);
+    else p = hop(t, 21.0, 21.42, C(938, 395), C(m.chips[0], 566), 70);
+    r = 13;
+  } else if (t < 22.72) {
+    if (t < 22.3) { p = C(m.chips[0], 566); r = 13 * (1 - lin(t, 21.42, 21.5)); }
+    else { p = hop(t, 22.3, 22.72, C(m.chips[2], 566), C(SPX0, SPY0), 50); r = 13 * lin(t, 22.3, 22.36); }
+  } else if (t < 24.75) {
+    if (t < SP_T1) { const u = lin(t, SP_T0, SP_T1); p = C(lerp(SPX0, SPX1, u), springY(u)); }
+    else if (t < 23.96) p = hop(t, SP_T1, 23.96, C(SPX1, springY(1)), C(312, 728), 45);
+    else p = C(312, lerp(728, 978, prog(t, 24.14, 24.42, 'inout')));
+    r = 13;
+  } else if (t < 25.88) {
+    p = hop(t, 24.72, 25.15, C(312, 978), C(540, 670), 30);
+    r = lerp(13, 7, lin(t, 24.75, 25.0)) + 19 * prog(t, 25.62, 25.88, 'out');
+  } else if (t < 26.38) {
+    const u = SIO(lin(t, 25.88, 26.38)), a = C(540, 670), b = D(540, 640);
+    p = [lerp(a[0], b[0], u) + 40 * Math.sin(Math.PI * u), lerp(a[1], b[1], u)]; r = 26; sy = 1 + 0.45 * Math.sin(Math.PI * u); sx = 1 / sy;
+  } else {
+    const wm = m.wm || { x: 330, y: 560, width: 450, height: 200 };
+    const land = D(wm.x - 34, WM_Y - 22);
+    p = t < 26.42 ? D(540, 640) : hop(t, 26.42, 26.78, D(540, 640), land, 150);
+    r = lerp(26, 22, lin(t, 26.42, 26.78)) * (1 + (t > 29.6 ? 0.25 * amp(t) : 0));
+    const sq = bump(t, 26.76, 0.26); sx = 1 + 0.35 * sq; sy = 1 - 0.3 * sq;
+  }
+  return { p, r, sx, sy, o };
+}
+const playX = t => mapr(t, 16.5, 19.6, 230, 560);
+
+// ================================================================ render(t)
+function render(t) {
+  const m = measure();
+  LG.forEach(L => { L.g.style.visibility = t >= L.start && t < L.end ? 'visible' : 'hidden'; });
+  const c = camera(t);
+  $('cam').setAttribute('transform', `translate(540 670) rotate(${c.r}) scale(${c.z}) translate(${-c.x} ${-c.y})`);
+  $('para').setAttribute('transform', `translate(540 670) rotate(${c.r * 0.5}) scale(${0.6 + 0.4 * c.z}) translate(${-c.x * 0.45} ${-c.y * 0.45})`);
+  $('mblurk').setAttribute('stdDeviation', `${c.bx.toFixed(2)} ${c.by.toFixed(2)}`);
+
+  // ---------- S1 + S2: bubble (voice) morphs into the composer; the kadr frame clamps on «كادر»
+  const mo = spring(t, 3.34, 1.9, 0.86);
+  const bx = lerp4([240, 455, 840, 815], [120, 470, 960, 800], mo);
+  bubble.setAttribute('d', bubbleD(bx[0], bx[1], bx[2], bx[3], lerp(58, 44, mo), 90 * (1 - mo)));
+  draw(bubble, prog(t, 0.12, 0.95, 'inout')); bubble.setAttribute('fill-opacity', prog(t, 0.6, 0.95));
+  tr(bubble, { s: 1 + 0.035 * bump(t, 3.0, 0.4) });
+  const fIn = spring(t, 1.58, 2.4, 0.62), fTo = spring(t, 3.86, 2.6, 0.6);
+  const fr0 = [140, 360, 940, 990], fr1 = [190, 405, 890, 950], fr2 = [84, 432, 996, 838];
+  const frm = lerp4(lerp4(fr0, fr1, fIn), fr2, fTo);
+  bracketsD(...frm, 74).forEach((d, i) => { brk[i].setAttribute('d', d); draw(brk[i], prog(t, 1.58 + i * 0.05, 1.95 + i * 0.05, 'out')); });
+  const spread = (0.12 + 0.88 * spring(t, 0.0, 2.3, 0.78)) * (1 - prog(t, 3.28, 3.55, 'inout'));
+  bars1.forEach((b, i) => {
+    const d = i - 6, prof = Math.exp(-Math.pow(d / 4.4, 2));
+    const h = 18 + (205 * amp(t - Math.abs(d) * 0.035) * prof) * spread;
+    b.setAttribute('x', 540 + d * 36 * spread - 9); b.setAttribute('height', h); b.setAttribute('y', 640 - h / 2);
+    b.style.opacity = 1 - lin(t, 3.5, 3.6);
+  });
+  // typed request, word by word (whole Arabic words — never letter by letter)
+  let wi = 0;
+  REQ.forEach((ln, li) => ln.forEach((w, k) => { const e = typed[li][k], t0 = 4.6 + wi * 0.3;
+    const u = expOut(t, t0, 9); tr(e, { y: 14 * (1 - u), o: clamp((t - t0) / 0.2, 0, 1) }); wi++; }));
+  tr(chipR, { s: pop(t, 5.64, 0.45), o: fade(t, 5.62, 5.8) }); tr(chipT, { s: pop(t, 5.64, 0.45), o: fade(t, 5.62, 5.8) });
+  tr(sendRing, { s: 0.6 + 0.4 * spring(t, 3.9, 2.4, 0.7), o: fade(t, 3.9, 4.2) });
+  draw(sendArrow, prog(t, 7.42, 7.58, 'out')); tr(sendArrow, { s: 1 - 0.12 * bump(t, 7.5, 0.16), o: 1 - lin(t, 7.62, 7.72) });
+
+  // ---------- S3: Claude writes the project file (the dot is the pen)
+  const fileShrink = expOut(t, 10.32, 7.5), open = spring(t, 14.6, 1.7, 0.86);
+  let fr = lerp4(FILE0, FILE1, fileShrink); fr = lerp4(fr, WIN, open);
+  const fk = lerp(lerp(84, 60, fileShrink), 28, open);
+  filePath.setAttribute('d', fileD(fr[0], fr[1], fr[2], fr[3], lerp(lerp(26, 19, fileShrink), 28, open), fk, open));
+  draw(filePath, SIO(lin(t, 8.25, 9.15)));
+  filePath.setAttribute('fill-opacity', prog(t, 8.85, 9.15));
+  const fx1 = fr[2], fy0 = fr[1], fkk = fk * (1 - open);
+  fold.setAttribute('d', `M ${fx1 - fkk} ${fy0} V ${fy0 + fkk * 0.8} Q ${fx1 - fkk} ${fy0 + fkk} ${fx1 - fkk * 0.8} ${fy0 + fkk} H ${fx1}`);
+  draw(fold, prog(t, 9.02, 9.2, 'out')); fold.style.opacity = (t > 9.02 ? 1 : 0) * (1 - lin(t, 14.6, 14.8));
+  const sh = `translate(540 ${lerp(650, 840, fileShrink)}) scale(${lerp(1, 0.72, fileShrink)}) translate(-540 -650)`;
+  setT(L_lines, sh); setT(L_tag, sh);
+  wl.forEach((l, i) => draw(l, prog(t, 9.19 + i * 0.17, 9.37 + i * 0.17, 'out')));
+  L_lines.style.opacity = 1 - lin(t, 14.58, 14.75);
+  const tagIn = pop(t, 9.48, 0.45); L_tag.querySelectorAll('*').forEach(e => tr(e, { s: tagIn }));
+  L_tag.style.opacity = 1 - lin(t, 14.58, 14.75);
+  draw(check3, prog(t, 10.2, 10.34, 'out')); check3.style.opacity = (t > 10.2 ? 1 : 0) * (1 - lin(t, 10.36, 10.42));
+
+  // ---------- S4: four parts pop on their words; the dot hops tile to tile
+  const T4 = [10.74, 11.5, 12.26, 13.1];
+  parts.forEach((P, k) => {
+    draw(cons[k], prog(t, T4[k] - 0.2, T4[k] + 0.15, 'out')); cons[k].style.opacity = 1 - lin(t, 14.5, 14.7);
+    const active = t >= T4[k] && (k === 3 ? t < 13.95 : t < T4[k + 1]);
+    P.gl.acc.forEach(a => a.setAttribute(a.tagName === 'rect' || a.getAttribute('fill') !== 'none' ? 'fill' : 'stroke', active ? OR : INK));
+    if (k === 3) P.gl.acc.forEach((b, j) => { const h = 20 + (active ? 46 : 18) * amp(t - j * 0.04) * [0.6, 0.9, 1, 0.8, 0.55][j]; b.setAttribute('height', h); b.setAttribute('y', P.y - h / 2); });
+    // drop into the timeline lane (15.4+): fly to the clip start and shrink, the clip grows out of it
+    const bx = 157 + (k % 2) * 92, by = 418 + Math.floor(k / 2) * 76;          // media-bin slot
+    const tu = SIO(lin(t, 14.62 + k * 0.05, 15.05 + k * 0.05));
+    const d0 = 15.4 + k * 0.2, du = SIO(lin(t, d0, d0 + 0.42));
+    const tx = CLIP[k][0] + 34, ty = LANE[k];
+    const x = lerp(lerp(P.x, bx, tu), tx, du), y = lerp(lerp(P.y, by, tu), ty, du) - 50 * Math.sin(Math.PI * tu) - 40 * Math.sin(Math.PI * du);
+    const s = pop(t, T4[k], 0.45) * lerp(lerp(1, 0.44, tu), 0.42, du);
+    setT(P.g, `translate(${x} ${y}) scale(${s}) translate(${-P.x} ${-P.y})`);
+    P.g.style.opacity = 1 - lin(t, d0 + 0.38, d0 + 0.5);
+  });
+
+  // ---------- S5: double-click → the file opens into the editor
+  const pIn = (a, d = 0.3) => prog(t, a + 0.25, a + 0.25 + d, 'out');
+  chrome.forEach((e, i) => draw(e, pIn(14.62 + i * 0.04)));
+  draw(preview, pIn(14.78, 0.35));
+  binTh.forEach((e, i) => draw(e, pIn(14.75 + i * 0.03, 0.25)));
+  props.forEach((e, i) => draw(e, pIn(14.86 + i * 0.04, 0.25)));
+  knobs.forEach((e, i) => tr(e, { s: pop(t, 15.25 + i * 0.05, 0.35), x: 30 * Math.sin(t * 0.8 + i) * fade(t, 15.2, 15.6) }));
+  draw(tlDiv, pIn(14.9)); ruler.forEach((e, i) => draw(e, pIn(14.95 + i * 0.012, 0.15)));
+  laneHead.forEach((e, i) => draw(e, pIn(15.05 + i * 0.05, 0.25)));
+  draw(miniB, pIn(15.02, 0.35));
+  miniBars.forEach((b, i) => { const d = i - 3, h = (9 + 46 * amp(t - Math.abs(d) * 0.04) * Math.exp(-d * d / 6)) * pop(t, 15.45 + i * 0.03, 0.35);
+    b.setAttribute('x', 540 + d * 15 - 4.5); b.setAttribute('height', Math.max(0, h)); b.setAttribute('y', 490 - h / 2); });
+
+  // ---------- S6: clips land in their lanes, a ripple of "everything is editable", drag + trim by hand
+  const dragX = 200 * spring(t, 17.86, 1.9, 0.82);
+  const trimX = 140 * spring(t, 19.02, 2.0, 0.85);
+  clips.forEach((C, k) => {
+    const d0 = 15.4 + k * 0.2 + 0.36, g = spring(t, d0, 2.4, 0.78);
+    let x0 = C.x0, x1 = C.x1;
+    if (k === 1) { x0 += dragX; x1 += dragX; }
+    if (k === 3) x1 += trimX;
+    const w = lerp(68, x1 - x0, clamp(g, 0, 1.2));
+    C.r.setAttribute('x', x0); C.r.setAttribute('width', Math.max(0, w));
+    C.inner.style.opacity = lin(t, d0 + 0.15, d0 + 0.35);
+    const lift = 9 * bump(t, 16.62 + k * 0.16, 0.38);
+    const held = k === 1 ? spring(t, 17.8, 3, 0.8) - spring(t, 18.46, 3, 0.8) : 0;
+    setT(C.g, `translate(0 ${-lift - 6 * held})`);
+    if (k === 1) setT(C.inner, `translate(${dragX} 0)`);
+    C.g.style.opacity = t >= d0 - 0.02 ? 1 : 0;
+    const edited = (k === 1 && t > 17.8 && t < 19.0) || (k === 3 && t > 18.92 && t < 19.9);
+    C.r.setAttribute('stroke', edited ? OR : INK);
+  });
+  AUD.forEach((b, i) => { b.style.opacity = 216 + i * 9 < CLIP[3][1] + trimX - 8 ? 1 : 0; });
+  trimH.setAttribute('x', CLIP[3][1] + trimX - 6); trimH.style.opacity = fade(t, 18.86, 18.98) * (1 - lin(t, 19.7, 19.85));
+  setT(playLine, `translate(${playX(t)} 0)`); draw(playLine, prog(t, 15.42, 15.7, 'out'));
+  // cursor
+  let cp = [1010, 1120], press = 0;
+  const cw = (a, b, u) => [lerp(a[0], b[0], u), lerp(a[1], b[1], u)];
+  if (t < 14.75) cp = cw([1010, 1120], [552, 852], expOut(t, 13.9, 5.5));
+  else if (t < 17.2) cp = cw([552, 852], [830, 1005], prog(t, 14.75, 15.4, 'inout'));
+  else if (t < 17.8) cp = cw([830, 1005], [412, 798], prog(t, 17.2, 17.72, 'inout'));
+  else if (t < 18.5) cp = [412 + dragX, 798 - 6 * spring(t, 17.8, 3, 0.8)];
+  else if (t < 19.0) cp = cw([612, 798], [CLIP[3][1] + 2, 946], prog(t, 18.5, 18.94, 'inout'));
+  else cp = cw([CLIP[3][1] + 2 + trimX, 946], [1040, 1180], prog(t, 19.62, 20.0, 'in'));
+  press = bump(t, 14.4, 0.1) + bump(t, 14.54, 0.1) + bump(t, 17.76, 0.12) + bump(t, 18.95, 0.12) + bump(t, 19.5, 0.12);
+  setT(cursor, `translate(${cp[0]} ${cp[1]}) scale(${1 - 0.14 * press})`);
+  L_cur.style.opacity = fade(t, 13.9, 14.1) * (1 - lin(t, 19.65, 19.9));
+  const rpc = t < 15.2 ? [552, 852] : cp; const rpu = t < 15.2 ? lin(t, 14.54, 14.94) : lin(t, 19.5, 19.85);
+  ripple.setAttribute('cx', rpc[0]); ripple.setAttribute('cy', rpc[1]); ripple.setAttribute('r', 8 + 46 * E.out(rpu));
+  ripple.style.opacity = (rpu > 0 && rpu < 1) ? 1 - rpu : 0;
+
+  // ---------- S7: the four features, each on its word
+  tiles.forEach((T, k) => {
+    draw(T.frame, prog(t, TSTART[k] - 0.05, TSTART[k] + 0.35, 'out')); T.frame.setAttribute('fill-opacity', prog(t, TSTART[k] + 0.1, TSTART[k] + 0.3));
+  });
+  wv1.forEach((b, i) => { const g = spring(t, 20.2 + i * 0.012, 2.6, 0.7); const h = b.h * g; b.e.setAttribute('height', Math.max(0, h)); b.e.setAttribute('y', 445 - h / 2); });
+  const px1 = mapr(t, 20.3, 21.0, 598, 938);
+  const cutsDone = BEATX.map(bx => spring(t, mapr(bx, 598, 938, 20.3, 21.0), 3, 0.7));
+  const edges = [600, ...BEATX, 936];
+  const grow = prog(t, 20.18, 20.5, 'out'), groups = []; let gs = 0;
+  for (let i = 0; i < 4; i++) if (cutsDone[i] > 0.02) { groups.push([gs, i + 1, i]); gs = i + 1; }
+  groups.push([gs, 5, -1]);
+  strip.forEach((s, j) => { const G = groups[j]; if (!G) { s.setAttribute('width', 0); return; }
+    const prevCut = G[0] > 0 ? cutsDone[G[0] - 1] * 7 : 0, nextCut = G[2] >= 0 ? cutsDone[G[2]] * 7 : 0;
+    const x0 = edges[G[0]] + prevCut, x1 = Math.min(edges[G[1]] - nextCut, lerp(600, 936, grow));
+    s.setAttribute('x', x0); s.setAttribute('width', Math.max(0, x1 - x0)); });
+  cutMk.forEach((c2, i) => { const tc = mapr(BEATX[i], 598, 938, 20.3, 21.0); draw(c2, prog(t, tc - 0.02, tc + 0.1, 'out')); c2.style.opacity = 1 - lin(t, tc + 0.12, tc + 0.3); });
+  setT(play1, `translate(${px1} 0)`); play1.style.opacity = fade(t, 20.28, 20.38) * (1 - lin(t, 20.98, 21.1));
+  // tile 2: the real voice as a line, chips light while each word is spoken
+  let vd = ''; for (let i = 0; i <= 64; i++) { const x = 140 + i * 5.5, env = Math.sin(Math.PI * i / 64);
+    const y = 438 + env * 52 * amp(t - (64 - i) * 0.008) * Math.sin(i * 0.9 + t * 9); vd += (i ? ' L ' : 'M ') + x.toFixed(1) + ' ' + y.toFixed(1); }
+  voiceLine.setAttribute('d', vd); voiceLine.style.opacity = fade(t, 21.35, 21.6);
+  chips2.forEach((ch, i) => { tr(ch.g, { s: pop(t, ch.s - 0.02, 0.4) });
+    const on = t >= ch.s && t < (i === 2 ? 22.7 : ch.e + 0.04);
+    ch.r.setAttribute('fill', on ? OR : BG); ch.r.setAttribute('stroke', on ? OR : INK); ch.tx.setAttribute('fill', on ? BG : INK); });
+  // tile 3: spring graph drawn by the dot
+  draw(axes3, prog(t, 22.62, 22.95, 'out')); draw(goal3, prog(t, 22.7, 23.0, 'out'));
+  let sd = ''; const su = lin(t, SP_T0, SP_T1);
+  for (let i = 0; i <= 60; i++) { const u = (i / 60) * su; sd += (i ? ' L ' : 'M ') + lerp(SPX0, SPX1, u).toFixed(1) + ' ' + springY(u).toFixed(1); }
+  trail3.setAttribute('d', su > 0 ? sd : 'M 0 0'); trail3.style.opacity = su > 0 ? 1 : 0;
+  // tile 4: split screen
+  draw(fr4, prog(t, 23.62, 23.95, 'out')); draw(mount, prog(t, 23.72, 24.05, 'out')); draw(sun4, prog(t, 23.8, 24.05, 'out'));
+  const dv = prog(t, 24.14, 24.42, 'inout'); draw(div4, dv); setT(div4, `translate(${170 * (1 - spring(t, 24.2, 2.2, 0.9)) * (t > 24.2 ? 1 : 0)} 0)`);
+  const gap = 8 * spring(t, 24.4, 2.4, 0.7);
+  const push = 170 * (1 - spring(t, 24.2, 2.2, 0.9)), edge = 312 + push;
+  $('splitLR').setAttribute('x', 130); $('splitLR').setAttribute('y', 720); $('splitLR').setAttribute('width', Math.max(0, edge - 130 - gap)); $('splitLR').setAttribute('height', 270);
+  $('splitRR').setAttribute('x', edge + gap); $('splitRR').setAttribute('y', 720); $('splitRR').setAttribute('width', 200); $('splitRR').setAttribute('height', 270);
+  setT(person, `translate(${push} 0)`);
+  setT(leftC, `translate(${-gap} 0)`); setT(rightC, `translate(${gap} 0)`);
+  // ---------- S8: the four shrink into a grid of everything, then all collapse into the dot
+  const shrink = spring(t, 24.72, 1.9, 0.85), TC = [[652, 577], [428, 577], [652, 763], [428, 763]];
+  tiles.forEach((T, k) => { const col = clamp(lin(t, 25.6 + (0.5 - 0.0) * 0.03, 25.92), 0, 1);
+    const cu = E.in(col);
+    const x = lerp(lerp(T.cx, TC[k][0], shrink), 540, cu), y = lerp(lerp(T.cy, TC[k][1], shrink), 670, cu), s = lerp(1, 0.5, shrink) * (1 - cu);
+    setT(T.g, `translate(${x} ${y}) scale(${Math.max(0.001, s * (k === 0 ? pop(t, TSTART[0] - 0.05, 0.45) : pop(t, TSTART[k] - 0.05, 0.45)))}) translate(${-T.cx} ${-T.cy})`); });
+  more.forEach(mm => { const t0 = 24.86 + mm.rank * 0.04, a = pop(t, t0, 0.42);
+    const cu = E.in(lin(t, 25.6 + (12 - mm.rank) * 0.012, 25.9 + (12 - mm.rank) * 0.012));
+    setT(mm.g, `translate(${lerp(mm.cx, 540, cu)} ${lerp(mm.cy, 670, cu)}) scale(${Math.max(0.001, a * (1 - cu))}) translate(${-mm.cx} ${-mm.cy})`); });
+
+  // ---------- S9: logo — the frame opens from the dot, the word rises, the dot lands at its end
+  const lo = spring(t, 25.9, 2.0, 0.7);
+  const lf = lerp4([500, 600, 580, 680], [190, 400, 890, 880], lo);
+  bracketsD(...lf, lerp(20, 96, lo)).forEach((d, i) => { lbrk[i].setAttribute('d', d); draw(lbrk[i], prog(t, 25.9, 26.3, 'out')); });
+  setT(L_lframe, `translate(540 640) scale(${1 + 0.02 * spring(t, 29.3, 2, 0.5) - 0.02 * spring(t, 29.45, 2, 0.8)}) translate(-540 -640)`);
+  const wr = expOut(t, 26.32, 6.5);
+  $('wmClipR').setAttribute('y', 440); $('wmClipR').setAttribute('height', 330); $('wmClipR').setAttribute('x', 0);
+  setT(wordmark, `translate(0 ${150 * (1 - wr)})`); wordmark.style.opacity = t > 26.32 ? 1 : 0;
+  draw(instR, prog(t, 27.42, 27.85, 'out'));
+  tr(freeG, { s: pop(t, 27.5, 0.45) });
+  const nch = Math.floor(clamp((t - 28.16) / 0.03, 0, CMD.length)); cmdT.textContent = CMD.slice(0, nch);
+  tr(instG, { s: 1 - 0.03 * bump(t, 29.28, 0.22) });
+
+  // ---------- hero dot
+  const H = hero(t, m);
+  dot.setAttribute('cx', H.p[0]); dot.setAttribute('cy', H.p[1]);
+  dot.setAttribute('rx', Math.max(0, H.r * H.sx)); dot.setAttribute('ry', Math.max(0, H.r * H.sy));
+  dot.style.opacity = H.o;
+}
+function solo(lname) {   // null = everything; 'bg' = background only; a layer name = only that layer
+  document.querySelectorAll('[data-layer]').forEach(g => { g.style.display = lname === null || g.dataset.layer === lname ? '' : 'none'; });
+  const bg = lname === null || lname === 'bg';
+  $('bgrect').style.display = bg ? '' : 'none'; $('para').style.display = bg ? '' : 'none';
+}
+// layer list in paint (DOM) order → z order in Filmora
+[...document.querySelectorAll('[data-layer]')].forEach(g => { const L = LG.find(x => x.g === g); LAYERS.push({ name: L.name, start: L.start, end: L.end }); });
+window.KADR = { width: 1080, height: 1920, fps: FPS, duration: DUR, render, layers: LAYERS, solo };
+render(0);
+</script>
+</body></html>

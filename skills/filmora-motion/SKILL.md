@@ -10,11 +10,13 @@ from an HTML/SVG page whose every pixel is a pure function of time, and the edit
 sound) stay native in Filmora. Ask the user once: "the animated graphics come as ready clips; texts and timing stay
 editable" — then build.
 
-Files: `${CLAUDE_PLUGIN_ROOT}/assets/motion/kadr-motion.js` (helpers), `assets/motion/examples/camera_world_reel.html`
-(complete 7-scene 9:16 reel: speech bubble with live voice bars, skyline → bird line art, speech→chip→text, dialect
-bubbles, benchmark bars, word-timing playhead, orange wipe CTA), `examples/camera_world_reel_layers.html` (the same
-reel split into background + transparent element layers — start from this one), `scripts/motion_render.py` (renderer).
-The examples load `../kadr-motion.js`; in a copied page change it to `kadr-motion.js` (copied next to the page).
+Files: `${CLAUDE_PLUGIN_ROOT}/assets/motion/kadr-motion.js` (helpers), `assets/motion/examples/kadr_example_layers.html`
+(complete 30 s 9:16 reel, 9 scenes, one camera world: voice dot → speech bubble with live voice bars, typed request,
+project file that draws itself and releases four parts, editor window whose timeline fills clip by clip, feature
+tiles, crane-up to the logo; 34 layers = opaque background + 33 transparent elements — start from this one),
+`examples/data.js` (its voice loudness + word timings), `examples/kadr_example_design-system.md` (the design system
+written before drawing it), `scripts/motion_render.py` (renderer).
+The example loads `../kadr-motion.js`; in a copied page change it to `kadr-motion.js` (copied next to the page).
 
 ## Read first
 

@@ -89,8 +89,15 @@ def render(page, out, start=None, end=None, cuts=None, stills=None, alpha=False,
                 ff = _ffmpeg(path, w, h, fps, not opaque)
                 f0, f1 = int(round(L["start"] * fps)), int(round(L["end"] * fps))
                 for f in range(f0, f1):
-                    pg.evaluate(f"KADR.render({f / fps})")
-                    ff.stdin.write(pg.screenshot(omit_background=not opaque, type="png"))
+                    if subframes > 1:                    # motion blur per layer (premultiplied average, see _blend)
+                        subs = []
+                        for k in range(subframes):
+                            pg.evaluate(f"KADR.render({(f + (k + 0.5) / subframes - 0.5) / fps})")
+                            subs.append(pg.screenshot(omit_background=not opaque, type="png"))
+                        ff.stdin.write(_blend(subs))
+                    else:
+                        pg.evaluate(f"KADR.render({f / fps})")
+                        ff.stdin.write(pg.screenshot(omit_background=not opaque, type="png"))
                 ff.stdin.close()
                 ff.wait()
                 manifest.append({"name": L["name"], "path": os.path.abspath(path).replace("\\", "/"), "start": f0 / fps,

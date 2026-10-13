@@ -28,7 +28,7 @@ x, y: centre in 0..1 of the clip's source picture.  w, h: size as a fraction of 
 rotation, feather, radius (or raw Filmora names), times in seconds from the clip start.
 
 Multi-mask (Filmora 16 "Mask" panel, several layers combined with Add / Subtract / Intersect, per-mask opacity) —
-decoded from projects/samples/Sample Multi Mask.wfp (saved by Filmora 16.0.12), see _work/decode_multimask.md:
+decoded from projects saved by Filmora 16.0.12:
 
   * the "Mask" chain holds [ComplexMask, path_stroke, path_innershadow, path_dropshadow] (the last three disabled).
   * ComplexMask paramList[0] = "IComplexMask" (paramType 12) {"complex_mask": {"complexmask_data": "<json> + NUL"}}

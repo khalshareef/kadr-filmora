@@ -1,7 +1,7 @@
 """Keyframed EFFECT parameters for Filmora 16 projects: filters on a clip, effect layers (clip type 8), audio volume.
 
 Works on the dicts that filmora_fx / filmora_wfp produce (no Filmora UI involved). Recovered from the user's own
-Filmora-saved projects (Untitled 33/37/39/62 ...) and Filmora's install folder — see _work/decode_effect_kf.md.
+projects saved by Filmora itself and Filmora's install folder.
 
 Where it lives:  effect["paramMapList"] = [{"key": <paramType>, "keyFrame": {"parameter": "<json string>"}, "name": <param>}]
                  (same effect object that holds the static "paramList"; one map per animated param)
@@ -264,7 +264,7 @@ def read_keyframes(effect, param_name):
     return []
 
 
-if __name__ == "__main__":   # self-test against the strings Filmora itself wrote (Untitled 62 / 33)
+if __name__ == "__main__":   # self-test against the strings Filmora itself wrote (keyframe strings saved by Filmora)
     ok = kf_string([(0.0, 0.0), (2.0, 1.0), (3.31428, 0.0)]).split('"MD5":"')[1][:32] == "bbed07098c1be42bd13db42a76babadd"
     ok2 = kf_string([(7.64, 0.0), (10.0, 18.78)], ptype=2).split('"MD5":"')[1][:32] == "832bfc6fa2ec6164de373f98ccbd3ebb"
     ok3 = kf_string([(0.0, 0), (0.56, 0), (0.6, 70)], ptype=5).split('"MD5":"')[1][:32] == "1a4b779bdcc109d51e8148b4031512a9"

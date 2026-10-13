@@ -1,6 +1,6 @@
 """Speed for Filmora (.wfp) clips: constant speed (Uniform Speed) and speed ramps (Speed Ramping curves/presets).
 
-Decoded from Filmora 16 projects saved by Filmora itself + its install folder (see _work/decode_speed.md).
+Decoded from Filmora 16 projects saved by Filmora itself + its install folder.
 
   clip["speed"] = {"offset": src_in_sec, "offsetEnd": src_out_sec, "reverse": bool, "speedParam": "<json>"}
   speedParam keyframes: _time = SOURCE seconds (whole media, 0.._totalTime), _value = speed multiplier.

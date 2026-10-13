@@ -36,8 +36,8 @@
 ### المتطلبات
 - ويندوز + Wondershare Filmora 16 (مجرّب على 16.0.12).
 - Python 3.10 أو أحدث، و ffmpeg/ffprobe موجودين على الـPATH.
-- `pip install -r requirements.txt` وبعدها `playwright install chromium`.
-- اختياري: `pip install faster-whisper` لتفريغ التعليق الصوتي لكابشن.
+- `pip install -r requirements.txt` وبعدها `python -m playwright install chromium`.
+- اختياري لترجمة الكلام العربي بدقة: `pip install faster-whisper` (موديل large-v3).
 
 ### التثبيت
 جوّا Claude Code:
@@ -49,10 +49,12 @@
 
 أول مرة قول لـ Claude: «جهّز كادر» — بيعمل فهرس للإفكتات المنزّلة بفيلمورا عندك. إذا عندك مكتبة مؤثرات صوتية،
 قلّه وين هي وبيفهرسها كمان.
+(بالأوامر: `python scripts/catalog_filmora.py` للإفكتات، و`python scripts/sfx_catalog.py scan "D:/Sound Effects"` للأصوات.)
 
 ### وين بينحفظ المشروع؟
 بالمجلد اللي فاتح فيه محادثة Claude Code (أي درايف). بدك مجلد ثابت؟ قول لـ Claude، أو:
 `python scripts/filmora_paths.py set project_dir "D:/Filmora Projects"`.
+الأفضل يكون فيلمورا مسكّر وقت يبني Claude المشروع، حتى يبيّن بشاشة المشاريع؛ وإلا افتحه من File ▸ Open Project.
 
 ### كمان بيكتب بالملف
 - السرعة: ثابتة، منحنيات فيلمورا الجاهزة (Montage، Hero moment، Bullet time…)، منحنى خاص، عكس، وتنعيم الحركة.
@@ -108,15 +110,15 @@ editing like any project you made by hand. Everything runs on your PC; nothing i
 | `filmora-beat-edit` | tempo/beat/kick/drop analysis, cut grid, beat-synced draft spec |
 | `filmora-edit-styles` | recipes: Velocity, Glitch Party, Cinematic Trailer, Hype, Smooth Vlog, Retro VHS, Kinetic Type… |
 | `filmora-design-system` | palettes, Arabic/Latin font pairing, safe areas, transparent PNG elements |
-| `filmora-motion` | real motion graphics: time-driven HTML/SVG pages → one clip per scene (camera flights, line drawing, springs, motion blur), premium workflow, 18 styles |
+| `filmora-motion` | real motion graphics: time-driven HTML/SVG pages → one clip per scene (camera flights, line drawing, springs, motion blur), premium workflow, 10 named styles + more |
 | `filmora-sfx` | catalog of your own SFX library; soft Foley picks with peak-aligned single hits; no bells |
 | `filmora-troubleshoot` | Filmora log diagnosis, symptom → fix table, template re-extraction |
 
 ### Requirements
 - Windows, Wondershare Filmora 16 (tested on 16.0.12).
 - Python 3.10+, ffmpeg/ffprobe on PATH.
-- `pip install -r requirements.txt`, then `playwright install chromium`.
-- Optional: `pip install faster-whisper` to transcribe a voice-over for captions.
+- `pip install -r requirements.txt`, then `python -m playwright install chromium`.
+- Optional: `pip install faster-whisper` to transcribe a voice-over for captions (use the large-v3 model for Arabic).
 
 ### Install
 Inside Claude Code:
@@ -127,10 +129,12 @@ Inside Claude Code:
 (or use the local path of this folder instead of `khalshareef/kadr-filmora`).
 
 First run: ask Claude to "set up Kadr" — it builds the catalog of effects installed in your Filmora. If you have a
-sound-effects library, tell Claude where it is and it will catalog that too.
+sound-effects library, tell Claude where it is and it will catalog that too
+(commands: `python scripts/catalog_filmora.py`, `python scripts/sfx_catalog.py scan "D:/Sound Effects"`).
 
 Projects are saved in the folder the Claude Code conversation was opened in (any drive), unless you set
-`python scripts/filmora_paths.py set project_dir "<folder>"`.
+`python scripts/filmora_paths.py set project_dir "<folder>"`. Close Filmora while projects are built so they appear on
+its home screen (otherwise use File ▸ Open Project).
 
 ### Also written into the file
 - Speed: constant, Filmora's ramp presets (Montage, Hero moment, Bullet time…), custom curves, reverse, frame blending.

@@ -93,7 +93,7 @@ def specimen(items, text, sub, out, bg, ink, per_page=16):
                 label = f"{fam} — {h}" + (f" / {m}" if m != h else "") + f"  [{e['tag']}{', AR' if e['arabic'] else ''}{', EN' if e['latin'] else ''}]"
                 rows += (f"<div class=row><div class=lab>{label}</div><div style=\"font-family:F{k}h;font-size:64px\">{text}</div>"
                          + (f"<div style=\"font-family:F{k}m;font-size:34px;opacity:.85\">{sub}</div>" if sub else "") + "</div>")
-            html = (f"<html dir=rtl><meta charset=utf-8><style>{css}body{{margin:0;background:{bg};color:{ink};width:1600px}}"
+            html = (f"<html dir={'rtl' if any('؀' <= ch <= 'ۿ' for ch in text) else 'ltr'}><meta charset=utf-8><style>{css}body{{margin:0;background:{bg};color:{ink};width:1600px}}"
                     f".row{{padding:22px 40px;border-bottom:1px solid rgba(0,0,0,.08)}}.lab{{font:14px Consolas,monospace;direction:ltr;"
                     f"text-align:left;opacity:.6;margin-bottom:6px}}</style>{rows}</html>")
             pg = b.new_page(viewport={"width": 1600, "height": 800})

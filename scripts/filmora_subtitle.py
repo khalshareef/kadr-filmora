@@ -10,7 +10,7 @@
 
     python filmora_subtitle.py talk.srt          # prints the parsed cues (check timing/text before building)
 
-Model (decoded from the user's own Filmora projects, see _work/decode_subtitle.md):
+Model (decoded from projects saved by Filmora):
   * a normal video track (trackType 1 + its paired audio track) holding ONE clip of type 22 (userData 1 = 29);
   * clip.subtitleSource = JSON string {AniTemplates, End, Items, Layout, Start, Templates, Version}; Items =
     [{AniTemplate, Content, End, Layer, Start, Template}] with Start/End in ticks (1e7/s) relative to the clip start;

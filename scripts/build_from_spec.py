@@ -178,7 +178,7 @@ _LH = {}
 
 def block_height(c, W):
     """Visible height (px) of a text block: first line ~1.25 em + the font's own line pitch for every extra line
-    (Filmora: 1 em = 1.5 x size x W/1920; the pitch comes from the font file - Readex Pro 1.76 em, DG Bebo 2.0 em)."""
+    (Filmora: 1 em = 1.5 x size x W/1920; the pitch comes from the font file - Readex Pro 1.76 em, some display fonts 2.0 em)."""
     em = 1.5 * c.get("size", 60) * W / 1920
     lines = c["text"].count("\n") + 1
     if lines == 1:
@@ -583,7 +583,8 @@ def build(spec, out=None, register=True):
         subprocess.run([sys.executable, os.path.join(HERE, "register_project.py"), path, str(round(end / 1e7 * p.fps))], check=True)
     n = lambda t: sum(1 for c in clips if c["type"] == t)
     print(f"built {path}  {end / 1e7:.2f}s  video tracks={len(lanes)} audio tracks={len(alanes)}  "
-          f"video={n('video')} images={n('image')} texts={n('text')} effects={n('effect')} audio={n('audio')}")
+          f"video={n('video')} images={n('image')} texts={n('text')} shapes={n('shape')} effects={n('effect')} "
+          f"audio={n('audio')}" + (f"  subtitles={len(sub.get('cues') or sub.get('words') or []) or 'srt'}" if sub else ""))
     return path
 
 
@@ -594,4 +595,11 @@ if __name__ == "__main__":
     ap.add_argument("--out")
     ap.add_argument("--no-register", action="store_true")
     a = ap.parse_args()
-    build(json.load(open(a.spec, encoding="utf-8")), a.out, not a.no_register)
+    spec = json.load(open(a.spec, encoding="utf-8"))
+    out = a.out
+    plugin_root = os.path.normcase(os.path.dirname(HERE)) + os.sep
+    if not out and not filmora_paths._config().get("project_dir") and \
+            os.path.normcase(os.getcwd() + os.sep).startswith(plugin_root):
+        # run from inside the plugin folder by mistake -> save next to the spec instead of inside the plugin
+        out = os.path.join(os.path.dirname(os.path.abspath(a.spec)), spec["name"] + ".wfp")
+    build(spec, out, not a.no_register)

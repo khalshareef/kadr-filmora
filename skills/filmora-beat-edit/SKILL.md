@@ -79,8 +79,10 @@ whole-song map. The detector is good but not perfect: if the drop is heard somew
 - **Stutter** (repeat a moment 2–4×): split one shot into 2–4 clips of ½ beat each with the **same `src_in`**.
 - **Freeze + flash**: image of the frame (`ffmpeg -ss T -i clip.mp4 -frames:v 1 freeze.png`) for 1–2 beats,
   white flash (`4_Flash_White1`, 0.15 s) at its start, text on top.
-- **Speed feel without speed ramps**: alternate pull-out/push-in keyframes across consecutive shots; real speed ramps
-  aren't supported in files yet — tell the user to add Speed Ramping in Filmora on the 1–2 key shots if wanted.
+- **Speed ramps** on the 1–2 key shots: `"speed": {"preset": "hero_moment"}` or a `curve` (slow into the drop, fast
+  out) — filmora-core spec.md. Keep the shot's timeline start/end on the beat grid; the builder solves the source.
+- **Words**: one `--words` word lands one beat BEFORE the main drop (anticipation); to put it ON the drop pass
+  `--word-times <drop seconds>`.
 
 ## Text on the beat (with filmora-text)
 

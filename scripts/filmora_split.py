@@ -11,8 +11,7 @@
    NOTE: this is a CONTAINER clip (type 10) with inner timelines — the parts are only visible inside Filmora's
    split-screen editor, not on the main timeline.  Use it only when the user asks for Filmora's animated templates.
 
-Format of the template clip (decoded from projects/samples/Sample Split Screen.wfp, Filmora 16.0.12; notes in
-_work/decode_split.md):
+Format of the template clip (decoded from a project saved by Filmora 16.0.12):
   main timeline   video track:  clip type 10 "SplitScreenClip" {timelineId: T, splitCount: n, isSplitExtended: true,
                                  userData 12 = resource info json (res_type 5), 50 = title, 1 = 11, 2 = 1, 102 = 2}
                   its paired audio track:  clip type 6 {isAudio: 1, timelineId: T, userData 3 = SAME guid (38 bytes)}

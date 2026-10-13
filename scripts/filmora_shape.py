@@ -1,8 +1,8 @@
 """Native Filmora 16 drawn shapes (Drawing Tools: rectangle, ellipse, triangle, polygon, star, arrow, line) as
 editable clips — fill, stroke, end shapes (arrowheads), trim path (self-drawing lines), transform keyframes.
 
-Decoded from a project Filmora 16.0.12 saved itself (projects/samples/Sample Shapes.wfp) + the install folder
-(resources/wfx_effect/desc_service/path_*, configs/TrimPathAnimation). Notes: _work/decode_shapes.md.
+Decoded from a project Filmora 16.0.12 saved itself + the install folder
+(resources/wfx_effect/desc_service/path_*, configs/TrimPathAnimation).
 
 A shape is a main-timeline clip of type 26, serviceType "pen" (no media, no resource, no title timeline):
   effect chain "Basic"   crop-pan-zoom + transform (Position_x/y = shape centre in 0..1 of the frame, Rotation deg)

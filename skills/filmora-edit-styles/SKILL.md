@@ -45,14 +45,14 @@ If unsure, ask one question: "شو الإحساس اللي بدك ياه: حما
 - **Light leak on the chorus / section change** — `pk.pick("light-leak", use="transition", n=1)` as `transition_out`,
   or a light-leak overlay effect 0.8–1.5 s centred on the cut.
 - **Whip pan between scenes** — fast wipe/whip transitions (`fx_pick.py velocity --use transition`) 0.25–0.35 s.
-- **Split screen** — effects tagged `split` (`fx_pick.py split -n 5`: 3D multi-panel, comic panels, TV wall) as an
-  effect layer for 1–2 bars over one clip. Real split-screen templates with different clips per panel aren't
-  supported yet: alternative = two/three video clips scaled to 50 % / 33 % and positioned (x/y) side by side.
+- **Split screen** — spec `"type": "split"` (layouts 2v 2h 3v 3h 1+2 2x2 diag2, gap, dividers, background): every part
+  is a real clip on the main timeline, cut by a mask (filmora-core spec.md). Effects tagged `split` (`fx_pick.py split`)
+  are a quick one-clip alternative.
 - **Picture-in-picture / small centred picture** — video clip `scale` 55–70, `y` 0.5, with a PNG panel or blurred copy
   of the same clip underneath (blurred background: same clip, same `src_in`, at fill scale × 1.08 with a blur filter at
   lower z — fill scale formula in filmora-core; 16:9 footage in 9:16 ≈ 340).
-- **Speed ramp** — not writable yet. Fake it with push-in keyframes + a motion-blur hit at the fast part, and tell the
-  user: "select the clip ▸ Speed ▸ Speed Ramping ▸ Montage/Hero" for the 1–2 key shots.
+- **Speed ramp** — video `"speed": {"preset": "montage" | "hero_moment" | "bullet_time" | "jumper" | "flash_in" |
+  "flash_out"}` or `{"curve": [[0, 1], [0.6, 0.3], [1, 1]]}`; `"frame_interp": "optical_flow"` for smooth slow-mo.
 - **Letterbox** — a cinema-bars overlay (`fx_pick.py letterbox --use look`) over the whole video, or for the intro only.
 - **Colour look** — one filter (`use: look`, `color` in styles) as an effect layer over a whole section, z just above
   the footage. Footage shot soft/flat on purpose keeps a very light look or none.

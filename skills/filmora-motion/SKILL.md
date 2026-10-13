@@ -12,7 +12,9 @@ editable" — then build.
 
 Files: `${CLAUDE_PLUGIN_ROOT}/assets/motion/kadr-motion.js` (helpers), `assets/motion/examples/camera_world_reel.html`
 (complete 7-scene 9:16 reel: speech bubble with live voice bars, skyline → bird line art, speech→chip→text, dialect
-bubbles, benchmark bars, word-timing playhead, orange wipe CTA), `scripts/motion_render.py` (renderer).
+bubbles, benchmark bars, word-timing playhead, orange wipe CTA), `examples/camera_world_reel_layers.html` (the same
+reel split into background + transparent element layers — start from this one), `scripts/motion_render.py` (renderer).
+The examples load `../kadr-motion.js`; in a copied page change it to `kadr-motion.js` (copied next to the page).
 
 ## Read first
 
@@ -46,7 +48,8 @@ bubbles, benchmark bars, word-timing playhead, orange wipe CTA), `scripts/motion
 6. **Render clips**: `python motion_render.py page.html --cuts 0,3.45,8.16,… --out "assets/motion_S{n}.mp4" --subframes 4`
    (H.264 CRF 12, real motion blur from 4 averaged subframes; about 13 s of rendering per second of video at
    1080×1920 with 4 subframes, ~4 s without). Then
-   `python motion_qa.py pops assets/motion_S*.mp4` must report 0 suspicious frames. `--alpha --out layer.mov` gives a transparent ProRes 4444 layer.
+   `python motion_qa.py pops assets/motion_S*.mp4` must report 0 suspicious frames; `python motion_qa.py contact "stills/*.png" --out sheet.jpg --cols 5` makes the
+   contact sheet. `--alpha --out layer.mov` gives a transparent ProRes 4444 layer.
 7. **Spec**: motion clips on track `motion` at frame-exact times (`round(t*fps)/fps`), native headline (y ≈ 0.56,
    `role`) + English sub with `below: <headline id>` (never a fixed y), captions (y ≈ 0.70), SFX on the visual events, voice 0 dB. Build with filmora-core.
 

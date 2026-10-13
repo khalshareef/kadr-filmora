@@ -110,7 +110,7 @@ The video must play at normal speed.
 
 **subtitles** (top level of the spec, next to "clips") — Filmora's native subtitle track (editable in its subtitle
 editor, exports SRT): `{"srt": "file.srt"}` or `{"cues": [[start, end, "text"], ...]}` or `{"words": [[word, start,
-end(, is_key)], ...]}` (from faster-whisper), plus `font` (the user's pick) and `size` (required), `color`, `y`,
+end(, is_key)], ...]}` (from faster-whisper), plus `font` (the user's pick) and `size` (required; caption scale ≈ 40–56 on 1080-wide frames), `color`, `y`,
 `max_width`, `box` ({"color", "alpha", "pad", "radius"}). `"dynamic": "blue_and_yellow"` | `"none"` | {"active": hex,
 "keyword": hex} turns it into Filmora 16 Dynamic Captions (spoken word highlighted, key words in a second colour) built
 from our own word timings — no AI credits.

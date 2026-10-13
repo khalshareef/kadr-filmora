@@ -12,7 +12,7 @@ Where the presets live (all read-only):
       -> names/ids only; the payload exists only after Filmora downloads it, unless the same preset is also bundled.
   * legacy (Filmora <=12 "animation" key) <install>/resources/captions/Animation.xml -> listed, never written.
 
-How Filmora stores a text animation (recovered from Filmora 15.2-16 projects; see _work/decode_text_anim.md):
+How Filmora stores a text animation (recovered from Filmora 15.2-16 projects):
   the INNER title clip (type 4, inside the text's own title timeline) gets
       "inAnimation" / "outAnimation" / "loopAnimation" = {<preset payload>, "duration": ticks, "userData": [...]}
   Nothing changes on the type-7 wrapper on the main timeline, nor in scriptBuf.

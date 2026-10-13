@@ -1,7 +1,6 @@
 """Motion tracking: make a text / image / shape follow a moving object in a video, stored the way Filmora 16 does it.
 
-What Filmora 16 saves after Video > Tracking > Motion Tracking + "Link Element" (decoded from a real saved sample,
-see _work/decode_tracking.md):
+What Filmora 16 saves after Video > Tracking > Motion Tracking + "Link Element" (decoded from a real saved sample,:
   * the VIDEO clip gets an effect chain "ObjTracking" (between "Mask" and "_wes_hold_effectchain_") with one effect
     id 87289B96-239D-4740-BF86-023F54349902 "ObjectTracking", param "ObjectTrackingPtr" (paramType 7) =
     {enabled: false, visble: false, pointSet: [inPoint, outPoint] ticks,

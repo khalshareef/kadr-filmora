@@ -74,7 +74,9 @@ python captions.py words.json --spec "Reel.spec.json" --karaoke --highlight "#C6
 - `--karaoke` (needs word JSON): each spoken word pops above the line in the highlight colour.
 - Native alternative: spec `"subtitles"` writes ONE editable Filmora subtitle track (and Dynamic Captions with the
   spoken word highlighted from `words`) instead of separate text clips — see filmora-core spec.md.
-- No subtitles yet? If `faster-whisper` is installed, transcribe with word timestamps; otherwise ask the user for an
+- No subtitles yet? If `faster-whisper` is installed, transcribe with word timestamps — use the `large-v3` model for
+  Arabic (small models garble dialect): `WhisperModel("large-v3", device="cpu", compute_type="int8")`,
+  `model.transcribe(path, word_timestamps=True)`; otherwise ask the user for an
   SRT (Filmora's own Auto Captions can export one). Always show the user the caption text to confirm the wording
   before building — they check it closely.
 
